@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { authApi } from "../api";
@@ -24,12 +23,13 @@ export function LoginCallback(){
         */
 
         // 회원가입
-        if (response.data.loginResult === LoginResult.NUMBER_0) {
+        if (response.data.loginResult === LoginResult.NeedsRegistration) {
             // 만약 응답 값이 회원가입인 경우
+            localStorage.setItem("joinToken", response.data.token); 
             navigate("/register");
         } else {
             // 만약 응답 값이 로그인 인 경우
-            localStorage.setItem("accessToken", "token");
+            localStorage.setItem("accessToken", response.data.token);
             navigate("/home");
         }
     }
