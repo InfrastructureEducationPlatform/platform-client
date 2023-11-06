@@ -1,0 +1,78 @@
+openapi: 3.0.1
+info:
+  title: BlockInfrastructure-Core
+  version: '1.0'
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: 서비스에 로그인을 실시합니다.
+      description: 등록되지 않은 유저인 경우 NeedsRegistration과 JoinToken을 응답으로 반환합니다.
+      operationId: LoginAsync
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+components:
+  schemas:
+    CredentialProvider:
+      enum:
+        - Google
+      type: string
+    LoginRequest:
+      required:
+        - authenticationCode
+        - provider
+      type: object
+      properties:
+        provider:
+          $ref: '#/components/schemas/CredentialProvider'
+        authenticationCode:
+          minLength: 1
+          type: string
+          description: OAuth Provider이 보내주는 인가 코드입니다.
+      additionalProperties: false
+    LoginResult:
+      enum:
+        - 0
+        - 1
+      type: integer
+      format: int32
+    TokenResponse:
+      required:
+        - token
+      type: object
+      properties:
+        loginResult:
+          $ref: '#/components/schemas/LoginResult'
+        token:
+          minLength: 1
+          type: string
+          description: 'Access Token, expires in an hour.'
+        refreshToken:
+          type: string
+          description: 'Refresh Token, expires in 30 days.'
+          nullable: true
+      additionalProperties: false
