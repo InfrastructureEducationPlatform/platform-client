@@ -12,4 +12,5 @@ model/credential-provider.ts
 model/index.ts
 model/login-request.ts
 model/login-result.ts
+model/sign-up-request.ts
 model/token-response.ts

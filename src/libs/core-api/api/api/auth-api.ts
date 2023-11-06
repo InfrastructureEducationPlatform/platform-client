@@ -24,6 +24,8 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 // @ts-ignore
 import { LoginRequest } from '../model';
 // @ts-ignore
+import { SignUpRequest } from '../model';
+// @ts-ignore
 import { TokenResponse } from '../model';
 /**
  * AuthApi - axios parameter creator
@@ -65,6 +67,40 @@ export const AuthApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @summary 서비스에 회원 가입합니다.
+         * @param {SignUpRequest} [SignUpRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        registerAsync: async (SignUpRequest?: SignUpRequest, options: AxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/auth/register`;
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(SignUpRequest, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -84,6 +120,17 @@ export const AuthApiFp = function(configuration?: Configuration) {
          */
         async loginAsync(LoginRequest?: LoginRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenResponse>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.loginAsync(LoginRequest, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary 서비스에 회원 가입합니다.
+         * @param {SignUpRequest} [SignUpRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async registerAsync(SignUpRequest?: SignUpRequest, options?: AxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenResponse>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.registerAsync(SignUpRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -106,6 +153,16 @@ export const AuthApiFactory = function (configuration?: Configuration, basePath?
         loginAsync(LoginRequest?: LoginRequest, options?: any): AxiosPromise<TokenResponse> {
             return localVarFp.loginAsync(LoginRequest, options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @summary 서비스에 회원 가입합니다.
+         * @param {SignUpRequest} [SignUpRequest] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        registerAsync(SignUpRequest?: SignUpRequest, options?: any): AxiosPromise<TokenResponse> {
+            return localVarFp.registerAsync(SignUpRequest, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -126,5 +183,17 @@ export class AuthApi extends BaseAPI {
      */
     public loginAsync(LoginRequest?: LoginRequest, options?: AxiosRequestConfig) {
         return AuthApiFp(this.configuration).loginAsync(LoginRequest, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary 서비스에 회원 가입합니다.
+     * @param {SignUpRequest} [SignUpRequest] 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof AuthApi
+     */
+    public registerAsync(SignUpRequest?: SignUpRequest, options?: AxiosRequestConfig) {
+        return AuthApiFp(this.configuration).registerAsync(SignUpRequest, options).then((request) => request(this.axios, this.basePath));
     }
 }

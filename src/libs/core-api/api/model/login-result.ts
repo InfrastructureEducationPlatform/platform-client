@@ -21,8 +21,8 @@
  */
 
 export const LoginResult = {
-    NUMBER_0: 0,
-    NUMBER_1: 1
+    NeedsRegistration: 'NeedsRegistration',
+    LoginSucceed: 'LoginSucceed'
 } as const;
 
 export type LoginResult = typeof LoginResult[keyof typeof LoginResult];

@@ -35,6 +35,41 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      summary: 서비스에 회원 가입합니다.
+      operationId: RegisterAsync
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/SignUpRequest'
+      responses:
+        '200':
+          description: 회원 가입에 성공했을 때 반환합니다.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: JWT Join Token Validation에 실패했을 때
+        '409':
+          description: 이미 존재하는 인증 정보일 때
 components:
   schemas:
     CredentialProvider:
@@ -56,10 +91,31 @@ components:
       additionalProperties: false
     LoginResult:
       enum:
-        - 0
-        - 1
-      type: integer
-      format: int32
+        - NeedsRegistration
+        - LoginSucceed
+      type: string
+    SignUpRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: User Nickname
+          nullable: true
+        email:
+          type: string
+          description: User Email
+          nullable: true
+        profileImageUrl:
+          type: string
+          description: Profile Image URL(Can be NULL)
+          nullable: true
+        joinToken:
+          type: string
+          description: 로그인 API에서 받은 Join Token입니다.
+          nullable: true
+        credentialProvider:
+          $ref: '#/components/schemas/CredentialProvider'
+      additionalProperties: false
     TokenResponse:
       required:
         - token
