@@ -14,7 +14,18 @@
 
 
 
-export * from './api/auth-api';
-export * from './api/channel-api';
-export * from './api/users-api';
+/**
+ * 
+ * @export
+ * @enum {string}
+ */
+
+export const ChannelPermissionType = {
+    Owner: 'Owner',
+    Reader: 'Reader'
+} as const;
+
+export type ChannelPermissionType = typeof ChannelPermissionType[keyof typeof ChannelPermissionType];
+
+
 

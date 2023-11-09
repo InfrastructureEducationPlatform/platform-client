@@ -24,7 +24,7 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Success
+          description: "OAuth에서 정보를 성공적으로 가져온 경우. 등록되지 않은 사용자는 LoginResult가 NeedsRegistration로 표기되고, 등록된 사용자는 로그인 성공으로 판단해\r\nLoginSucceed를 반환합니다."
           content:
             text/plain:
               schema:
@@ -35,6 +35,18 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/TokenResponse'
+        '400':
+          description: OAuth 로그인 혹은 OAuth 정보를 가져오는데 실패한 경우.
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /auth/register:
     post:
       tags:
@@ -68,14 +80,152 @@ paths:
                 $ref: '#/components/schemas/TokenResponse'
         '400':
           description: JWT Join Token Validation에 실패했을 때
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
         '409':
           description: 이미 존재하는 인증 정보일 때
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /channels:
+    post:
+      tags:
+        - Channel
+      summary: '채널을 생성하고, 생성한 사람을 Owner로 추가합니다.'
+      operationId: CreateChannelAsync
+      requestBody:
+        description: 채널 생성 요청
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelRequest'
+      responses:
+        '200':
+          description: Success
+        '204':
+          description: 채널 생성에 성공한 경우
+      security:
+        - JwtAuthenticationFilter: [ ]
+  /users/me:
+    get:
+      tags:
+        - Users
+      summary: '사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.'
+      operationId: GetUsersDetailProjectionAsync
+      responses:
+        '200':
+          description: 사용자 조회에 성공한 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/MeResponse'
+        '404':
+          description: 사용자를 어떠한 이유로 찾을 수 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: [ ]
 components:
   schemas:
+    ChannelPermissionProjection:
+      required:
+        - channelId
+        - channelPermissionType
+        - createdAt
+        - userId
+      type: object
+      properties:
+        userId:
+          minLength: 1
+          type: string
+          description: 사용자 ID
+        channelId:
+          minLength: 1
+          type: string
+          description: 사용자가 소속되어 있는 Channel ID
+        channelPermissionType:
+          $ref: '#/components/schemas/ChannelPermissionType'
+        createdAt:
+          type: string
+          description: 권한이 추가된 시작
+          format: date-time
+      additionalProperties: false
+    ChannelPermissionType:
+      enum:
+        - Owner
+        - Reader
+      type: string
+    CreateChannelRequest:
+      required:
+        - description
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: 생성할 채널의 이름입니다.
+        description:
+          minLength: 1
+          type: string
+          description: 생성할 채널의 1줄 설명입니다.
+        imageUrl:
+          type: string
+          description: 'Optional: 채널의 프로필 이미지 URL입니다.'
+          nullable: true
+      additionalProperties: false
     CredentialProvider:
       enum:
         - Google
       type: string
+    ErrorResponse:
+      type: object
+      properties:
+        statusCodes:
+          type: integer
+          format: int32
+        errorMessage:
+          type: string
+          nullable: true
+        errorTitle:
+          type: string
+          nullable: true
+      additionalProperties: false
     LoginRequest:
       required:
         - authenticationCode
@@ -94,6 +244,36 @@ components:
         - NeedsRegistration
         - LoginSucceed
       type: string
+    MeResponse:
+      required:
+        - channelPermissionList
+        - email
+        - name
+        - userId
+      type: object
+      properties:
+        userId:
+          minLength: 1
+          type: string
+          description: 사용자 Unique ID
+        name:
+          minLength: 1
+          type: string
+          description: 사용자 이름(닉네임)
+        email:
+          minLength: 1
+          type: string
+          description: 사용자 이메일
+        profilePictureImageUrl:
+          type: string
+          description: 'Optional, 사용자 프로필 이미지'
+          nullable: true
+        channelPermissionList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelPermissionProjection'
+          description: 사용자가 속한 채널의 권한 리스트
+      additionalProperties: false
     SignUpRequest:
       type: object
       properties:
@@ -118,6 +298,7 @@ components:
       additionalProperties: false
     TokenResponse:
       required:
+        - loginResult
         - token
       type: object
       properties:
@@ -132,3 +313,7 @@ components:
           description: 'Refresh Token, expires in 30 days.'
           nullable: true
       additionalProperties: false
+  securitySchemes:
+    JwtAuthenticationFilter:
+      type: http
+      scheme: Bearer

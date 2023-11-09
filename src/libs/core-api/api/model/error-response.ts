@@ -13,35 +13,30 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import { LoginResult } from './login-result';
 
 /**
  * 
  * @export
- * @interface TokenResponse
+ * @interface ErrorResponse
  */
-export interface TokenResponse {
+export interface ErrorResponse {
     /**
      * 
-     * @type {LoginResult}
-     * @memberof TokenResponse
+     * @type {number}
+     * @memberof ErrorResponse
      */
-    'loginResult': LoginResult;
+    'statusCodes'?: number;
     /**
-     * Access Token, expires in an hour.
+     * 
      * @type {string}
-     * @memberof TokenResponse
+     * @memberof ErrorResponse
      */
-    'token': string;
+    'errorMessage'?: string | null;
     /**
-     * Refresh Token, expires in 30 days.
+     * 
      * @type {string}
-     * @memberof TokenResponse
+     * @memberof ErrorResponse
      */
-    'refreshToken'?: string | null;
+    'errorTitle'?: string | null;
 }
-
-
 

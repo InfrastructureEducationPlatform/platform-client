@@ -13,35 +13,30 @@
  */
 
 
-// May contain unused imports in some cases
-// @ts-ignore
-import { LoginResult } from './login-result';
 
 /**
  * 
  * @export
- * @interface TokenResponse
+ * @interface CreateChannelRequest
  */
-export interface TokenResponse {
+export interface CreateChannelRequest {
     /**
-     * 
-     * @type {LoginResult}
-     * @memberof TokenResponse
-     */
-    'loginResult': LoginResult;
-    /**
-     * Access Token, expires in an hour.
+     * 생성할 채널의 이름입니다.
      * @type {string}
-     * @memberof TokenResponse
+     * @memberof CreateChannelRequest
      */
-    'token': string;
+    'name': string;
     /**
-     * Refresh Token, expires in 30 days.
+     * 생성할 채널의 1줄 설명입니다.
      * @type {string}
-     * @memberof TokenResponse
+     * @memberof CreateChannelRequest
      */
-    'refreshToken'?: string | null;
+    'description': string;
+    /**
+     * Optional: 채널의 프로필 이미지 URL입니다.
+     * @type {string}
+     * @memberof CreateChannelRequest
+     */
+    'imageUrl'?: string | null;
 }
-
-
 

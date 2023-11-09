@@ -3,7 +3,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { authApi } from "../api";
 import { LoginResult } from "../libs/core-api/api";
 
-
 export function LoginCallback(){
     const [searchParameters, _] = useSearchParams();
     const navigate = useNavigate(); // 이동 시킬 때  쓰는 훅
@@ -30,7 +29,7 @@ export function LoginCallback(){
         } else {
             // 만약 응답 값이 로그인 인 경우
             localStorage.setItem("accessToken", response.data.token);
-            navigate("/home");
+            navigate("/createChannel");
         }
     }
 
