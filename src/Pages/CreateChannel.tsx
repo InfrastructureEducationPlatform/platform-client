@@ -27,7 +27,7 @@ export function CreateChannel(){
             console.log(response);
             
             if(response != null){
-                navigate('/');
+                navigate('/home');
             }
             
         })();
@@ -59,7 +59,7 @@ export function CreateChannel(){
                 <label htmlFor = "channelImgUrlInput">채널 프로필 이미지</label>
                 <input
                     id="channelImgUrlInput"
-                    type="image"
+                    type="file"
                     value={channelImgUrl}
                     onChange={(event) => setChannelImgUrl(event.target.value)}/>
             </div>
