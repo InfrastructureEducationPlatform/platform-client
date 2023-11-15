@@ -2,45 +2,24 @@ import { AxiosHeaders } from "axios";
 import { userApi } from "../api";
 import { FaRegBell } from "react-icons/fa6";
 import {useEffect, useState} from 'react'
-import { ChannelPermissionProjection, ChannelPermissionType } from "../libs/core-api/api";
-
-class ChannelPermission implements ChannelPermissionProjection {
-    userId: string;
-    channelId: string;
-    channelPermissionType: ChannelPermissionType;
-    createdAt: string;
-  
-    // 추가적인 생성자나 메서드 등이 필요하다면 여기에 추가할 수 있습니다.
-    constructor(userId: string, channelId: string, channelPermissionType: ChannelPermissionType, createdAt: string) {
-      this.userId = userId;
-      this.channelId = channelId;
-      this.channelPermissionType = channelPermissionType;
-      this.createdAt = createdAt;
-    }
-  }
-  
+import { ChannelPermissionProjection } from "../libs/core-api/api";
 
 export function TopBarHeader(){
-    // let channelList:ChannelPermissionProjection = {userId: "", };
     const [profilePictureImageUrl, setProfilePictureImageUrl] = useState('');
-    const [channelPermissionList, setChannelPermissionList] = useState<ChannelPermission[]>([]);
-
-    // const [selectedChannelId, setSelectedChannelId] = useState('');
+    const [channelPermissionList, setChannelPermissionList] = useState<ChannelPermissionProjection[]>([]);
 
     useEffect(()=>{
         const fetchData =async () => {
             try{
+                
                 let accessToken:string = localStorage.getItem("accessToken")||"";
                 const headers = new AxiosHeaders();
                 headers.setAuthorization(`Bearer ${accessToken}`);
                 const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
-
+                
                 setChannelPermissionList(userDetail.data.channelPermissionList);
                 setProfilePictureImageUrl(userDetail.data.profilePictureImageUrl||"https://avatars.githubusercontent.com/u/141570137?s=200&v=4");
-                
-                console.log(channelPermissionList);
-                localStorage.setItem('selectedChannelId',channelPermissionList[0].channelId)
-
+        
             } catch(error){
                 console.error("There is problem"+error);
             }
@@ -56,7 +35,6 @@ export function TopBarHeader(){
     
     return(
     <header style={{
-        position: "fixed",
         left: 0,
         top: 0,
         width: '100%',
@@ -74,7 +52,7 @@ export function TopBarHeader(){
             justifyContent: 'space-between',
         }}>
             <div>
-                {/* <a>{channelPermissionList[0].channelId}</a> */}
+                <a>{channelPermissionList[0]?.channelId ?? ""}</a>
             </div>
             <nav>
                 <ul style={{

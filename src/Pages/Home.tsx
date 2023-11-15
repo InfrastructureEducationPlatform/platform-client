@@ -2,6 +2,7 @@ import { userApi } from "../api";
 import { AxiosHeaders } from "axios";
 import { useNavigate } from "react-router-dom";
 import { TopBarHeader } from "../components/TopBarHeader";
+import { SketchList } from "../components/SketchList";
 
 export function Home(){
     const navigate = useNavigate();
@@ -17,9 +18,15 @@ export function Home(){
     })();
 
     return(
-        <div>
+        <div >
+            <div>
             <TopBarHeader/>
+            </div>
+            
+            <div>
             <h1>Home</h1>
+            <SketchList/>
+            </div>
             
         </div>
     );
