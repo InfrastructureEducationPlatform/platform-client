@@ -1,43 +1,27 @@
-import { FormEvent, useState } from 'react';
+import { Button, Card, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
 import { authApi } from '../api';
 import { CredentialProvider } from '../libs/core-api/api';
 
+type RegistrationFormType = {
+  userName: string;
+  userEmail: string;
+};
+
 export function Join() {
-  localStorage.getItem('joinToken');
-
-  return (
-    <>
-      <div>
-        <InputBox />
-      </div>
-    </>
-  );
-}
-
-function InputBox() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    // Form의 기본 엑션 방지
-    event.preventDefault();
-
-    // 비동기로 API 요청(회원가입 요청)
+  const onSubmit = (value: RegistrationFormType) => {
     (async () => {
       // 회원가입 API
       const response = await authApi.registerAsync({
-        name: userName,
-        email: userEmail,
+        name: value.userEmail,
+        email: value.userName,
         credentialProvider: CredentialProvider.Google,
         joinToken: localStorage.getItem('joinToken'),
         profileImageUrl: null,
       });
-
-      // 응답값 로깅(필수 아님, 로깅용)
-      console.log(response);
 
       // 요청에 성공 한 경우(서버 응답 값에 토큰이 정상적으로 있는 경우) 엑세스 토큰을 로컬스토리지에 등록하고 홈페이지로 이동
       if (response.data.token) {
@@ -48,73 +32,54 @@ function InputBox() {
   };
 
   return (
-    /* Root Content Area */
     <div
       style={{
         width: '100vw',
         height: '100vh',
         display: 'flex',
-        alignItems: 'center',
         justifyContent: 'center',
+        alignItems: 'center',
       }}
     >
-      {/* Outer Content Area */}
-      <div
-        style={{
-          width: '720px',
-          height: '610px',
-          background: '#A87575',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        {/* Inner Content Area */}
-        <div
-          style={{
-            background: 'white',
-            width: '640px',
-            height: '500px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'column',
-          }}
+      <Card title={'회원가입'}>
+        <Form
+          name="basic"
+          labelCol={{ span: 6 }}
+          wrapperCol={{ span: 16 }}
+          style={{ width: 500, maxWidth: 800 }}
+          onFinish={(value) => onSubmit(value)}
+          autoComplete="off"
         >
-          <h1 style={{ color: 'black' }}>회원가입</h1>
-          <form
-            onSubmit={onSubmit}
+          <Form.Item<RegistrationFormType>
+            label="사용자 이름"
+            name={'userName'}
+            rules={[
+              { required: true, message: '사용자 이름을 입력해 주세요!' },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item<RegistrationFormType>
+            label="사용자 이메일"
+            name={'userEmail'}
+            rules={[{ required: true, message: '비밀번호를 입력해주세요!' }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
             style={{
-              width: '100%',
               display: 'flex',
-              alignItems: 'center',
-              flexDirection: 'column',
-              gap: '10px',
+              justifyContent: 'center',
             }}
           >
-            <div>
-              <label htmlFor="userNameInput">사용자 이름</label>
-              <input
-                id="userNameInput"
-                type="text"
-                onChange={(event) => setUserName(event.target.value)}
-                value={userName}
-              />
-            </div>
-            <div>
-              <label htmlFor="userEmailInput">사용자 이메일</label>
-              <input
-                type="text"
-                onChange={(event) => setUserEmail(event.target.value)}
-                value={userEmail}
-              />
-            </div>
-            <button style={{ width: '30%' }} type="submit">
+            <Button type="primary" htmlType="submit">
               회원가입
-            </button>
-          </form>
-        </div>
-      </div>
+            </Button>
+          </Form.Item>
+        </Form>
+      </Card>
     </div>
   );
 }
