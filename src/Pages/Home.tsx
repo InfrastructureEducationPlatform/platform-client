@@ -1,17 +1,14 @@
 import { userApi } from "../api";
-import { AxiosHeaders } from "axios";
 import { useNavigate } from "react-router-dom";
 import { TopBarHeader } from "../components/TopBarHeader";
 import { SketchList } from "../components/SketchList";
+import { initializeHeader } from "./api-controller";
 
 export function Home(){
     const navigate = useNavigate();
-    let accessToken:string = localStorage.getItem("accessToken")||"";
-    const headers = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${accessToken}`);
-    
+    const headers = initializeHeader();
     (async () =>{ 
-        const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
+            const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
         if (userDetail.data.channelPermissionList.length == 0){ // 채널 생성 온보딩이 필요한 경우
             navigate('/onBoarding');
         }

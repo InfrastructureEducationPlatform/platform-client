@@ -1,20 +1,19 @@
-import { AxiosHeaders } from "axios";
 import { userApi } from "../api";
 import { FaRegBell } from "react-icons/fa6";
 import {useEffect, useState} from 'react'
 import { ChannelPermissionProjection } from "../libs/core-api/api";
+import { initializeHeader } from "../Pages/api-controller";
 
 export function TopBarHeader(){
     const [profilePictureImageUrl, setProfilePictureImageUrl] = useState('');
     const [channelPermissionList, setChannelPermissionList] = useState<ChannelPermissionProjection[]>([]);
+    const headers = initializeHeader();
+    const [isOpen, setIsOpen] = useState(false);
+
 
     useEffect(()=>{
         const fetchData =async () => {
-            try{
-                
-                let accessToken:string = localStorage.getItem("accessToken")||"";
-                const headers = new AxiosHeaders();
-                headers.setAuthorization(`Bearer ${accessToken}`);
+            try{ 
                 const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
                 
                 setChannelPermissionList(userDetail.data.channelPermissionList);
@@ -52,8 +51,17 @@ export function TopBarHeader(){
             justifyContent: 'space-between',
         }}>
             <div>
+                <div>
                 <a>{channelPermissionList[0]?.channelId ?? ""}</a>
+                </div>
+                
+                <div>
+                   <button onClick={()=> setIsOpen(!isOpen)}>열기</button>
+                   {isOpen ? <ul>{channelPermissionList.map((channel, index)=>{
+                        return <li key={index} onClick={() => localStorage.setItem('selectedChannelId', channel.channelId)}>{channel.channelId}</li>})}</ul>:<></>}
+                </div>
             </div>
+            
             <nav>
                 <ul style={{
                     display: 'flex',

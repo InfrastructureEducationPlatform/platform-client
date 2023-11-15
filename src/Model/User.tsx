@@ -13,5 +13,4 @@ class User{
         this.channelPermissionList = channelPermissionList;
     }
 
-    set
 }
