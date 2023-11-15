@@ -16,5 +16,6 @@
 
 export * from './api/auth-api';
 export * from './api/channel-api';
+export * from './api/sketch-api';
 export * from './api/users-api';
 

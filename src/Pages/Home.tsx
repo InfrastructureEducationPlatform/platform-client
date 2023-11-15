@@ -1,6 +1,7 @@
 import { userApi } from "../api";
 import { AxiosHeaders } from "axios";
 import { useNavigate } from "react-router-dom";
+import { TopBarHeader } from "../components/TopBarHeader";
 
 export function Home(){
     const navigate = useNavigate();
@@ -10,7 +11,6 @@ export function Home(){
     
     (async () =>{ 
         const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
-        console.log(userDetail.data);
         if (userDetail.data.channelPermissionList.length == 0){ // 채널 생성 온보딩이 필요한 경우
             navigate('/onBoarding');
         }
@@ -18,7 +18,9 @@ export function Home(){
 
     return(
         <div>
+            <TopBarHeader/>
             <h1>Home</h1>
+            
         </div>
     );
     

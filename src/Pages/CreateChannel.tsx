@@ -24,7 +24,6 @@ export function CreateChannel(){
                 description: channelInfo,
                 imageUrl: null
             }, {headers: headers});
-            console.log(response);
             
             if(response != null){
                 navigate('/home');

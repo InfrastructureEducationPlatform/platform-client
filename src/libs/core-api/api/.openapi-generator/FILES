@@ -4,6 +4,7 @@
 api.ts
 api/auth-api.ts
 api/channel-api.ts
+api/sketch-api.ts
 api/users-api.ts
 base.ts
 common.ts
@@ -20,4 +21,5 @@ model/login-request.ts
 model/login-result.ts
 model/me-response.ts
 model/sign-up-request.ts
+model/sketch-response.ts
 model/token-response.ts

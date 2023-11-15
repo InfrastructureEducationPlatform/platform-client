@@ -7,4 +7,5 @@ export * from './login-request';
 export * from './login-result';
 export * from './me-response';
 export * from './sign-up-request';
+export * from './sketch-response';
 export * from './token-response';

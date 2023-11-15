@@ -21,7 +21,8 @@
  */
 
 export const CredentialProvider = {
-    Google: 'Google'
+    Google: 'Google',
+    Self: 'Self'
 } as const;
 
 export type CredentialProvider = typeof CredentialProvider[keyof typeof CredentialProvider];
