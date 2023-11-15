@@ -1,4 +1,5 @@
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
+import { Button } from 'antd';
 
 export function Login() {
   // const onSuccess = (res:string) =>{
@@ -32,5 +33,9 @@ function InnerOAuth() {
     redirect_uri: `${window.location.origin}/auth/callback`,
     ux_mode: 'redirect',
   });
-  return <button onClick={() => useLogin()}>Google Login</button>;
+  // return <button onClick={() => useLogin()}>Google Login</button>;
+
+  return (
+    <Button onClick={() => useLogin()}>Google Login</Button>
+  )
 }
