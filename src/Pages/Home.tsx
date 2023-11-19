@@ -1,11 +1,5 @@
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
 import { Avatar, Card, Col, Flex, Row, Typography } from 'antd';
 import Meta from 'antd/es/card/Meta';
-import { Header } from 'antd/es/layout/layout';
 import React, { useEffect, useState } from 'react';
 
 import { sketchApi } from '../api';
