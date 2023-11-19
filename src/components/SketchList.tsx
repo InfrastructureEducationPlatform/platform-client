@@ -10,20 +10,20 @@ export function SketchList() {
     localStorage.getItem('selectedChannelId') || '',
   );
   const [sketchList, setSketchList] = useState<SketchResponse[]>([]);
-  useEffect(() => {}, []);
-  (async () => {
-    let accessToken: string = localStorage.getItem('accessToken') || '';
-    const headers = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${accessToken}`);
 
-    const response = await sketchApi.listSketchesInChannelAsync(
-      selectedChannelId,
-      { headers },
-    );
-    setSketchList(response.data);
-    console.log(sketchList);
-  })();
-  useEffect(() => {}, [sketchList]);
+  useEffect(() => {
+    (async () => {
+      const accessToken: string = localStorage.getItem('accessToken') || '';
+      const headers = new AxiosHeaders();
+      headers.setAuthorization(`Bearer ${accessToken}`);
+
+      const response = await sketchApi.listSketchesInChannelAsync(
+        selectedChannelId,
+        { headers },
+      );
+      setSketchList(response.data);
+    })();
+  }, [selectedChannelId]);
 
   return (
     <div
