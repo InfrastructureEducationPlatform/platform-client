@@ -82,7 +82,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
           />
         </Sider>
         <Layout>
-          <Content>{children}</Content>
+          <Content style={{ overflow: 'scroll' }}>{children}</Content>
         </Layout>
       </Layout>
     </Layout>
