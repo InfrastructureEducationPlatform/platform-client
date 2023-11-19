@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { userApi } from '../api';
 import { UserContext } from '../types/UserContext.ts';
 import { ChannelSelector } from './ChannelSelector.tsx';
+import { AuthProvider } from './providers/AuthProvider.tsx';
 
 const { Header, Content, Sider } = Layout;
 
@@ -20,6 +21,14 @@ const leftSideMenuItem: MenuProps['items'] = [
 ];
 
 export function MainLayout({ children }: { children: ReactNode }) {
+  return (
+    <AuthProvider>
+      <InnerLayout>{children}</InnerLayout>
+    </AuthProvider>
+  );
+}
+
+function InnerLayout({ children }: { children: ReactNode }) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -53,7 +62,6 @@ export function MainLayout({ children }: { children: ReactNode }) {
   if (!userChannelInformation) {
     return <div>loading...</div>;
   }
-
   return (
     <Layout style={{ height: '100vh' }}>
       <Header

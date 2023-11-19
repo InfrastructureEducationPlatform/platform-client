@@ -30,14 +30,7 @@ function App() {
           </AuthProvider>
         }
       />
-      <Route
-        path="/home"
-        element={
-          <AuthProvider>
-            <Home />
-          </AuthProvider>
-        }
-      />
+      <Route path="/home" element={<Home />} />
     </Routes>
   );
 }
