@@ -30,6 +30,7 @@ export function LoginCallback() {
     } else {
       // 만약 응답 값이 로그인 인 경우
       localStorage.setItem('accessToken', response.data.token);
+      localStorage.removeItem('userContext');
       navigate('/home');
     }
   };

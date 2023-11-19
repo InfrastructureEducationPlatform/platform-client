@@ -21,6 +21,7 @@ export function CreateChannel() {
       });
 
       if (response != null) {
+        localStorage.removeItem('userContext');
         navigate('/home');
       }
     })();

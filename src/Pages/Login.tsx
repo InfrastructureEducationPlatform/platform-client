@@ -35,7 +35,5 @@ function InnerOAuth() {
   });
   // return <button onClick={() => useLogin()}>Google Login</button>;
 
-  return (
-    <Button onClick={() => useLogin()}>Google Login</Button>
-  )
+  return <Button onClick={() => useLogin()}>Google Login</Button>;
 }
