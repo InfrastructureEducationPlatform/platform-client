@@ -31,6 +31,7 @@ export function Home() {
 }
 
 function SketchListView() {
+  const [form] = Form.useForm();
   const { currentChannel } = useChannelNavigationContext();
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
   const [isCreateOpenModal, setIsCreateOpenModal] = useState<boolean>(false);
@@ -123,6 +124,7 @@ function SketchListView() {
             <Divider style={{ margin: 0, marginTop: '10px' }} />
           </div>
           <Form
+            form={form}
             id={'createSketchForm'}
             name="basic"
             onFinish={(value) => {
@@ -131,8 +133,9 @@ function SketchListView() {
                   currentChannel.channelId,
                   value,
                 );
-                setIsSketchCreated(true);
+                setIsSketchCreated(!isSketchCreated);
                 setIsCreateOpenModal(false);
+                form.resetFields();
               })();
             }}
             autoComplete="off"
