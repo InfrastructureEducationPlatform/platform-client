@@ -1,39 +1,43 @@
-import { userApi } from "../api";
-import { FaRegBell } from "react-icons/fa6";
-import {useEffect, useState} from 'react'
-import { ChannelPermissionProjection } from "../libs/core-api/api";
-import { initializeHeader } from "../Pages/api-controller";
+import { useEffect, useState } from 'react';
+import { FaRegBell } from 'react-icons/fa6';
 
-export function TopBarHeader(){
-    const [profilePictureImageUrl, setProfilePictureImageUrl] = useState('');
-    const [channelPermissionList, setChannelPermissionList] = useState<ChannelPermissionProjection[]>([]);
-    const headers = initializeHeader();
-    const [isOpen, setIsOpen] = useState(false);
+import { initializeHeader } from '../Pages/api-controller';
+import { userApi } from '../api';
+import { ChannelPermissionProjection } from '../libs/core-api/api';
 
+export function TopBarHeader() {
+  const [profilePictureImageUrl, setProfilePictureImageUrl] = useState('');
+  const [channelPermissionList, setChannelPermissionList] = useState<
+    ChannelPermissionProjection[]
+  >([]);
+  const headers = initializeHeader();
+  const [isOpen, setIsOpen] = useState(false);
 
-    useEffect(()=>{
-        const fetchData =async () => {
-            try{ 
-                const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
-                
-                setChannelPermissionList(userDetail.data.channelPermissionList);
-                setProfilePictureImageUrl(userDetail.data.profilePictureImageUrl||"https://avatars.githubusercontent.com/u/141570137?s=200&v=4");
-        
-            } catch(error){
-                console.error("There is problem"+error);
-            }
-        };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userDetail = await userApi.getUsersDetailProjectionAsync({
+          headers,
+        });
 
-        fetchData();
-    },[]);
+        setChannelPermissionList(userDetail.data.channelPermissionList);
+        setProfilePictureImageUrl(
+          userDetail.data.profilePictureImageUrl ||
+            'https://avatars.githubusercontent.com/u/141570137?s=200&v=4',
+        );
+      } catch (error) {
+        console.error('There is problem' + error);
+      }
+    };
 
-    useEffect(() => {
-        
-    }, [channelPermissionList]);
+    fetchData();
+  }, []);
 
-    
-    return(
-    <header style={{
+  useEffect(() => {}, [channelPermissionList]);
+
+  return (
+    <header
+      style={{
         left: 0,
         top: 0,
         width: '100%',
@@ -41,45 +45,75 @@ export function TopBarHeader(){
         backgroundColor: '#FFFFFF',
         stroke: '#25282F',
         strokeOpacity: '10.2%',
-        }}>
-        <div style={{
-            display:"flex",
-            width: '96%',
-            height: '100%',
-            margin: '0 auto',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-        }}>
-            <div>
-                <div>
-                <a>{channelPermissionList[0]?.channelId ?? ""}</a>
-                </div>
-                
-                <div>
-                   <button onClick={()=> setIsOpen(!isOpen)}>열기</button>
-                   {isOpen ? <ul>{channelPermissionList.map((channel, index)=>{
-                        return <li key={index} onClick={() => localStorage.setItem('selectedChannelId', channel.channelId)}>{channel.channelId}</li>})}</ul>:<></>}
-                </div>
-            </div>
-            
-            <nav>
-                <ul style={{
-                    display: 'flex',
-                    listStyle: 'none',
-                }}>
-                <li>
-                    <FaRegBell size = "42px"/>
-                </li>
-                <li>
-                    <div style={{
-                        borderRadius: '70%',
-                        overflow: 'hidden',
-                    }}>
-                        <img src={profilePictureImageUrl} style={{height: '45px', width: '45px'}}></img>
-                    </div>
-                </li>
-                </ul>
-            </nav>
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          width: '96%',
+          height: '100%',
+          margin: '0 auto',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <div>
+            <a>{channelPermissionList[0]?.channelId ?? ''}</a>
+          </div>
+
+          <div>
+            <button onClick={() => setIsOpen(!isOpen)}>열기</button>
+            {isOpen ? (
+              <ul>
+                {channelPermissionList.map((channel, index) => {
+                  return (
+                    <li
+                      key={index}
+                      onClick={() =>
+                        localStorage.setItem(
+                          'selectedChannelId',
+                          channel.channelId,
+                        )
+                      }
+                    >
+                      {channel.channelId}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <></>
+            )}
+          </div>
         </div>
-    </header>);
+
+        <nav>
+          <ul
+            style={{
+              display: 'flex',
+              listStyle: 'none',
+            }}
+          >
+            <li>
+              <FaRegBell size="42px" />
+            </li>
+            <li>
+              <div
+                style={{
+                  borderRadius: '70%',
+                  overflow: 'hidden',
+                }}
+              >
+                <img
+                  src={profilePictureImageUrl}
+                  style={{ height: '45px', width: '45px' }}
+                ></img>
+              </div>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
 }

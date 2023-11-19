@@ -1,31 +1,31 @@
-import { userApi } from "../api";
-import { useNavigate } from "react-router-dom";
-import { TopBarHeader } from "../components/TopBarHeader";
-import { SketchList } from "../components/SketchList";
-import { initializeHeader } from "./api-controller";
+import { useNavigate } from 'react-router-dom';
 
-export function Home(){
-    const navigate = useNavigate();
-    const headers = initializeHeader();
-    (async () =>{ 
-            const userDetail = await userApi.getUsersDetailProjectionAsync({headers});
-        if (userDetail.data.channelPermissionList.length == 0){ // 채널 생성 온보딩이 필요한 경우
-            navigate('/onBoarding');
-        }
-    })();
+import { userApi } from '../api';
+import { SketchList } from '../components/SketchList';
+import { TopBarHeader } from '../components/TopBarHeader';
+import { initializeHeader } from './api-controller';
 
-    return(
-        <div >
-            <div>
-            <TopBarHeader/>
-            </div>
-            
-            <div>
-            <h1>Home</h1>
-            <SketchList/>
-            </div>
-            
-        </div>
-    );
-    
+export function Home() {
+  const navigate = useNavigate();
+  const headers = initializeHeader();
+  (async () => {
+    const userDetail = await userApi.getUsersDetailProjectionAsync({ headers });
+    if (userDetail.data.channelPermissionList.length == 0) {
+      // 채널 생성 온보딩이 필요한 경우
+      navigate('/onBoarding');
+    }
+  })();
+
+  return (
+    <div>
+      <div>
+        <TopBarHeader />
+      </div>
+
+      <div>
+        <h1>Home</h1>
+        <SketchList />
+      </div>
+    </div>
+  );
 }

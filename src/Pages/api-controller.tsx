@@ -1,9 +1,9 @@
-import { AxiosHeaders } from "axios";
+import { AxiosHeaders } from 'axios';
 
-export function initializeHeader(): AxiosHeaders{
-    let accessToken:string = localStorage.getItem("accessToken")||"";
-    const headers = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${accessToken}`);
+export function initializeHeader(): AxiosHeaders {
+  let accessToken: string = localStorage.getItem('accessToken') || '';
+  const headers = new AxiosHeaders();
+  headers.setAuthorization(`Bearer ${accessToken}`);
 
-    return(headers);
+  return headers;
 }
