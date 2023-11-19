@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
-import { initializeHeader } from '../Pages/api-controller';
 import { userApi } from '../api';
 import { ChannelPermissionProjection } from '../libs/core-api/api';
 
@@ -10,15 +9,12 @@ export function TopBarHeader() {
   const [channelPermissionList, setChannelPermissionList] = useState<
     ChannelPermissionProjection[]
   >([]);
-  const headers = initializeHeader();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userDetail = await userApi.getUsersDetailProjectionAsync({
-          headers,
-        });
+        const userDetail = await userApi.getUsersDetailProjectionAsync();
 
         setChannelPermissionList(userDetail.data.channelPermissionList);
         setProfilePictureImageUrl(

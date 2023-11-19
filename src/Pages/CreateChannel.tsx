@@ -1,5 +1,4 @@
 import { Button, Card, Form, Input } from 'antd';
-import { AxiosHeaders } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 import { channelApi } from '../api';
@@ -14,19 +13,12 @@ export function CreateChannel() {
   const navigate = useNavigate();
 
   const onSubmit = (value: CreateChannelType) => {
-    let accessToken: string = localStorage.getItem('accessToken') || '';
-    const headers = new AxiosHeaders();
-    headers.setAuthorization(`Bearer ${accessToken}`);
-
     (async () => {
-      const response = await channelApi.createChannelAsync(
-        {
-          name: value.channelName,
-          description: value.channelDescription,
-          imageUrl: null,
-        },
-        { headers: headers },
-      );
+      const response = await channelApi.createChannelAsync({
+        name: value.channelName,
+        description: value.channelDescription,
+        imageUrl: null,
+      });
 
       if (response != null) {
         navigate('/home');
