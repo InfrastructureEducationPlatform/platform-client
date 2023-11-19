@@ -4,6 +4,7 @@ import type { MenuProps } from 'antd';
 import React, { ReactNode } from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
+import { UserContext } from '../types/UserContext.ts';
 import { ChannelSelector } from './ChannelSelector.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
 import {
@@ -37,6 +38,11 @@ function InnerLayout({ children }: { children: ReactNode }) {
   } = theme.useToken();
 
   const userContext = useUserContext();
+  const selectedChannelId = getSelectedChannelIdOrDefault(userContext);
+  const selectedChannelName = userContext.channelPermissions.filter(
+    (a) => a.id === selectedChannelId,
+  )[0].name;
+  console.log(selectedChannelName);
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -51,7 +57,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
         }}
       >
         <Flex style={{ alignItems: 'center', gap: 20 }}>
-          <Avatar size={'large'}>asdf</Avatar>
+          <Avatar size={'large'}>{selectedChannelName.charAt(0)}</Avatar>
           <ChannelSelector userContext={userContext} />
         </Flex>
         <Flex style={{ alignItems: 'center', gap: 20 }}>
@@ -77,4 +83,18 @@ function InnerLayout({ children }: { children: ReactNode }) {
       </Layout>
     </Layout>
   );
+}
+
+function getSelectedChannelIdOrDefault(userContext: UserContext): string {
+  const selectedChannelId = localStorage.getItem('selectedChannelId');
+  if (selectedChannelId) {
+    return selectedChannelId;
+  }
+
+  localStorage.setItem(
+    'selectedChannelId',
+    userContext.channelPermissions[0].id,
+  );
+
+  return userContext.channelPermissions[0].id;
 }

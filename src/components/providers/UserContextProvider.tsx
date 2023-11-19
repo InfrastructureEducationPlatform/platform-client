@@ -38,7 +38,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
         userProfilePictureUrl: undefined,
         channelPermissions: userDetail.data.channelPermissionList.map((a) => ({
           id: a.channelId,
-          name: '',
+          name: a.channelName,
           permission: a.channelPermissionType,
         })),
       };

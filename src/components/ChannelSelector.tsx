@@ -15,9 +15,22 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
     localStorage.setItem('selectedChannelId', data.key);
     navigate('/home');
   };
+
+  const selectedChannelId = getSelectedChannelIdOrDefault(userContext);
+  const selectedChannelName = userContext.channelPermissions.filter(
+    (a) => a.id === selectedChannelId,
+  )[0].name;
+  const selectedChannelPermission = userContext.channelPermissions.filter(
+    (a) => a.id === selectedChannelId,
+  )[0].permission;
+
   return (
     <Dropdown
-      menu={{ items: generateMenuItem(userContext), onClick: handleMenuClick }}
+      menu={{
+        items: generateMenuItem(userContext),
+        onClick: handleMenuClick,
+        style: { width: '300px' },
+      }}
       placement="topRight"
     >
       <Flex gap={20} style={{ height: '100%' }}>
@@ -25,9 +38,11 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
           style={{ flexDirection: 'column', gap: 2, justifyContent: 'center' }}
         >
           <Title level={5} style={{ margin: 0 }}>
-            ChannelName
+            {selectedChannelName}
           </Title>
-          <Text type={'secondary'}>Collaborators: count</Text>
+          <Text type={'secondary'}>
+            Permission: {selectedChannelPermission}
+          </Text>
         </Flex>
         <DownOutlined />
       </Flex>
@@ -43,9 +58,9 @@ function ChannelSelectionMenuItems({
   channelPermissionType: string;
 }) {
   return (
-    <Flex gap={20} style={{ justifyContent: 'center', alignItems: 'center' }}>
+    <Flex gap={20} style={{ alignItems: 'center' }}>
       <Avatar style={{ verticalAlign: 'middle' }} size={'large'}>
-        T
+        {channelName.charAt(0)}
       </Avatar>
       <Flex
         style={{ flexDirection: 'column', gap: 2, justifyContent: 'center' }}
@@ -69,4 +84,18 @@ function generateMenuItem(userContext: UserContext): MenuProps['items'] {
       />
     ),
   }));
+}
+
+function getSelectedChannelIdOrDefault(userContext: UserContext): string {
+  const selectedChannelId = localStorage.getItem('selectedChannelId');
+  if (selectedChannelId) {
+    return selectedChannelId;
+  }
+
+  localStorage.setItem(
+    'selectedChannelId',
+    userContext.channelPermissions[0].id,
+  );
+
+  return userContext.channelPermissions[0].id;
 }

@@ -36,6 +36,12 @@ export interface ChannelPermissionProjection {
    */
   channelId: string;
   /**
+   * 채널 이름
+   * @type {string}
+   * @memberof ChannelPermissionProjection
+   */
+  channelName: string;
+  /**
    *
    * @type {ChannelPermissionType}
    * @memberof ChannelPermissionProjection

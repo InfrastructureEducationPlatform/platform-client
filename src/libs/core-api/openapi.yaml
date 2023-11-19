@@ -225,6 +225,7 @@ components:
     ChannelPermissionProjection:
       required:
         - channelId
+        - channelName
         - channelPermissionType
         - createdAt
         - userId
@@ -238,6 +239,10 @@ components:
           minLength: 1
           type: string
           description: 사용자가 소속되어 있는 Channel ID
+        channelName:
+          minLength: 1
+          type: string
+          description: 채널 이름
         channelPermissionType:
           $ref: '#/components/schemas/ChannelPermissionType'
         createdAt:
