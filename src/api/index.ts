@@ -30,6 +30,38 @@ defaultAuthorizationInstance.interceptors.request.use(async (config) => {
   return config;
 });
 
+defaultAuthorizationInstance.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const {
+      config,
+      response: { status },
+    } = error;
+
+    if (config.url.includes('/auth/refresh') || status !== 401 || config.sent) {
+      console.log('Refresh Token is not valid. Redirecting to login page.');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      window.location.href = '/';
+    }
+
+    config.sent = true;
+    const refreshToken = await authApi.refreshAsync({
+      accessToken: localStorage.getItem('accessToken')!,
+      refreshToken: localStorage.getItem('refreshToken')!,
+    });
+
+    if (refreshToken.data) {
+      localStorage.setItem('accessToken', refreshToken.data.token);
+      localStorage.setItem('refreshToken', refreshToken.data.refreshToken!);
+      config.headers.Authorization = `Bearer ${refreshToken.data.token}`;
+      return axios(config);
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 export const authApi = new AuthApi(configuration);
 export const channelApi = new ChannelApi(
   configuration,
