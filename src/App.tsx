@@ -6,6 +6,7 @@ import { Join } from './Pages/Join';
 import { Login } from './Pages/Login';
 import { LoginCallback } from './Pages/LoginCallback';
 import { OnBoarding } from './Pages/Onboarding';
+import { AuthProvider } from './components/providers/AuthProvider.tsx';
 
 function App() {
   return (
@@ -13,9 +14,30 @@ function App() {
       <Route path="/" element={<Login />} />
       <Route path="/auth/callback" element={<LoginCallback />} />
       <Route path="/register" element={<Join />} />
-      <Route path="/createChannel" element={<CreateChannel />} />
-      <Route path="/onBoarding" element={<OnBoarding />} />
-      <Route path="/home" element={<Home />} />
+      <Route
+        path="/createChannel"
+        element={
+          <AuthProvider>
+            <CreateChannel />
+          </AuthProvider>
+        }
+      />
+      <Route
+        path="/onBoarding"
+        element={
+          <AuthProvider>
+            <OnBoarding />
+          </AuthProvider>
+        }
+      />
+      <Route
+        path="/home"
+        element={
+          <AuthProvider>
+            <Home />
+          </AuthProvider>
+        }
+      />
     </Routes>
   );
 }
