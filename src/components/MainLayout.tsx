@@ -8,6 +8,10 @@ import { UserContext } from '../types/UserContext.ts';
 import { ChannelSelector } from './ChannelSelector.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
 import {
+  ChannelNavigationProvider,
+  useChannelNavigationContext,
+} from './providers/ChannelNavigationProvider.tsx';
+import {
   UserContextProvider,
   useUserContext,
 } from './providers/UserContextProvider.tsx';
@@ -26,7 +30,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
       <UserContextProvider>
-        <InnerLayout>{children}</InnerLayout>
+        <ChannelNavigationProvider>
+          <InnerLayout>{children}</InnerLayout>
+        </ChannelNavigationProvider>
       </UserContextProvider>
     </AuthProvider>
   );
@@ -38,11 +44,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
   } = theme.useToken();
 
   const userContext = useUserContext();
-  const selectedChannelId = getSelectedChannelIdOrDefault(userContext);
-  const selectedChannelName = userContext.channelPermissions.filter(
-    (a) => a.id === selectedChannelId,
-  )[0].name;
-  console.log(selectedChannelName);
+  const channelNavigationContext = useChannelNavigationContext();
 
   return (
     <Layout style={{ height: '100vh' }}>
@@ -57,7 +59,9 @@ function InnerLayout({ children }: { children: ReactNode }) {
         }}
       >
         <Flex style={{ alignItems: 'center', gap: 20 }}>
-          <Avatar size={'large'}>{selectedChannelName.charAt(0)}</Avatar>
+          <Avatar size={'large'}>
+            {channelNavigationContext.currentChannel.channelName.charAt(0)}
+          </Avatar>
           <ChannelSelector userContext={userContext} />
         </Flex>
         <Flex style={{ alignItems: 'center', gap: 20 }}>
@@ -83,18 +87,4 @@ function InnerLayout({ children }: { children: ReactNode }) {
       </Layout>
     </Layout>
   );
-}
-
-function getSelectedChannelIdOrDefault(userContext: UserContext): string {
-  const selectedChannelId = localStorage.getItem('selectedChannelId');
-  if (selectedChannelId) {
-    return selectedChannelId;
-  }
-
-  localStorage.setItem(
-    'selectedChannelId',
-    userContext.channelPermissions[0].id,
-  );
-
-  return userContext.channelPermissions[0].id;
 }

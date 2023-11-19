@@ -14,6 +14,7 @@ import React, { useEffect, useState } from 'react';
 
 import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
+import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
 
 type CreateSketchType = {
@@ -30,15 +31,16 @@ export function Home() {
 }
 
 function SketchListView() {
-  const selectedChannelId = localStorage.getItem('selectedChannelId')!;
+  const { currentChannel } = useChannelNavigationContext();
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
   const [isCreateOpenModal, setIsCreateOpenModal] = useState<boolean>(false);
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      const response =
-        await sketchApi.listSketchesInChannelAsync(selectedChannelId);
+      const response = await sketchApi.listSketchesInChannelAsync(
+        currentChannel.channelId,
+      );
       setSketchList(
         response.data.map((a) => ({
           id: a.sketchId,
@@ -50,7 +52,7 @@ function SketchListView() {
         })),
       );
     })();
-  }, [selectedChannelId, isSketchCreated]);
+  }, [currentChannel, isSketchCreated]);
 
   return (
     <>
@@ -125,7 +127,10 @@ function SketchListView() {
             name="basic"
             onFinish={(value) => {
               (async () => {
-                await sketchApi.createSketchAsync(selectedChannelId, value);
+                await sketchApi.createSketchAsync(
+                  currentChannel.channelId,
+                  value,
+                );
                 setIsSketchCreated(true);
                 setIsCreateOpenModal(false);
               })();

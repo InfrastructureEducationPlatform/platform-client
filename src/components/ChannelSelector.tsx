@@ -5,23 +5,23 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { UserContext } from '../types/UserContext.ts';
+import { useChannelNavigationContext } from './providers/ChannelNavigationProvider.tsx';
 
 const { Text } = Typography;
 
 export function ChannelSelector({ userContext }: { userContext: UserContext }) {
   const navigate = useNavigate();
+  const { currentChannel, setChannelInformation } =
+    useChannelNavigationContext();
+
   const handleMenuClick: MenuProps['onClick'] = (data) => {
     console.log(data.key);
-    localStorage.setItem('selectedChannelId', data.key);
+    setChannelInformation(data.key);
     navigate('/home');
   };
 
-  const selectedChannelId = getSelectedChannelIdOrDefault(userContext);
-  const selectedChannelName = userContext.channelPermissions.filter(
-    (a) => a.id === selectedChannelId,
-  )[0].name;
   const selectedChannelPermission = userContext.channelPermissions.filter(
-    (a) => a.id === selectedChannelId,
+    (a) => a.id === currentChannel.channelId,
   )[0].permission;
 
   return (
@@ -38,7 +38,7 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
           style={{ flexDirection: 'column', gap: 2, justifyContent: 'center' }}
         >
           <Title level={5} style={{ margin: 0 }}>
-            {selectedChannelName}
+            {currentChannel.channelName}
           </Title>
           <Text type={'secondary'}>
             Permission: {selectedChannelPermission}
