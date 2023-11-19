@@ -1,4 +1,5 @@
-import { Avatar, Card, Col, Flex, Row, Typography } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
+import { Card, Divider, Flex, Typography } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import React, { useEffect, useState } from 'react';
 
@@ -43,29 +44,44 @@ function SketchListView() {
           현재 채널 내 인프라 스케치 모아보기
         </Typography.Text>
       </Flex>
-      <Row gutter={[8, 24]}>
+      <Divider style={{ margin: 0 }} />
+      <Flex style={{ flexWrap: 'wrap', gap: '30px' }}>
+        <Card
+          style={{
+            width: '300px',
+            height: '280px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Flex
+            style={{
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <PlusOutlined style={{ fontSize: '32px' }} />
+            <Typography.Title level={5} style={{ marginTop: '15px' }}>
+              스케치 추가
+            </Typography.Title>
+          </Flex>
+        </Card>
         {sketchList.map((sketch) => (
-          <Col className="gutter-row" span={5}>
-            <Card
-              style={{ width: 300 }}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
-              }
-            >
-              <Meta
-                avatar={
-                  <Avatar src="https://xsgames.co/randomusers/avatar.php?g=pixel" />
-                }
-                title={sketch.name}
-                description={sketch.description}
+          <Card
+            style={{ width: '300px', height: '280px' }}
+            cover={
+              <img
+                alt="example"
+                src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
               />
-            </Card>
-          </Col>
+            }
+          >
+            <Meta title={sketch.name} description={sketch.description} />
+          </Card>
         ))}
-      </Row>
+      </Flex>
     </Flex>
   );
 }
