@@ -1,6 +1,7 @@
 export * from './channel-permission-projection';
 export * from './channel-permission-type';
 export * from './create-channel-request';
+export * from './create-sketch-request';
 export * from './credential-provider';
 export * from './error-response';
 export * from './login-request';

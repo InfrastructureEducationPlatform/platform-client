@@ -48,4 +48,16 @@ export interface SketchResponse {
    * @memberof SketchResponse
    */
   blockSketch: any;
+  /**
+   * 생성일
+   * @type {string}
+   * @memberof SketchResponse
+   */
+  createdAt: string;
+  /**
+   * 마지막 수정일
+   * @type {string}
+   * @memberof SketchResponse
+   */
+  updatedAt: string;
 }

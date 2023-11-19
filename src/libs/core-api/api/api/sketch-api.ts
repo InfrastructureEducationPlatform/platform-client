@@ -40,6 +40,8 @@ import {
 } from '../common';
 import type { Configuration } from '../configuration';
 // @ts-ignore
+import { CreateSketchRequest } from '../model';
+// @ts-ignore
 import { ErrorResponse } from '../model';
 // @ts-ignore
 import { SketchResponse } from '../model';
@@ -52,6 +54,65 @@ export const SketchApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     * 이 API는 채널의 Owner만 사용할 수 있습니다.
+     * @summary 채널 내에 빈 스케치를 새로 추가합니다.
+     * @param {string} channelId 채널 ID
+     * @param {CreateSketchRequest} [CreateSketchRequest] 스케치 생성 요청
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createSketchAsync: async (
+      channelId: string,
+      CreateSketchRequest?: CreateSketchRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('createSketchAsync', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}/sketches`.replace(
+        `{${'channelId'}}`,
+        encodeURIComponent(String(channelId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        CreateSketchRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
@@ -113,6 +174,34 @@ export const SketchApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = SketchApiAxiosParamCreator(configuration);
   return {
     /**
+     * 이 API는 채널의 Owner만 사용할 수 있습니다.
+     * @summary 채널 내에 빈 스케치를 새로 추가합니다.
+     * @param {string} channelId 채널 ID
+     * @param {CreateSketchRequest} [CreateSketchRequest] 스케치 생성 요청
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async createSketchAsync(
+      channelId: string,
+      CreateSketchRequest?: CreateSketchRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SketchResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.createSketchAsync(
+          channelId,
+          CreateSketchRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -155,6 +244,23 @@ export const SketchApiFactory = function (
   const localVarFp = SketchApiFp(configuration);
   return {
     /**
+     * 이 API는 채널의 Owner만 사용할 수 있습니다.
+     * @summary 채널 내에 빈 스케치를 새로 추가합니다.
+     * @param {string} channelId 채널 ID
+     * @param {CreateSketchRequest} [CreateSketchRequest] 스케치 생성 요청
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    createSketchAsync(
+      channelId: string,
+      CreateSketchRequest?: CreateSketchRequest,
+      options?: any,
+    ): AxiosPromise<SketchResponse> {
+      return localVarFp
+        .createSketchAsync(channelId, CreateSketchRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -179,6 +285,25 @@ export const SketchApiFactory = function (
  * @extends {BaseAPI}
  */
 export class SketchApi extends BaseAPI {
+  /**
+   * 이 API는 채널의 Owner만 사용할 수 있습니다.
+   * @summary 채널 내에 빈 스케치를 새로 추가합니다.
+   * @param {string} channelId 채널 ID
+   * @param {CreateSketchRequest} [CreateSketchRequest] 스케치 생성 요청
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public createSketchAsync(
+    channelId: string,
+    CreateSketchRequest?: CreateSketchRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .createSketchAsync(channelId, CreateSketchRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
    * @summary 채널 내에 있는 모든 스케치를 가져옵니다,

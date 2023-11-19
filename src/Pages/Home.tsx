@@ -33,6 +33,7 @@ function SketchListView() {
   const selectedChannelId = localStorage.getItem('selectedChannelId')!;
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
   const [isCreateOpenModal, setIsCreateOpenModal] = useState<boolean>(false);
+  const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -44,10 +45,12 @@ function SketchListView() {
           name: a.name,
           description: a.description,
           blockSketch: a.blockSketch,
+          createdAt: a.createdAt,
+          updatedAt: a.updatedAt,
         })),
       );
     })();
-  }, [selectedChannelId]);
+  }, [selectedChannelId, isSketchCreated]);
 
   return (
     <>
@@ -121,8 +124,11 @@ function SketchListView() {
             id={'createSketchForm'}
             name="basic"
             onFinish={(value) => {
-              console.log(value);
-              setIsCreateOpenModal(false);
+              (async () => {
+                await sketchApi.createSketchAsync(selectedChannelId, value);
+                setIsSketchCreated(true);
+                setIsCreateOpenModal(false);
+              })();
             }}
             autoComplete="off"
           >

@@ -3,4 +3,6 @@ export type SketchProjection = {
   name: string;
   description: string;
   blockSketch: string;
+  createdAt: string;
+  updatedAt: string;
 };

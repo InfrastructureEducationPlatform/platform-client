@@ -14,6 +14,7 @@ index.ts
 model/channel-permission-projection.ts
 model/channel-permission-type.ts
 model/create-channel-request.ts
+model/create-sketch-request.ts
 model/credential-provider.ts
 model/error-response.ts
 model/index.ts
