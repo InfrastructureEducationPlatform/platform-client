@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom';
 
+import { BlockEditPage } from './Pages/BlockEditPage.tsx';
 import { CreateChannel } from './Pages/CreateChannel';
 import { Home } from './Pages/Home';
 import { Join } from './Pages/Join';
@@ -31,6 +32,7 @@ function App() {
         }
       />
       <Route path="/home" element={<Home />} />
+      <Route path={'/sketches/:sketchId'} element={<BlockEditPage />} />
     </Routes>
   );
 }
