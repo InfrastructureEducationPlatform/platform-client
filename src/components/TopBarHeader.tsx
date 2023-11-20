@@ -1,115 +1,37 @@
-import { useEffect, useState } from 'react';
+import { Avatar, Flex } from 'antd';
+import { Header } from 'antd/es/layout/layout';
 import { FaRegBell } from 'react-icons/fa6';
 
-import { userApi } from '../api';
-import { ChannelPermissionProjection } from '../libs/core-api/api';
+import { ChannelSelector } from './ChannelSelector.tsx';
+import { useChannelNavigationContext } from './providers/ChannelNavigationProvider.tsx';
+import { useUserContext } from './providers/UserContextProvider.tsx';
 
 export function TopBarHeader() {
-  const [profilePictureImageUrl, setProfilePictureImageUrl] = useState('');
-  const [channelPermissionList, setChannelPermissionList] = useState<
-    ChannelPermissionProjection[]
-  >([]);
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const userDetail = await userApi.getUsersDetailProjectionAsync();
-
-        setChannelPermissionList(userDetail.data.channelPermissionList);
-        setProfilePictureImageUrl(
-          userDetail.data.profilePictureImageUrl ||
-            'https://avatars.githubusercontent.com/u/141570137?s=200&v=4',
-        );
-      } catch (error) {
-        console.error('There is problem' + error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {}, [channelPermissionList]);
-
+  const userContext = useUserContext();
+  const channelNavigationContext = useChannelNavigationContext();
   return (
-    <header
+    <Header
       style={{
-        left: 0,
-        top: 0,
-        width: '100%',
-        height: '80px',
-        backgroundColor: '#FFFFFF',
-        stroke: '#25282F',
-        strokeOpacity: '10.2%',
+        display: 'flex',
+        alignItems: 'center',
+        background: 'white',
+        paddingLeft: '20px',
+        paddingRight: '20px',
+        justifyContent: 'space-between',
       }}
     >
-      <div
-        style={{
-          display: 'flex',
-          width: '96%',
-          height: '100%',
-          margin: '0 auto',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <div>
-          <div>
-            <a>{channelPermissionList[0]?.channelId ?? ''}</a>
-          </div>
-
-          <div>
-            <button onClick={() => setIsOpen(!isOpen)}>열기</button>
-            {isOpen ? (
-              <ul>
-                {channelPermissionList.map((channel, index) => {
-                  return (
-                    <li
-                      key={index}
-                      onClick={() =>
-                        localStorage.setItem(
-                          'selectedChannelId',
-                          channel.channelId,
-                        )
-                      }
-                    >
-                      {channel.channelId}
-                    </li>
-                  );
-                })}
-              </ul>
-            ) : (
-              <></>
-            )}
-          </div>
-        </div>
-
-        <nav>
-          <ul
-            style={{
-              display: 'flex',
-              listStyle: 'none',
-            }}
-          >
-            <li>
-              <FaRegBell size="42px" />
-            </li>
-            <li>
-              <div
-                style={{
-                  borderRadius: '70%',
-                  overflow: 'hidden',
-                }}
-              >
-                <img
-                  src={profilePictureImageUrl}
-                  style={{ height: '45px', width: '45px' }}
-                ></img>
-              </div>
-            </li>
-          </ul>
-        </nav>
-      </div>
-    </header>
+      <Flex style={{ alignItems: 'center', gap: 20 }}>
+        <Avatar size={'large'}>
+          {channelNavigationContext.currentChannel.channelName.charAt(0)}
+        </Avatar>
+        <ChannelSelector userContext={userContext} />
+      </Flex>
+      <Flex style={{ alignItems: 'center', gap: 20 }}>
+        <FaRegBell size={'32px'} />
+        <Avatar size={'large'}>
+          {userContext.userName.charAt(0).toUpperCase()}
+        </Avatar>
+      </Flex>
+    </Header>
   );
 }

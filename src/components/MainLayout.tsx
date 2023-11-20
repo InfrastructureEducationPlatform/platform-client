@@ -6,6 +6,7 @@ import { FaRegBell } from 'react-icons/fa6';
 
 import { UserContext } from '../types/UserContext.ts';
 import { ChannelSelector } from './ChannelSelector.tsx';
+import { TopBarHeader } from './TopBarHeader.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
 import {
   ChannelNavigationProvider,
@@ -46,34 +47,9 @@ function InnerLayout({ children }: { children: ReactNode }) {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const userContext = useUserContext();
-  const channelNavigationContext = useChannelNavigationContext();
-
   return (
     <Layout style={{ height: '100vh' }}>
-      <Header
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          background: 'white',
-          paddingLeft: '20px',
-          paddingRight: '20px',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Flex style={{ alignItems: 'center', gap: 20 }}>
-          <Avatar size={'large'}>
-            {channelNavigationContext.currentChannel.channelName.charAt(0)}
-          </Avatar>
-          <ChannelSelector userContext={userContext} />
-        </Flex>
-        <Flex style={{ alignItems: 'center', gap: 20 }}>
-          <FaRegBell size={'32px'} />
-          <Avatar size={'large'}>
-            {userContext.userName.charAt(0).toUpperCase()}
-          </Avatar>
-        </Flex>
-      </Header>
+      <TopBarHeader />
       <Layout>
         <Sider width={200} style={{ background: colorBgContainer }}>
           <Menu
