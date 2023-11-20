@@ -1,7 +1,7 @@
-import { LaptopOutlined } from '@ant-design/icons';
+import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Flex, Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
 import { UserContext } from '../types/UserContext.ts';
@@ -46,12 +46,28 @@ function InnerLayout({ children }: { children: ReactNode }) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <Layout style={{ height: '100vh' }}>
       <TopBarHeader />
       <Layout>
-        <Sider width={200} style={{ background: colorBgContainer }}>
+        <Sider
+          width={200}
+          style={{ background: 'white' }}
+          collapsible
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+          trigger={
+            <div style={{ background: 'white' }}>
+              {collapsed ? (
+                <RightOutlined style={{ color: 'black' }} />
+              ) : (
+                <LeftOutlined style={{ color: 'black' }} />
+              )}
+            </div>
+          }
+        >
           <Menu
             mode="inline"
             defaultSelectedKeys={['1']}
