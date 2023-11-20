@@ -11,6 +11,7 @@ import {
   ChannelNavigationProvider,
   useChannelNavigationContext,
 } from './providers/ChannelNavigationProvider.tsx';
+import { ErrorHandlerProvider } from './providers/ErrorProvider.tsx';
 import {
   UserContextProvider,
   useUserContext,
@@ -28,13 +29,15 @@ const leftSideMenuItem: MenuProps['items'] = [
 
 export function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
-      <UserContextProvider>
-        <ChannelNavigationProvider>
-          <InnerLayout>{children}</InnerLayout>
-        </ChannelNavigationProvider>
-      </UserContextProvider>
-    </AuthProvider>
+    <ErrorHandlerProvider>
+      <AuthProvider>
+        <UserContextProvider>
+          <ChannelNavigationProvider>
+            <InnerLayout>{children}</InnerLayout>
+          </ChannelNavigationProvider>
+        </UserContextProvider>
+      </AuthProvider>
+    </ErrorHandlerProvider>
   );
 }
 
