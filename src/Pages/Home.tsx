@@ -93,6 +93,7 @@ function SketchListView() {
           </Card>
           {sketchList.map((sketch) => (
             <Card
+              key={sketch.id}
               style={{ width: '300px', height: '280px' }}
               cover={
                 <img
