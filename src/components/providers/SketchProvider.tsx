@@ -1,4 +1,11 @@
-import React, { ReactNode, createContext, useEffect, useState } from 'react';
+import { debounce } from 'lodash';
+import React, {
+  ReactNode,
+  createContext,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 
 import { sketchApi } from '../../api';
 import { VirtualMachineBlockNodeProps } from '../blocks/VirtualMachineBlockNode.tsx';
@@ -50,8 +57,35 @@ export function SketchProvider({
   const { currentChannel: channelId } = useChannelNavigationContext();
   const { showError } = useErrorHandler();
 
+  // Callback for saving sketch data
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const callbackTest = useCallback(
+    debounce(
+      async (
+        channelId: string,
+        sketchId: string,
+        sketchInput: SketchBlock,
+        sketchProjectionInput: SketchProjection,
+      ) => {
+        try {
+          await sketchApi.updateSketchAsync(channelId, sketchId, {
+            name: sketchProjectionInput?.name ?? '',
+            description: sketchProjectionInput?.description ?? '',
+            blockData: {
+              ...sketchInput,
+              sketchId: sketchProjectionInput?.sketchId ?? '',
+            },
+          });
+        } catch (e) {
+          showError(e);
+        }
+      },
+      500,
+    ),
+    [],
+  );
+
   useEffect(() => {
-    console.log('SketchBlockContext SketchId Changed');
     (async () => {
       try {
         const response = await sketchApi.getSketchAsync(
@@ -73,22 +107,14 @@ export function SketchProvider({
   }, [sketchId, channelId]);
 
   useEffect(() => {
-    if (!sketchBlock) return;
-    console.log('SketchBlockContext SketchBlock Changed', sketchBlock);
-    (async () => {
-      try {
-        await sketchApi.updateSketchAsync(channelId.channelId, sketchId, {
-          name: sketchProjection?.name ?? '',
-          description: sketchProjection?.description ?? '',
-          blockData: {
-            ...sketchBlock,
-            sketchId: sketchProjection?.sketchId ?? '',
-          },
-        });
-      } catch (e) {
-        showError(e);
-      }
-    })();
+    if (sketchBlock !== undefined && sketchProjection !== undefined) {
+      callbackTest(
+        channelId.channelId,
+        sketchId,
+        sketchBlock,
+        sketchProjection,
+      );
+    }
   }, [sketchBlock]);
 
   if (!sketchBlock) return <div>로딩중</div>;

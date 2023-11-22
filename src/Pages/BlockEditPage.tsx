@@ -69,7 +69,6 @@ function BlockEditPageComponent() {
   );
 
   useEffect(() => {
-    console.log('BlockEditPageComponent Editing Nodes called');
     setSketchBlock({
       sketchId: sketchBlock.sketchId,
       blockList: nodes.map((node) => {
