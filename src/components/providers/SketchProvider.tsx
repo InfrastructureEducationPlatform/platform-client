@@ -30,7 +30,7 @@ export function SketchProvider({
 }) {
   const [sketchBlock, setSketchBlock] = useState<SketchBlock | undefined>();
   const { currentChannel: channelId } = useChannelNavigationContext();
-  const errorContext = useErrorHandler();
+  const { showError } = useErrorHandler();
 
   useEffect(() => {
     (async () => {
@@ -41,10 +41,10 @@ export function SketchProvider({
         );
         setSketchBlock(response.data.blockSketch as SketchBlock);
       } catch (e) {
-        errorContext.showError(e);
+        showError(e);
       }
     })();
-  }, [sketchId, channelId, errorContext]);
+  }, [sketchId, channelId]);
 
   if (!sketchBlock) return <div>로딩중</div>;
   return (
