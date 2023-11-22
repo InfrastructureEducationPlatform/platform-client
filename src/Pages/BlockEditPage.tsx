@@ -6,6 +6,7 @@ import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
+import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import {
@@ -13,7 +14,10 @@ import {
   VirtualMachineBlockNodeProps,
 } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { useErrorHandler } from '../components/providers/ErrorProvider.tsx';
-import { SketchProvider } from '../components/providers/SketchProvider.tsx';
+import {
+  SketchProvider,
+  useSketchBlockContext,
+} from '../components/providers/SketchProvider.tsx';
 
 export function BlockEditPage() {
   // Get Sketch Parameter ID
@@ -29,12 +33,29 @@ export function BlockEditPage() {
 }
 
 function BlockEditPageComponent() {
+  // Sketch Provider
+  const { sketchBlock, setSketchBlock } = useSketchBlockContext();
+
   // Define Nodes, Node Types
   const nodeTypes = useMemo(
     () => ({ virtualMachine: VirtualMachineBlockNode }),
     [],
   );
-  const [nodes, setNodes] = useState<Node[]>([]);
+  const [nodes, setNodes] = useState<Node[]>(
+    sketchBlock.blockList.map<Node>((a) => ({
+      id: a.id,
+      position: { x: a.x, y: a.y },
+      type: a.blockType,
+      data: {
+        blockTitle: a.blockTitle,
+        blockDescription: a.blockDescription,
+        vmTier: a.vmTier,
+        vmRegion: a.vmRegion,
+        vmOperatingSystem: a.vmOperatingSystem,
+        blockTags: a.blockTags,
+      },
+    })),
+  );
 
   // Drawer 관련 State
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -46,6 +67,22 @@ function BlockEditPageComponent() {
     },
     [setNodes],
   );
+
+  useEffect(() => {
+    console.log('BlockEditPageComponent Editing Nodes called');
+    setSketchBlock({
+      sketchId: sketchBlock.sketchId,
+      blockList: nodes.map((node) => {
+        return {
+          id: node.id,
+          x: node.position.x,
+          y: node.position.y,
+          blockType: node.type,
+          ...node.data,
+        };
+      }),
+    });
+  }, [nodes]);
 
   useEffect(() => {
     if (!nodeToEdit) return;
