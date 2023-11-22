@@ -469,6 +469,7 @@ components:
       additionalProperties: false
     CreateSketchRequest:
       required:
+        - blockSketch
         - description
         - name
       type: object
@@ -481,6 +482,7 @@ components:
           minLength: 1
           type: string
           description: 스케치 설명입니다.
+        blockSketch: {}
       additionalProperties: false
     CredentialProvider:
       enum:

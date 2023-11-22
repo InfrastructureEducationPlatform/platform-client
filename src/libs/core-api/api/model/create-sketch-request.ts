@@ -30,4 +30,10 @@ export interface CreateSketchRequest {
    * @memberof CreateSketchRequest
    */
   description: string;
+  /**
+   *
+   * @type {any}
+   * @memberof CreateSketchRequest
+   */
+  blockSketch: any;
 }

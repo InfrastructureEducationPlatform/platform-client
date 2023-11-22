@@ -130,10 +130,14 @@ function SketchListView() {
             name="basic"
             onFinish={(value) => {
               (async () => {
-                await sketchApi.createSketchAsync(
-                  currentChannel.channelId,
-                  value,
-                );
+                await sketchApi.createSketchAsync(currentChannel.channelId, {
+                  name: value.name,
+                  description: value.description,
+                  blockSketch: {
+                    sketchId: 'not-set',
+                    blockList: [],
+                  },
+                });
                 setIsSketchCreated(!isSketchCreated);
                 setIsCreateOpenModal(false);
                 form.resetFields();
