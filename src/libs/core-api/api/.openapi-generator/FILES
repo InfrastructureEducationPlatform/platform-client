@@ -25,3 +25,4 @@ model/refresh-token-request.ts
 model/sign-up-request.ts
 model/sketch-response.ts
 model/token-response.ts
+model/update-sketch-request.ts

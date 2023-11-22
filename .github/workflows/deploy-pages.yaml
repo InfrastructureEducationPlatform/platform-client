@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Build Projects
-        run:  |
+        run: |
           pnpm install && pnpm build
 
       - name: Publish to Cloudflare Pages
@@ -36,6 +36,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          projectName: "login-page"
+          projectName: 'login-page'
           directory: dist
           wranglerVersion: '3'

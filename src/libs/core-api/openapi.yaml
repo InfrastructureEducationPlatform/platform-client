@@ -273,6 +273,113 @@ paths:
           description: 스케치를 생성하는데 채널 권한이 부족한 경우(해당 API에서는 owner권한만 허용.)
       security:
         - JwtAuthenticationFilter: []
+  '/channels/{channelId}/sketches/{sketchId}':
+    put:
+      tags:
+        - Sketch
+      summary: 스케치를 업데이트 합니다.
+      operationId: UpdateSketchAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 채널 ID
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: sketchId
+          in: path
+          description: 업데이트 할 스케치 ID
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: 업데이트 할 스케치 내용
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSketchRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSketchRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateSketchRequest'
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
+    get:
+      tags:
+        - Sketch
+      summary: 특정 스케치를 불러옵니다.
+      operationId: GetSketchAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 채널 ID
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: sketchId
+          in: path
+          description: 가져올 특정 스케치 ID
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 정상적으로 데이터를 불러왔을 때
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+        '404':
+          description: 해당 스케치를 찾을 수 없을 때
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
   /users/me:
     get:
       tags:
@@ -532,6 +639,23 @@ components:
           type: string
           description: 'Refresh Token, expires in 30 days.'
           nullable: true
+      additionalProperties: false
+    UpdateSketchRequest:
+      required:
+        - blockData
+        - description
+        - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          description: 스케치 이름입니다.
+        description:
+          minLength: 1
+          type: string
+          description: 스케치 설명입니다.
+        blockData: {}
       additionalProperties: false
   securitySchemes:
     JwtAuthenticationFilter:

@@ -13,22 +13,22 @@ import {
   VirtualMachineBlockNodeProps,
 } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { useErrorHandler } from '../components/providers/ErrorProvider.tsx';
+import { SketchProvider } from '../components/providers/SketchProvider.tsx';
 
 export function BlockEditPage() {
+  // Get Sketch Parameter ID
+  const { sketchId } = useParams();
+
   return (
     <MainLayout>
-      <BlockEditPageComponent />
+      <SketchProvider sketchId={sketchId!}>
+        <BlockEditPageComponent />
+      </SketchProvider>
     </MainLayout>
   );
 }
 
 function BlockEditPageComponent() {
-  // Get Sketch Parameter ID
-  const { sketchId } = useParams();
-
-  // Error Handler
-  const errorHandler = useErrorHandler();
-
   // Define Nodes, Node Types
   const nodeTypes = useMemo(
     () => ({ virtualMachine: VirtualMachineBlockNode }),
@@ -46,12 +46,6 @@ function BlockEditPageComponent() {
     },
     [setNodes],
   );
-
-  useEffect(() => {
-    if (sketchId === undefined || sketchId === null || sketchId.length === 0) {
-      errorHandler.showError(new Error('스케치 ID가 없습니다.'));
-    }
-  }, [errorHandler, sketchId]);
 
   useEffect(() => {
     if (!nodeToEdit) return;

@@ -45,6 +45,8 @@ import { CreateSketchRequest } from '../model';
 import { ErrorResponse } from '../model';
 // @ts-ignore
 import { SketchResponse } from '../model';
+// @ts-ignore
+import { UpdateSketchRequest } from '../model';
 
 /**
  * SketchApi - axios parameter creator
@@ -114,6 +116,59 @@ export const SketchApiAxiosParamCreator = function (
       };
     },
     /**
+     *
+     * @summary 특정 스케치를 불러옵니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 가져올 특정 스케치 ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSketchAsync: async (
+      channelId: string,
+      sketchId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('getSketchAsync', 'channelId', channelId);
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('getSketchAsync', 'sketchId', sketchId);
+      const localVarPath = `/channels/{channelId}/sketches/{sketchId}`
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)))
+        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -163,6 +218,68 @@ export const SketchApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @summary 스케치를 업데이트 합니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 업데이트 할 스케치 ID
+     * @param {UpdateSketchRequest} [UpdateSketchRequest] 업데이트 할 스케치 내용
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateSketchAsync: async (
+      channelId: string,
+      sketchId: string,
+      UpdateSketchRequest?: UpdateSketchRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('updateSketchAsync', 'channelId', channelId);
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('updateSketchAsync', 'sketchId', sketchId);
+      const localVarPath = `/channels/{channelId}/sketches/{sketchId}`
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)))
+        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'PUT',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        UpdateSketchRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -202,6 +319,33 @@ export const SketchApiFp = function (configuration?: Configuration) {
       );
     },
     /**
+     *
+     * @summary 특정 스케치를 불러옵니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 가져올 특정 스케치 ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getSketchAsync(
+      channelId: string,
+      sketchId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SketchResponse>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.getSketchAsync(
+        channelId,
+        sketchId,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -220,6 +364,37 @@ export const SketchApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.listSketchesInChannelAsync(
           channelId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @summary 스케치를 업데이트 합니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 업데이트 할 스케치 ID
+     * @param {UpdateSketchRequest} [UpdateSketchRequest] 업데이트 할 스케치 내용
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateSketchAsync(
+      channelId: string,
+      sketchId: string,
+      UpdateSketchRequest?: UpdateSketchRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SketchResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.updateSketchAsync(
+          channelId,
+          sketchId,
+          UpdateSketchRequest,
           options,
         );
       return createRequestFunction(
@@ -261,6 +436,23 @@ export const SketchApiFactory = function (
         .then((request) => request(axios, basePath));
     },
     /**
+     *
+     * @summary 특정 스케치를 불러옵니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 가져올 특정 스케치 ID
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSketchAsync(
+      channelId: string,
+      sketchId: string,
+      options?: any,
+    ): AxiosPromise<SketchResponse> {
+      return localVarFp
+        .getSketchAsync(channelId, sketchId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -273,6 +465,25 @@ export const SketchApiFactory = function (
     ): AxiosPromise<Array<SketchResponse>> {
       return localVarFp
         .listSketchesInChannelAsync(channelId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary 스케치를 업데이트 합니다.
+     * @param {string} channelId 채널 ID
+     * @param {string} sketchId 업데이트 할 스케치 ID
+     * @param {UpdateSketchRequest} [UpdateSketchRequest] 업데이트 할 스케치 내용
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateSketchAsync(
+      channelId: string,
+      sketchId: string,
+      UpdateSketchRequest?: UpdateSketchRequest,
+      options?: any,
+    ): AxiosPromise<SketchResponse> {
+      return localVarFp
+        .updateSketchAsync(channelId, sketchId, UpdateSketchRequest, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -305,6 +516,25 @@ export class SketchApi extends BaseAPI {
   }
 
   /**
+   *
+   * @summary 특정 스케치를 불러옵니다.
+   * @param {string} channelId 채널 ID
+   * @param {string} sketchId 가져올 특정 스케치 ID
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public getSketchAsync(
+    channelId: string,
+    sketchId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .getSketchAsync(channelId, sketchId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
    * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
    * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
    * @param {string} channelId 조회할 채널 ID
@@ -318,6 +548,27 @@ export class SketchApi extends BaseAPI {
   ) {
     return SketchApiFp(this.configuration)
       .listSketchesInChannelAsync(channelId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary 스케치를 업데이트 합니다.
+   * @param {string} channelId 채널 ID
+   * @param {string} sketchId 업데이트 할 스케치 ID
+   * @param {UpdateSketchRequest} [UpdateSketchRequest] 업데이트 할 스케치 내용
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public updateSketchAsync(
+    channelId: string,
+    sketchId: string,
+    UpdateSketchRequest?: UpdateSketchRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .updateSketchAsync(channelId, sketchId, UpdateSketchRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

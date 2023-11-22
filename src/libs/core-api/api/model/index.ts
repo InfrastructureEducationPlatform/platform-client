@@ -11,3 +11,4 @@ export * from './refresh-token-request';
 export * from './sign-up-request';
 export * from './sketch-response';
 export * from './token-response';
+export * from './update-sketch-request';
