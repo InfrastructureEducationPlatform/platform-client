@@ -11,6 +11,7 @@ import {
 } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
@@ -36,6 +37,7 @@ function SketchListView() {
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
   const [isCreateOpenModal, setIsCreateOpenModal] = useState<boolean>(false);
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -101,6 +103,7 @@ function SketchListView() {
                   src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
                 />
               }
+              onClick={() => navigate(`/sketches/${sketch.id}`)}
             >
               <Meta title={sketch.name} description={sketch.description} />
             </Card>
