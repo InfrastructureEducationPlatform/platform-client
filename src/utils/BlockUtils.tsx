@@ -1,5 +1,6 @@
 import { Node } from 'reactflow';
 
+import { DatabaseBlockNode } from '../components/blocks/DatabaseBlockNode.tsx';
 import {
   VirtualMachineBlockNode,
   VirtualMachineBlockNodeProps,
@@ -9,6 +10,7 @@ import {
   WebServerBlockNodeProps,
 } from '../components/blocks/WebServerBlockNode.tsx';
 import {
+  DatabaseBlock,
   ExtendedBlock,
   VirtualMachineBlock,
   WebServerBlock,
@@ -18,6 +20,7 @@ import {
 export const supportedBlockNodeTypes = {
   virtualMachine: VirtualMachineBlockNode,
   webServer: WebServerBlockNode,
+  database: DatabaseBlockNode,
 };
 
 // Convert Block(usually from saved data from server) to Node(react-flow)
@@ -29,6 +32,10 @@ export function convertBlockToNode(block: ExtendedBlock): Node {
 
   if (block.type === 'webServer') {
     return convertWebServerBlockToNode(block as WebServerBlock);
+  }
+
+  if (block.type === 'database') {
+    return convertDatabaseBlockToNode(block as DatabaseBlock);
   }
 
   throw new Error(`Block Type ${block.type} is not supported!`);
@@ -75,6 +82,22 @@ function convertWebServerBlockToNode(
   };
 }
 
+// Convert Database Block(usually from saved data from server) to Node(react-flow)
+function convertDatabaseBlockToNode(block: DatabaseBlock): Node {
+  return {
+    id: block.id,
+    position: { x: block.x, y: block.y },
+    type: block.type,
+    data: {
+      blockTitle: block.name,
+      blockDescription: block.description,
+      blockTags: block.tags,
+      dbTier: block.databaseFeatures.tier,
+      dbRegion: block.databaseFeatures.region,
+    },
+  };
+}
+
 // Convert Node(react-flow) to Block(usually for saving to server)
 // this will examine blockType and convert it to Block(see each sub-function for more reference.)
 export function convertNodeToBlock(node: Node): ExtendedBlock {
@@ -84,6 +107,10 @@ export function convertNodeToBlock(node: Node): ExtendedBlock {
 
   if (node.type === 'webServer') {
     return convertWebServerNodeToBlock(node);
+  }
+
+  if (node.type === 'database') {
+    return convertDatabseNodeToBlock(node);
   }
 
   throw new Error(`Node Type ${node.type} is not supported!`);
@@ -130,6 +157,23 @@ function convertWebServerNodeToBlock(
         secrets: node.data.containerData.secrets,
         imageTags: node.data.containerData.imageTags,
       },
+    },
+  };
+}
+
+function convertDatabseNodeToBlock(node: Node): DatabaseBlock {
+  return {
+    id: node.id,
+    x: node.position.x,
+    y: node.position.y,
+    type: 'database',
+    name: node.data.blockTitle,
+    description: node.data.blockDescription,
+    tags: node.data.blockTags,
+    advancedMeta: {},
+    databaseFeatures: {
+      tier: node.data.dbTier,
+      region: node.data.dbRegion,
     },
   };
 }

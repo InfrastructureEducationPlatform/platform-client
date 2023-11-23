@@ -32,4 +32,16 @@ export type WebServerBlock = Block & {
   };
 };
 
-export type ExtendedBlock = VirtualMachineBlock | WebServerBlock | Block;
+export type DatabaseBlock = Block & {
+  type: 'database';
+  databaseFeatures: {
+    tier: 'low' | 'medium' | 'high' | 'custom';
+    region: 'korea' | 'defaultAccount';
+  };
+};
+
+export type ExtendedBlock =
+  | VirtualMachineBlock
+  | WebServerBlock
+  | DatabaseBlock
+  | Block;
