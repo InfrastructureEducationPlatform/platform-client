@@ -9,6 +9,7 @@ import { ulid } from 'ulid';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
+import { WebServerBlockNodeProps } from '../components/blocks/WebServerBlockNode.tsx';
 import {
   SketchProvider,
   useSketchBlockContext,
@@ -123,6 +124,31 @@ function BlockEditPageComponent() {
                 blockTags: [],
               },
               type: 'virtualMachine',
+            };
+            setNodes((nds) => nds.concat(newNode));
+          }}
+        />
+        <FloatButton
+          icon={<PlusOutlined />}
+          tooltip={'웹 서버 블록 생성'}
+          onClick={() => {
+            const newNode: Node<WebServerBlockNodeProps> = {
+              id: ulid(),
+              position: { x: 0, y: 0 },
+              data: {
+                blockTitle: '웹 서버 블록',
+                blockDescription: '웹 서버 블록입니다.',
+                blockTags: [],
+                webServerTier: 'low',
+                webServerRegion: 'korea',
+                containerData: {
+                  registryUrl: '',
+                  username: '',
+                  secrets: '',
+                  imageTags: '',
+                },
+              },
+              type: 'webServer',
             };
             setNodes((nds) => nds.concat(newNode));
           }}

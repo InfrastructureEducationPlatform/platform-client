@@ -4,11 +4,20 @@ import {
   VirtualMachineBlockNode,
   VirtualMachineBlockNodeProps,
 } from '../components/blocks/VirtualMachineBlockNode.tsx';
-import { ExtendedBlock, VirtualMachineBlock } from '../types/BlockTypes.ts';
+import {
+  WebServerBlockNode,
+  WebServerBlockNodeProps,
+} from '../components/blocks/WebServerBlockNode.tsx';
+import {
+  ExtendedBlock,
+  VirtualMachineBlock,
+  WebServerBlock,
+} from '../types/BlockTypes.ts';
 
 // Supported Node Type
 export const supportedBlockNodeTypes = {
   virtualMachine: VirtualMachineBlockNode,
+  webServer: WebServerBlockNode,
 };
 
 // Convert Block(usually from saved data from server) to Node(react-flow)
@@ -17,6 +26,11 @@ export function convertBlockToNode(block: ExtendedBlock): Node {
   if (block.type === 'virtualMachine') {
     return convertVMBlockToNode(block as VirtualMachineBlock);
   }
+
+  if (block.type === 'webServer') {
+    return convertWebServerBlockToNode(block as WebServerBlock);
+  }
+
   throw new Error(`Block Type ${block.type} is not supported!`);
 }
 
@@ -37,12 +51,41 @@ function convertVMBlockToNode(block: VirtualMachineBlock): Node {
   };
 }
 
+// Convert WebServer Block(usually from saved data from server) to Node(react-flow)
+function convertWebServerBlockToNode(
+  block: WebServerBlock,
+): Node<WebServerBlockNodeProps> {
+  return {
+    id: block.id,
+    position: { x: block.x, y: block.y },
+    type: block.type,
+    data: {
+      blockTitle: block.name,
+      blockDescription: block.description,
+      blockTags: block.tags,
+      webServerRegion: block.webServerFeatures.region,
+      webServerTier: block.webServerFeatures.tier,
+      containerData: {
+        registryUrl: block.webServerFeatures.containerMetadata.registryUrl,
+        username: block.webServerFeatures.containerMetadata.username,
+        secrets: block.webServerFeatures.containerMetadata.secrets,
+        imageTags: block.webServerFeatures.containerMetadata.imageTags,
+      },
+    },
+  };
+}
+
 // Convert Node(react-flow) to Block(usually for saving to server)
 // this will examine blockType and convert it to Block(see each sub-function for more reference.)
 export function convertNodeToBlock(node: Node): ExtendedBlock {
   if (node.type === 'virtualMachine') {
     return convertVMNodeToBlock(node);
   }
+
+  if (node.type === 'webServer') {
+    return convertWebServerNodeToBlock(node);
+  }
+
   throw new Error(`Node Type ${node.type} is not supported!`);
 }
 
@@ -62,6 +105,31 @@ function convertVMNodeToBlock(
       tier: node.data.vmTier,
       region: node.data.vmRegion,
       osType: node.data.vmOperatingSystem,
+    },
+  };
+}
+
+function convertWebServerNodeToBlock(
+  node: Node<WebServerBlockNodeProps>,
+): WebServerBlock {
+  return {
+    id: node.id,
+    x: node.position.x,
+    y: node.position.y,
+    type: 'webServer',
+    name: node.data.blockTitle,
+    description: node.data.blockDescription,
+    tags: node.data.blockTags,
+    advancedMeta: {},
+    webServerFeatures: {
+      tier: node.data.webServerTier,
+      region: node.data.webServerRegion,
+      containerMetadata: {
+        registryUrl: node.data.containerData.registryUrl,
+        username: node.data.containerData.username,
+        secrets: node.data.containerData.secrets,
+        imageTags: node.data.containerData.imageTags,
+      },
     },
   };
 }

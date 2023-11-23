@@ -18,4 +18,18 @@ export type VirtualMachineBlock = Block & {
   };
 };
 
-export type ExtendedBlock = VirtualMachineBlock;
+export type WebServerBlock = Block & {
+  type: 'webServer';
+  webServerFeatures: {
+    tier: 'low' | 'medium' | 'high' | 'custom';
+    region: 'korea' | 'defaultAccount';
+    containerMetadata: {
+      registryUrl: string;
+      imageTags: string;
+      username: string | undefined;
+      secrets: string | undefined;
+    };
+  };
+};
+
+export type ExtendedBlock = VirtualMachineBlock | WebServerBlock | Block;
