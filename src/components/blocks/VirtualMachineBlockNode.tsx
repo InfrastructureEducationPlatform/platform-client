@@ -42,7 +42,14 @@ export function VirtualMachineBlockNode(
   return (
     <Card
       key={props.id}
-      style={{ position: 'relative', width: '400px', height: '280px' }}
+      style={{
+        position: 'relative',
+        width: '400px',
+        height: '280px',
+        border: props.selected
+          ? '2px solid #1890ff'
+          : '2px solid rgb(0 0 0 / 0%)',
+      }}
     >
       <Flex gap={'15px'}>
         <Avatar icon={<LaptopOutlined />} size={40} />
