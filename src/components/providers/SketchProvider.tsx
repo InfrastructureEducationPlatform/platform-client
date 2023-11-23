@@ -8,20 +8,13 @@ import React, {
 } from 'react';
 
 import { sketchApi } from '../../api';
-import { VirtualMachineBlockNodeProps } from '../blocks/VirtualMachineBlockNode.tsx';
+import { ExtendedBlock } from '../../types/BlockTypes.ts';
 import { useChannelNavigationContext } from './ChannelNavigationProvider.tsx';
 import { useErrorHandler } from './ErrorProvider.tsx';
 
-export type Block = VirtualMachineBlockNodeProps & {
-  id: string;
-  blockType: string;
-  x: number;
-  y: number;
-};
-
 type SketchBlock = {
   sketchId: string;
-  blockList: Block[];
+  blockList: ExtendedBlock[];
 };
 
 type SketchBlockContextValue = {

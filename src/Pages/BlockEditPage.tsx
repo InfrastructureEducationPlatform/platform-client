@@ -1,25 +1,21 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { FloatButton } from 'antd';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
-import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
-import {
-  VirtualMachineBlockNode,
-  VirtualMachineBlockNodeProps,
-} from '../components/blocks/VirtualMachineBlockNode.tsx';
-import { useErrorHandler } from '../components/providers/ErrorProvider.tsx';
+import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import {
   SketchProvider,
   useSketchBlockContext,
 } from '../components/providers/SketchProvider.tsx';
 import {
   convertBlockToNode,
+  convertNodeToBlock,
   supportedBlockNodeTypes,
 } from '../utils/BlockUtils.tsx';
 
@@ -61,15 +57,7 @@ function BlockEditPageComponent() {
   useEffect(() => {
     setSketchBlock({
       sketchId: sketchBlock.sketchId,
-      blockList: nodes.map((node) => {
-        return {
-          id: node.id,
-          x: node.position.x,
-          y: node.position.y,
-          blockType: node.type,
-          ...node.data,
-        };
-      }),
+      blockList: nodes.map((node) => convertNodeToBlock(node)),
     });
   }, [nodes]);
 
