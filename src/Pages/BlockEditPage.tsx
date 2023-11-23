@@ -18,6 +18,10 @@ import {
   SketchProvider,
   useSketchBlockContext,
 } from '../components/providers/SketchProvider.tsx';
+import {
+  convertBlockToNode,
+  supportedBlockNodeTypes,
+} from '../utils/BlockUtils.tsx';
 
 export function BlockEditPage() {
   // Get Sketch Parameter ID
@@ -37,30 +41,15 @@ function BlockEditPageComponent() {
   const { sketchBlock, setSketchBlock } = useSketchBlockContext();
 
   // Define Nodes, Node Types
-  const nodeTypes = useMemo(
-    () => ({ virtualMachine: VirtualMachineBlockNode }),
-    [],
-  );
   const [nodes, setNodes] = useState<Node[]>(
-    sketchBlock.blockList.map<Node>((a) => ({
-      id: a.id,
-      position: { x: a.x, y: a.y },
-      type: a.blockType,
-      data: {
-        blockTitle: a.blockTitle,
-        blockDescription: a.blockDescription,
-        vmTier: a.vmTier,
-        vmRegion: a.vmRegion,
-        vmOperatingSystem: a.vmOperatingSystem,
-        blockTags: a.blockTags,
-      },
-    })),
+    sketchBlock.blockList.map<Node>((a) => convertBlockToNode(a)),
   );
 
   // Drawer 관련 State
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [nodeToEdit, setNodeToEdit] = useState<Node | undefined>(undefined);
 
+  // Node Change Callback
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => {
       setNodes((nds) => applyNodeChanges(changes, nds));
@@ -68,6 +57,7 @@ function BlockEditPageComponent() {
     [setNodes],
   );
 
+  // Update sketchBlock when nodes are changed (saving to server)
   useEffect(() => {
     setSketchBlock({
       sketchId: sketchBlock.sketchId,
@@ -116,7 +106,7 @@ function BlockEditPageComponent() {
         setNode={setNodeToEdit}
       />
       <ReactFlow
-        nodeTypes={nodeTypes}
+        nodeTypes={supportedBlockNodeTypes}
         nodes={nodes}
         onNodesChange={onNodesChange}
         onNodeClick={(event, node) => {

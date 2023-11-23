@@ -12,7 +12,7 @@ import { VirtualMachineBlockNodeProps } from '../blocks/VirtualMachineBlockNode.
 import { useChannelNavigationContext } from './ChannelNavigationProvider.tsx';
 import { useErrorHandler } from './ErrorProvider.tsx';
 
-type Block = VirtualMachineBlockNodeProps & {
+export type Block = VirtualMachineBlockNodeProps & {
   id: string;
   blockType: string;
   x: number;
