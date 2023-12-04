@@ -1,7 +1,7 @@
 import { Button, Card, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-import { channelApi } from '../api';
+import { channelApi, userApi } from '../api';
 
 type CreateChannelType = {
   channelName: string;
@@ -22,6 +22,11 @@ export function CreateChannel() {
 
       if (response != null) {
         localStorage.removeItem('userContext');
+        const userResponse = await userApi.getUsersDetailProjectionAsync();
+        localStorage.setItem(
+          'selectedChannelId',
+          userResponse.data.channelPermissionList[0].channelId,
+        );
         navigate('/home');
       }
     })();
