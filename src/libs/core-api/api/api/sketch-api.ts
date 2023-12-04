@@ -220,6 +220,58 @@ export const SketchApiAxiosParamCreator = function (
     },
     /**
      *
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    tempDeployment: async (
+      sketchId: string,
+      channelId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('tempDeployment', 'sketchId', sketchId);
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('tempDeployment', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}/sketches/{sketchId}/deploy`
+        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)))
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary 스케치를 업데이트 합니다.
      * @param {string} channelId 채널 ID
      * @param {string} sketchId 업데이트 할 스케치 ID
@@ -375,6 +427,32 @@ export const SketchApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async tempDeployment(
+      sketchId: string,
+      channelId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.tempDeployment(
+        sketchId,
+        channelId,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @summary 스케치를 업데이트 합니다.
      * @param {string} channelId 채널 ID
      * @param {string} sketchId 업데이트 할 스케치 ID
@@ -469,6 +547,22 @@ export const SketchApiFactory = function (
     },
     /**
      *
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    tempDeployment(
+      sketchId: string,
+      channelId: string,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .tempDeployment(sketchId, channelId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary 스케치를 업데이트 합니다.
      * @param {string} channelId 채널 ID
      * @param {string} sketchId 업데이트 할 스케치 ID
@@ -548,6 +642,24 @@ export class SketchApi extends BaseAPI {
   ) {
     return SketchApiFp(this.configuration)
       .listSketchesInChannelAsync(channelId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} sketchId
+   * @param {string} channelId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public tempDeployment(
+    sketchId: string,
+    channelId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .tempDeployment(sketchId, channelId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

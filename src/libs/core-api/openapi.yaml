@@ -380,6 +380,39 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JwtAuthenticationFilter: []
+  '/channels/{channelId}/sketches/{sketchId}/deploy':
+    post:
+      tags:
+        - Sketch
+      operationId: TempDeployment
+      parameters:
+        - name: sketchId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: channelId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
   /users/me:
     get:
       tags:

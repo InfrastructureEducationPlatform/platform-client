@@ -1,4 +1,4 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { CloudOutlined, PlusOutlined } from '@ant-design/icons';
 import { FloatButton } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,11 +6,13 @@ import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
+import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { WebServerBlockNodeProps } from '../components/blocks/WebServerBlockNode.tsx';
+import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import {
   SketchProvider,
   useSketchBlockContext,
@@ -37,6 +39,7 @@ export function BlockEditPage() {
 function BlockEditPageComponent() {
   // Sketch Provider
   const { sketchBlock, setSketchBlock } = useSketchBlockContext();
+  const { currentChannel } = useChannelNavigationContext();
 
   // Define Nodes, Node Types
   const [nodes, setNodes] = useState<Node[]>(
@@ -171,6 +174,16 @@ function BlockEditPageComponent() {
               type: 'database',
             };
             setNodes((nds) => nds.concat(newNode));
+          }}
+        />
+        <FloatButton
+          icon={<CloudOutlined />}
+          tooltip={'클라우드에 배포'}
+          onClick={() => {
+            sketchApi.tempDeployment(
+              sketchBlock.sketchId,
+              currentChannel.channelId,
+            );
           }}
         />
       </FloatButton.Group>
