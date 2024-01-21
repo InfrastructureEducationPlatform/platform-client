@@ -49,7 +49,6 @@ function SketchListView() {
           id: a.sketchId,
           name: a.name,
           description: a.description,
-          blockSketch: a.blockSketch,
           createdAt: a.createdAt,
           updatedAt: a.updatedAt,
         })),
