@@ -1,5 +1,5 @@
-import { UserOutlined } from '@ant-design/icons';
-import { Flex, Menu, MenuProps, Modal, Typography } from 'antd';
+import { CloseOutlined, UserOutlined } from '@ant-design/icons';
+import { Button, Flex, Menu, MenuProps, Modal, Typography } from 'antd';
 import { useState } from 'react';
 
 import { useUserContext } from '../providers/UserContextProvider.tsx';
@@ -7,14 +7,22 @@ import { GeneralAccountPreferences } from './GeneralAccountPreferences.tsx';
 
 type PreferencesMode = 'account-general';
 
-export function Preferences() {
+export function Preferences({
+  modalVisible,
+  setModalVisible,
+}: {
+  modalVisible: boolean;
+  setModalVisible: (visible: boolean) => void;
+}) {
   return (
     <Modal
-      open={true}
+      open={modalVisible}
       centered
       footer={null}
-      modalRender={() => <InnerModalContent />}
-      width={'80%'}
+      modalRender={() => (
+        <InnerModalContent setModalVisible={setModalVisible} />
+      )}
+      width={'60%'}
       style={{
         pointerEvents: 'all',
       }}
@@ -22,7 +30,11 @@ export function Preferences() {
   );
 }
 
-function InnerModalContent() {
+function InnerModalContent({
+  setModalVisible,
+}: {
+  setModalVisible: (visible: boolean) => void;
+}) {
   const userInfo = useUserContext();
   const [preferencesMode, setPreferencesMode] =
     useState<PreferencesMode>('account-general');
@@ -87,6 +99,17 @@ function InnerModalContent() {
         />
       </Flex>
       {renderMap[preferencesMode]}
+      <Button
+        icon={<CloseOutlined />}
+        shape={'circle'}
+        type={'text'}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+        }}
+        onClick={() => setModalVisible(false)}
+      />
     </Flex>
   );
 }
