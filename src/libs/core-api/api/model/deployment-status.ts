@@ -12,8 +12,18 @@
  * Do not edit the class manually.
  */
 
-export * from './api/auth-api';
-export * from './api/channel-api';
-export * from './api/deployment-api';
-export * from './api/sketch-api';
-export * from './api/users-api';
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const DeploymentStatus = {
+  NUMBER_0: 0,
+  NUMBER_1: 1,
+  NUMBER_2: 2,
+  NUMBER_3: 3,
+} as const;
+
+export type DeploymentStatus =
+  (typeof DeploymentStatus)[keyof typeof DeploymentStatus];

@@ -20,37 +20,37 @@ import { ChannelPermissionProjection } from './channel-permission-projection';
 /**
  *
  * @export
- * @interface MeResponse
+ * @interface MeProjection
  */
-export interface MeResponse {
+export interface MeProjection {
   /**
-   * 사용자 Unique ID
+   *
    * @type {string}
-   * @memberof MeResponse
+   * @memberof MeProjection
    */
   userId: string;
   /**
-   * 사용자 이름(닉네임)
+   *
    * @type {string}
-   * @memberof MeResponse
+   * @memberof MeProjection
    */
   name: string;
   /**
-   * 사용자 이메일
+   *
    * @type {string}
-   * @memberof MeResponse
+   * @memberof MeProjection
    */
   email: string;
   /**
-   * Optional, 사용자 프로필 이미지
+   *
    * @type {string}
-   * @memberof MeResponse
+   * @memberof MeProjection
    */
   profilePictureImageUrl?: string | null;
   /**
-   * 사용자가 속한 채널의 권한 리스트
+   *
    * @type {Array<ChannelPermissionProjection>}
-   * @memberof MeResponse
+   * @memberof MeProjection
    */
   channelPermissionList: Array<ChannelPermissionProjection>;
 }

@@ -15,42 +15,48 @@
  */
 // May contain unused imports in some cases
 // @ts-ignore
-import { ChannelPermissionType } from './channel-permission-type';
+import { DeploymentStatus } from './deployment-status';
 
 /**
  *
  * @export
- * @interface ChannelPermissionProjection
+ * @interface DeploymentProjection
  */
-export interface ChannelPermissionProjection {
+export interface DeploymentProjection {
   /**
    *
    * @type {string}
-   * @memberof ChannelPermissionProjection
+   * @memberof DeploymentProjection
    */
-  userId: string;
+  deploymentId: string;
   /**
    *
    * @type {string}
-   * @memberof ChannelPermissionProjection
+   * @memberof DeploymentProjection
    */
-  channelId: string;
+  sketchId: string;
   /**
    *
    * @type {string}
-   * @memberof ChannelPermissionProjection
+   * @memberof DeploymentProjection
    */
-  channelName: string;
+  pluginId: string;
   /**
    *
-   * @type {ChannelPermissionType}
-   * @memberof ChannelPermissionProjection
+   * @type {DeploymentStatus}
+   * @memberof DeploymentProjection
    */
-  channelPermissionType: ChannelPermissionType;
+  deploymentStatus: DeploymentStatus;
   /**
    *
    * @type {string}
-   * @memberof ChannelPermissionProjection
+   * @memberof DeploymentProjection
    */
   createdAt: string;
+  /**
+   *
+   * @type {any}
+   * @memberof DeploymentProjection
+   */
+  deploymentOutput?: any | null;
 }

@@ -40,30 +40,39 @@ import {
 } from '../common';
 import type { Configuration } from '../configuration';
 // @ts-ignore
+import { DeploymentProjection } from '../model';
+// @ts-ignore
 import { ErrorResponse } from '../model';
-// @ts-ignore
-import { MeProjection } from '../model';
-// @ts-ignore
-import { UpdateUserPreferenceRequest } from '../model';
 
 /**
- * UsersApi - axios parameter creator
+ * DeploymentApi - axios parameter creator
  * @export
  */
-export const UsersApiAxiosParamCreator = function (
+export const DeploymentApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
     /**
-     *
-     * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
+     * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
+     * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
+     * @param {string} deploymentId 조회할 배포 정보 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUsersDetailProjectionAsync: async (
+    getDeploymentInformationAsync: async (
+      deploymentId: string,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/users/me`;
+      // verify required parameter 'deploymentId' is not null or undefined
+      assertParamExists(
+        'getDeploymentInformationAsync',
+        'deploymentId',
+        deploymentId,
+      );
+      const localVarPath = `/deployment/{deploymentId}`.replace(
+        `{${'deploymentId'}}`,
+        encodeURIComponent(String(deploymentId)),
+      );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -98,17 +107,15 @@ export const UsersApiAxiosParamCreator = function (
       };
     },
     /**
-     * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
-     * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
-     * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
+     * 해당 API는 사용자가 소속되어 있는 채널의 모든 배포 리스트를 불러옵니다.
+     * @summary 특정 사용자에 해당하는 배포 정보 상태들을 모두 불러옵니다.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateUserPreferenceAsync: async (
-      UpdateUserPreferenceRequest?: UpdateUserPreferenceRequest,
+    getDeploymentInformationListAsync: async (
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      const localVarPath = `/users/preferences`;
+      const localVarPath = `/deployment`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -117,7 +124,7 @@ export const UsersApiAxiosParamCreator = function (
       }
 
       const localVarRequestOptions = {
-        method: 'POST',
+        method: 'GET',
         ...baseOptions,
         ...options,
       };
@@ -128,8 +135,6 @@ export const UsersApiAxiosParamCreator = function (
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
 
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -138,11 +143,6 @@ export const UsersApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        UpdateUserPreferenceRequest,
-        localVarRequestOptions,
-        configuration,
-      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -153,25 +153,34 @@ export const UsersApiAxiosParamCreator = function (
 };
 
 /**
- * UsersApi - functional programming interface
+ * DeploymentApi - functional programming interface
  * @export
  */
-export const UsersApiFp = function (configuration?: Configuration) {
-  const localVarAxiosParamCreator = UsersApiAxiosParamCreator(configuration);
+export const DeploymentApiFp = function (configuration?: Configuration) {
+  const localVarAxiosParamCreator =
+    DeploymentApiAxiosParamCreator(configuration);
   return {
     /**
-     *
-     * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
+     * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
+     * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
+     * @param {string} deploymentId 조회할 배포 정보 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async getUsersDetailProjectionAsync(
+    async getDeploymentInformationAsync(
+      deploymentId: string,
       options?: AxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<MeProjection>
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<DeploymentProjection>
     > {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.getUsersDetailProjectionAsync(options);
+        await localVarAxiosParamCreator.getDeploymentInformationAsync(
+          deploymentId,
+          options,
+        );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -180,21 +189,21 @@ export const UsersApiFp = function (configuration?: Configuration) {
       );
     },
     /**
-     * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
-     * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
-     * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
+     * 해당 API는 사용자가 소속되어 있는 채널의 모든 배포 리스트를 불러옵니다.
+     * @summary 특정 사용자에 해당하는 배포 정보 상태들을 모두 불러옵니다.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    async updateUserPreferenceAsync(
-      UpdateUserPreferenceRequest?: UpdateUserPreferenceRequest,
+    async getDeploymentInformationListAsync(
       options?: AxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<Array<DeploymentProjection>>
     > {
       const localVarAxiosArgs =
-        await localVarAxiosParamCreator.updateUserPreferenceAsync(
-          UpdateUserPreferenceRequest,
+        await localVarAxiosParamCreator.getDeploymentInformationListAsync(
           options,
         );
       return createRequestFunction(
@@ -208,79 +217,81 @@ export const UsersApiFp = function (configuration?: Configuration) {
 };
 
 /**
- * UsersApi - factory interface
+ * DeploymentApi - factory interface
  * @export
  */
-export const UsersApiFactory = function (
+export const DeploymentApiFactory = function (
   configuration?: Configuration,
   basePath?: string,
   axios?: AxiosInstance,
 ) {
-  const localVarFp = UsersApiFp(configuration);
+  const localVarFp = DeploymentApiFp(configuration);
   return {
     /**
-     *
-     * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
+     * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
+     * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
+     * @param {string} deploymentId 조회할 배포 정보 ID
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    getUsersDetailProjectionAsync(options?: any): AxiosPromise<MeProjection> {
+    getDeploymentInformationAsync(
+      deploymentId: string,
+      options?: any,
+    ): AxiosPromise<DeploymentProjection> {
       return localVarFp
-        .getUsersDetailProjectionAsync(options)
+        .getDeploymentInformationAsync(deploymentId, options)
         .then((request) => request(axios, basePath));
     },
     /**
-     * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
-     * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
-     * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
+     * 해당 API는 사용자가 소속되어 있는 채널의 모든 배포 리스트를 불러옵니다.
+     * @summary 특정 사용자에 해당하는 배포 정보 상태들을 모두 불러옵니다.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    updateUserPreferenceAsync(
-      UpdateUserPreferenceRequest?: UpdateUserPreferenceRequest,
+    getDeploymentInformationListAsync(
       options?: any,
-    ): AxiosPromise<void> {
+    ): AxiosPromise<Array<DeploymentProjection>> {
       return localVarFp
-        .updateUserPreferenceAsync(UpdateUserPreferenceRequest, options)
+        .getDeploymentInformationListAsync(options)
         .then((request) => request(axios, basePath));
     },
   };
 };
 
 /**
- * UsersApi - object-oriented interface
+ * DeploymentApi - object-oriented interface
  * @export
- * @class UsersApi
+ * @class DeploymentApi
  * @extends {BaseAPI}
  */
-export class UsersApi extends BaseAPI {
+export class DeploymentApi extends BaseAPI {
   /**
-   *
-   * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
+   * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
+   * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
+   * @param {string} deploymentId 조회할 배포 정보 ID
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersApi
+   * @memberof DeploymentApi
    */
-  public getUsersDetailProjectionAsync(options?: AxiosRequestConfig) {
-    return UsersApiFp(this.configuration)
-      .getUsersDetailProjectionAsync(options)
+  public getDeploymentInformationAsync(
+    deploymentId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return DeploymentApiFp(this.configuration)
+      .getDeploymentInformationAsync(deploymentId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
-   * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
-   * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
-   * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
+   * 해당 API는 사용자가 소속되어 있는 채널의 모든 배포 리스트를 불러옵니다.
+   * @summary 특정 사용자에 해당하는 배포 정보 상태들을 모두 불러옵니다.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof UsersApi
+   * @memberof DeploymentApi
    */
-  public updateUserPreferenceAsync(
-    UpdateUserPreferenceRequest?: UpdateUserPreferenceRequest,
-    options?: AxiosRequestConfig,
-  ) {
-    return UsersApiFp(this.configuration)
-      .updateUserPreferenceAsync(UpdateUserPreferenceRequest, options)
+  public getDeploymentInformationListAsync(options?: AxiosRequestConfig) {
+    return DeploymentApiFp(this.configuration)
+      .getDeploymentInformationListAsync(options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

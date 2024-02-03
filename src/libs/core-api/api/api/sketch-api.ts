@@ -42,6 +42,8 @@ import type { Configuration } from '../configuration';
 // @ts-ignore
 import { CreateSketchRequest } from '../model';
 // @ts-ignore
+import { DeploymentProjection } from '../model';
+// @ts-ignore
 import { ErrorResponse } from '../model';
 // @ts-ignore
 import { SketchResponse } from '../model';
@@ -109,6 +111,59 @@ export const SketchApiAxiosParamCreator = function (
         localVarRequestOptions,
         configuration,
       );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     * 해당 API는 Blocking API가 아닌, Non-Blocking API이며, 응답으로는 배포의 상황을 조회할 수 있는 DeploymentProjection을 반환합니다.
+     * @summary 배포를 시작합니다.
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deploySketchAsync: async (
+      sketchId: string,
+      channelId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('deploySketchAsync', 'sketchId', sketchId);
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('deploySketchAsync', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}/sketches/{sketchId}/deploy`
+        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)))
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
 
       return {
         url: toPathString(localVarUrlObj),
@@ -194,58 +249,6 @@ export const SketchApiAxiosParamCreator = function (
 
       const localVarRequestOptions = {
         method: 'GET',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      // authentication JwtAuthenticationFilter required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
-    /**
-     *
-     * @param {string} sketchId
-     * @param {string} channelId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    tempDeployment: async (
-      sketchId: string,
-      channelId: string,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'sketchId' is not null or undefined
-      assertParamExists('tempDeployment', 'sketchId', sketchId);
-      // verify required parameter 'channelId' is not null or undefined
-      assertParamExists('tempDeployment', 'channelId', channelId);
-      const localVarPath = `/channels/{channelId}/sketches/{sketchId}/deploy`
-        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)))
-        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)));
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = {
-        method: 'POST',
         ...baseOptions,
         ...options,
       };
@@ -371,6 +374,37 @@ export const SketchApiFp = function (configuration?: Configuration) {
       );
     },
     /**
+     * 해당 API는 Blocking API가 아닌, Non-Blocking API이며, 응답으로는 배포의 상황을 조회할 수 있는 DeploymentProjection을 반환합니다.
+     * @summary 배포를 시작합니다.
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deploySketchAsync(
+      sketchId: string,
+      channelId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<DeploymentProjection>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.deploySketchAsync(
+          sketchId,
+          channelId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      *
      * @summary 특정 스케치를 불러옵니다.
      * @param {string} channelId 채널 ID
@@ -418,32 +452,6 @@ export const SketchApiFp = function (configuration?: Configuration) {
           channelId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
-     *
-     * @param {string} sketchId
-     * @param {string} channelId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async tempDeployment(
-      sketchId: string,
-      channelId: string,
-      options?: AxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
-    > {
-      const localVarAxiosArgs = await localVarAxiosParamCreator.tempDeployment(
-        sketchId,
-        channelId,
-        options,
-      );
       return createRequestFunction(
         localVarAxiosArgs,
         globalAxios,
@@ -514,6 +522,23 @@ export const SketchApiFactory = function (
         .then((request) => request(axios, basePath));
     },
     /**
+     * 해당 API는 Blocking API가 아닌, Non-Blocking API이며, 응답으로는 배포의 상황을 조회할 수 있는 DeploymentProjection을 반환합니다.
+     * @summary 배포를 시작합니다.
+     * @param {string} sketchId
+     * @param {string} channelId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deploySketchAsync(
+      sketchId: string,
+      channelId: string,
+      options?: any,
+    ): AxiosPromise<DeploymentProjection> {
+      return localVarFp
+        .deploySketchAsync(sketchId, channelId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      *
      * @summary 특정 스케치를 불러옵니다.
      * @param {string} channelId 채널 ID
@@ -543,22 +568,6 @@ export const SketchApiFactory = function (
     ): AxiosPromise<Array<SketchResponse>> {
       return localVarFp
         .listSketchesInChannelAsync(channelId, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {string} sketchId
-     * @param {string} channelId
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    tempDeployment(
-      sketchId: string,
-      channelId: string,
-      options?: any,
-    ): AxiosPromise<void> {
-      return localVarFp
-        .tempDeployment(sketchId, channelId, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -610,6 +619,25 @@ export class SketchApi extends BaseAPI {
   }
 
   /**
+   * 해당 API는 Blocking API가 아닌, Non-Blocking API이며, 응답으로는 배포의 상황을 조회할 수 있는 DeploymentProjection을 반환합니다.
+   * @summary 배포를 시작합니다.
+   * @param {string} sketchId
+   * @param {string} channelId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public deploySketchAsync(
+    sketchId: string,
+    channelId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .deploySketchAsync(sketchId, channelId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
    *
    * @summary 특정 스케치를 불러옵니다.
    * @param {string} channelId 채널 ID
@@ -642,24 +670,6 @@ export class SketchApi extends BaseAPI {
   ) {
     return SketchApiFp(this.configuration)
       .listSketchesInChannelAsync(channelId, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {string} sketchId
-   * @param {string} channelId
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof SketchApi
-   */
-  public tempDeployment(
-    sketchId: string,
-    channelId: string,
-    options?: AxiosRequestConfig,
-  ) {
-    return SketchApiFp(this.configuration)
-      .tempDeployment(sketchId, channelId, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
