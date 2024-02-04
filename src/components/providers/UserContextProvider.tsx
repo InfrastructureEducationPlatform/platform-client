@@ -11,10 +11,16 @@ import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 
-const UsrContext = createContext<UserContext | undefined>(undefined);
+const UsrContext = createContext<UserContextValue | undefined>(undefined);
+
+type UserContextValue = {
+  userContext: UserContext;
+  setForceReload: (reloadKey: string) => void;
+};
 
 export function UserContextProvider({ children }: { children: ReactNode }) {
   const [userContext, setUserContext] = useState<UserContext>();
+  const [forceReload, setForceReload] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
   useEffect(() => {
     // 로컬스토리지에 캐시 확인
@@ -51,12 +57,42 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     })();
   }, [navigate]);
 
+  useEffect(() => {
+    if (forceReload) {
+      (async () => {
+        const userDetail = await userApi.getUsersDetailProjectionAsync();
+        const userContext: UserContext = {
+          userId: userDetail.data.userId,
+          userName: userDetail.data.name,
+          userEmail: userDetail.data.email,
+          userProfilePictureUrl: undefined,
+          channelPermissions: userDetail.data.channelPermissionList.map(
+            (a) => ({
+              id: a.channelId,
+              name: a.channelName,
+              permission: a.channelPermissionType,
+            }),
+          ),
+        };
+        LocalStorageUtils.setUserContext(userContext);
+        setUserContext(userContext);
+      })();
+    }
+  }, [forceReload]);
+
   if (!userContext) {
     return <div>로딩중</div>;
   }
 
   return (
-    <UsrContext.Provider value={userContext}>{children}</UsrContext.Provider>
+    <UsrContext.Provider
+      value={{
+        userContext,
+        setForceReload,
+      }}
+    >
+      {children}
+    </UsrContext.Provider>
   );
 }
 

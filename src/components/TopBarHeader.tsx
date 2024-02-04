@@ -9,7 +9,7 @@ import { useChannelNavigationContext } from './providers/ChannelNavigationProvid
 import { useUserContext } from './providers/UserContextProvider.tsx';
 
 export function TopBarHeader() {
-  const userContext = useUserContext();
+  const { userContext } = useUserContext();
   const channelNavigationContext = useChannelNavigationContext();
   const [preferencesVisible, setPreferencesVisible] = useState(false);
   const userMenu: MenuProps['items'] = [

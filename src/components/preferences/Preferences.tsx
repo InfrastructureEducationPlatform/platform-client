@@ -35,11 +35,16 @@ function InnerModalContent({
 }: {
   setModalVisible: (visible: boolean) => void;
 }) {
-  const userInfo = useUserContext();
+  const { userContext: userInfo, setForceReload } = useUserContext();
   const [preferencesMode, setPreferencesMode] =
     useState<PreferencesMode>('account-general');
   const renderMap = {
-    'account-general': <GeneralAccountPreferences userContext={userInfo} />,
+    'account-general': (
+      <GeneralAccountPreferences
+        userContext={userInfo}
+        setForceReload={setForceReload}
+      />
+    ),
   };
   const menuItems: MenuProps['items'] = [
     {

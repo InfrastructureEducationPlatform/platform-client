@@ -6,12 +6,13 @@ import { useNavigate } from 'react-router-dom';
 
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
-import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 
 export function GeneralAccountPreferences({
   userContext,
+  setForceReload,
 }: {
   userContext: UserContext;
+  setForceReload: (forceReload: string) => void;
 }) {
   const navigate = useNavigate();
 
@@ -23,7 +24,7 @@ export function GeneralAccountPreferences({
         email: userContext.userEmail,
         name: userName,
       });
-      LocalStorageUtils.removeUserContext();
+      setForceReload(new Date().toISOString());
     }, 500),
     [],
   );

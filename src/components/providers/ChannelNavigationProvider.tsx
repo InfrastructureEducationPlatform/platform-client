@@ -22,7 +22,7 @@ export function ChannelNavigationProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const userContext = useUserContext();
+  const { userContext } = useUserContext();
   const [currentChannel, setCurrentChannel] = useState<CurrentChannel>();
   const [channelId, setChannelId] = useState<string>(
     getSelectedChannelIdOrDefault(userContext),
