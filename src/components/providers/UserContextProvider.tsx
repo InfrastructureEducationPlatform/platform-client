@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
+import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 
 const UsrContext = createContext<UserContext | undefined>(undefined);
 
@@ -17,11 +18,10 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   useEffect(() => {
     // 로컬스토리지에 캐시 확인
-    const cachedData = localStorage.getItem('userContext');
+    const cachedData = LocalStorageUtils.getUserContext();
     if (cachedData) {
-      const contextData = JSON.parse(cachedData);
-      setUserContext(JSON.parse(cachedData));
-      if (contextData.channelPermissions.length == 0) {
+      setUserContext(cachedData);
+      if (cachedData.channelPermissions.length == 0) {
         // 채널 생성 온보딩이 필요한 경우
         navigate('/onBoarding');
       }
@@ -42,7 +42,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
           permission: a.channelPermissionType,
         })),
       };
-      localStorage.setItem('userContext', JSON.stringify(userContext));
+      LocalStorageUtils.setUserContext(userContext);
       setUserContext(userContext);
       if (userDetail.data.channelPermissionList.length == 0) {
         // 채널 생성 온보딩이 필요한 경우

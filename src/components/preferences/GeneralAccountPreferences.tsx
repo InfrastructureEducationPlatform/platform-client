@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
+import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 
 export function GeneralAccountPreferences({
   userContext,
@@ -22,7 +23,7 @@ export function GeneralAccountPreferences({
         email: userContext.userEmail,
         name: userName,
       });
-      localStorage.removeItem('userContext');
+      LocalStorageUtils.removeUserContext();
     }, 500),
     [],
   );

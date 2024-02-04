@@ -2,8 +2,10 @@ import { Button, Modal, Result } from 'antd';
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const token = localStorage.getItem('accessToken');
+  const token = LocalStorageUtils.getAccessToken();
   const navigate = useNavigate();
 
   if (!token) {

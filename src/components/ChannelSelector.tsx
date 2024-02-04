@@ -85,17 +85,3 @@ function generateMenuItem(userContext: UserContext): MenuProps['items'] {
     ),
   }));
 }
-
-function getSelectedChannelIdOrDefault(userContext: UserContext): string {
-  const selectedChannelId = localStorage.getItem('selectedChannelId');
-  if (selectedChannelId) {
-    return selectedChannelId;
-  }
-
-  localStorage.setItem(
-    'selectedChannelId',
-    userContext.channelPermissions[0].id,
-  );
-
-  return userContext.channelPermissions[0].id;
-}

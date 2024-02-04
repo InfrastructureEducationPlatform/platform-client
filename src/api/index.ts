@@ -7,6 +7,7 @@ import {
   SketchApi,
   UsersApi,
 } from '../libs/core-api/api';
+import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 
 const configuration = new Configuration({
   basePath: 'https://api.blockinfra.kangdroid.me',
@@ -17,7 +18,7 @@ defaultAuthorizationInstance.interceptors.request.use(async (config) => {
   let token: string | undefined;
 
   try {
-    token = localStorage.getItem('accessToken') ?? undefined;
+    token = LocalStorageUtils.getAccessToken() ?? undefined;
     if (!token) {
       throw new Error('Cannot find access token on storage');
     }
@@ -41,13 +42,13 @@ defaultAuthorizationInstance.interceptors.response.use(
     if (status === 401 && !config.sent) {
       config.sent = true;
       const refreshToken = await authApi.refreshAsync({
-        accessToken: localStorage.getItem('accessToken')!,
-        refreshToken: localStorage.getItem('refreshToken')!,
+        accessToken: LocalStorageUtils.getAccessToken()!,
+        refreshToken: LocalStorageUtils.getRefreshToken()!,
       });
 
       if (refreshToken.data) {
-        localStorage.setItem('accessToken', refreshToken.data.token);
-        localStorage.setItem('refreshToken', refreshToken.data.refreshToken!);
+        LocalStorageUtils.setAccessToken(refreshToken.data.token);
+        LocalStorageUtils.setRefreshToken(refreshToken.data.refreshToken!);
         config.headers.Authorization = `Bearer ${refreshToken.data.token}`;
         return axios(config);
       }
@@ -55,8 +56,8 @@ defaultAuthorizationInstance.interceptors.response.use(
 
     if (config.url.includes('/auth/refresh') && status === 401 && config.sent) {
       console.log('Refresh Token is not valid. Redirecting to login page.');
-      localStorage.removeItem('accessToken');
-      localStorage.removeItem('refreshToken');
+      LocalStorageUtils.removeAccessToken();
+      LocalStorageUtils.removeRefreshToken();
       window.location.href = '/';
     }
 

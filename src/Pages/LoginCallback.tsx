@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { authApi } from '../api';
 import { LoginResult } from '../libs/core-api/api';
+import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 
 export function LoginCallback() {
   const [searchParameters, _] = useSearchParams();
@@ -25,13 +26,13 @@ export function LoginCallback() {
     // 회원가입
     if (response.data.loginResult === LoginResult.NeedsRegistration) {
       // 만약 응답 값이 회원가입인 경우
-      localStorage.setItem('joinToken', response.data.token);
+      LocalStorageUtils.setJoinToken(response.data.token);
       navigate('/register');
     } else {
       // 만약 응답 값이 로그인 인 경우
-      localStorage.setItem('accessToken', response.data.token);
-      localStorage.setItem('refreshToken', response.data.refreshToken!);
-      localStorage.removeItem('userContext');
+      LocalStorageUtils.setAccessToken(response.data.token);
+      LocalStorageUtils.setRefreshToken(response.data.refreshToken!);
+      LocalStorageUtils.removeUserContext();
       navigate('/home');
     }
   };

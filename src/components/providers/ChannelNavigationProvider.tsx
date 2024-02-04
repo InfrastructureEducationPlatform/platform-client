@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 import { UserContext } from '../../types/UserContext.ts';
+import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { useUserContext } from './UserContextProvider.tsx';
 
 type ChannelNavigationContextValue = {
@@ -46,7 +47,7 @@ export function ChannelNavigationProvider({
       value={{
         currentChannel: currentChannel,
         setChannelInformation: (a) => {
-          localStorage.setItem('selectedChannelId', a);
+          LocalStorageUtils.setSelectedChannelId(a);
           setChannelId(a);
         },
       }}
@@ -68,15 +69,11 @@ export function useChannelNavigationContext() {
 }
 
 function getSelectedChannelIdOrDefault(userContext: UserContext): string {
-  const selectedChannelId = localStorage.getItem('selectedChannelId');
+  const selectedChannelId = LocalStorageUtils.getSelectedChannelId();
   if (selectedChannelId) {
     return selectedChannelId;
   }
 
-  localStorage.setItem(
-    'selectedChannelId',
-    userContext.channelPermissions[0].id,
-  );
-
+  LocalStorageUtils.setSelectedChannelId(userContext.channelPermissions[0].id);
   return userContext.channelPermissions[0].id;
 }
