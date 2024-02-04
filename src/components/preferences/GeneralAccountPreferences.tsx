@@ -1,11 +1,12 @@
 import { RightOutlined } from '@ant-design/icons';
-import { Button, Divider, Flex, Image, Input, Typography } from 'antd';
+import { Button, Divider, Flex, Input, Typography } from 'antd';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
+import { ImageUploader } from '../ProfileImageUploader.tsx';
 
 export function GeneralAccountPreferences({
   userContext,
@@ -41,11 +42,28 @@ export function GeneralAccountPreferences({
         <Typography.Title level={4}>내 프로필</Typography.Title>
         <Divider style={{ width: '100%', margin: 0 }} />
         <Flex style={{ marginTop: '10px', gap: '20px', alignItems: 'center' }}>
-          <Image
-            src={'https://avatars.githubusercontent.com/u/9135474?v=4'}
-            preview={false}
-            width={'52px'}
-            height={'52px'}
+          <ImageUploader
+            defaultImageUrl={userContext.userProfilePictureUrl}
+            onImageUploaded={(imageUrl) => {
+              (async () => {
+                await userApi.updateUserPreferenceAsync({
+                  profilePictureImageUrl: imageUrl,
+                  email: userContext.userEmail,
+                  name: userContext.userName,
+                });
+                setForceReload(new Date().toISOString());
+              })();
+            }}
+            onImageDeleted={() => {
+              (async () => {
+                await userApi.updateUserPreferenceAsync({
+                  profilePictureImageUrl: undefined,
+                  email: userContext.userEmail,
+                  name: userContext.userName,
+                });
+                setForceReload(new Date().toISOString());
+              })();
+            }}
           />
           <div>
             <Typography.Text type={'secondary'}>선호하는 이름</Typography.Text>

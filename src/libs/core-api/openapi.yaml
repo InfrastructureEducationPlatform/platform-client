@@ -170,6 +170,137 @@ paths:
           description: 채널 생성에 성공한 경우
       security:
         - JwtAuthenticationFilter: []
+  '/channels/{channelId}':
+    get:
+      tags:
+        - Channel
+      summary: 특정 채널의 정보와 채널의 사용자 정보를 가져옵니다.
+      operationId: GetChannelInformationAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 조회할 채널의 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 채널 정보 조회에 성공한 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ChannelInformationResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelInformationResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ChannelInformationResponse'
+        '401':
+          description: 인증 정보가 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 채널 조회 권한이 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 채널 정보가 존재하지 않는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
+    put:
+      tags:
+        - Channel
+      summary: 특정 채널의 기본 정보를 수정합니다.
+      operationId: UpdateChannelInformationAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 수정할 채널 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: 수정할 채널 정보
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelInformationRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelInformationRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelInformationRequest'
+      responses:
+        '401':
+          description: 인증 정보가 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 채널 수정 권한이 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 채널 정보가 존재하지 않는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: 채널 정보 수정에 성공한 경우
+      security:
+        - JwtAuthenticationFilter: []
   '/deployment/{deploymentId}':
     get:
       tags:
@@ -264,6 +395,56 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JwtAuthenticationFilter: []
+  /files/upload:
+    post:
+      tags:
+        - File
+      summary: 파일을 업로드 합니다.
+      operationId: UploadFileAsync
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                formFile:
+                  type: string
+                  format: binary
+            encoding:
+              formFile:
+                style: form
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/FileProjectionResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileProjectionResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/FileProjectionResponse'
+      security:
+        - JwtAuthenticationFilter: []
+  '/files/{fileId}':
+    get:
+      tags:
+        - File
+      summary: 파일을 가져옵니다.
+      operationId: GetFileAsync
+      parameters:
+        - name: fileId
+          in: path
+          description: 파일 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
   '/channels/{channelId}/sketches':
     get:
       tags:
@@ -605,6 +786,31 @@ paths:
         - JwtAuthenticationFilter: []
 components:
   schemas:
+    ChannelInformationResponse:
+      required:
+        - channelId
+        - channelUserInformationList
+        - description
+        - name
+      type: object
+      properties:
+        channelId:
+          minLength: 1
+          type: string
+        name:
+          minLength: 1
+          type: string
+        description:
+          minLength: 1
+          type: string
+        profileImageUrl:
+          type: string
+          nullable: true
+        channelUserInformationList:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelUserInformationProjection'
+      additionalProperties: false
     ChannelPermissionProjection:
       required:
         - channelId
@@ -634,6 +840,26 @@ components:
         - Owner
         - Reader
       type: string
+    ChannelUserInformationProjection:
+      required:
+        - email
+        - name
+        - userId
+      type: object
+      properties:
+        userId:
+          minLength: 1
+          type: string
+        name:
+          minLength: 1
+          type: string
+        email:
+          minLength: 1
+          type: string
+        profilePictureImageUrl:
+          type: string
+          nullable: true
+      additionalProperties: false
     CreateChannelRequest:
       required:
         - description
@@ -721,6 +947,31 @@ components:
         errorTitle:
           type: string
           nullable: true
+      additionalProperties: false
+    FileProjectionResponse:
+      required:
+        - contentDispositionFileName
+        - contentDispositionName
+        - contentType
+        - fileId
+        - fileSize
+      type: object
+      properties:
+        fileId:
+          minLength: 1
+          type: string
+        contentDispositionFileName:
+          minLength: 1
+          type: string
+        contentDispositionName:
+          minLength: 1
+          type: string
+        contentType:
+          minLength: 1
+          type: string
+        fileSize:
+          type: integer
+          format: int64
       additionalProperties: false
     LoginRequest:
       required:
@@ -855,6 +1106,22 @@ components:
         refreshToken:
           type: string
           description: 'Refresh Token, expires in 30 days.'
+          nullable: true
+      additionalProperties: false
+    UpdateChannelInformationRequest:
+      required:
+        - channelDescription
+        - channelName
+      type: object
+      properties:
+        channelName:
+          minLength: 1
+          type: string
+        channelDescription:
+          minLength: 1
+          type: string
+        profileImageUrl:
+          type: string
           nullable: true
       additionalProperties: false
     UpdateSketchRequest:

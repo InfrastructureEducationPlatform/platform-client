@@ -5,6 +5,7 @@ api.ts
 api/auth-api.ts
 api/channel-api.ts
 api/deployment-api.ts
+api/file-api.ts
 api/sketch-api.ts
 api/users-api.ts
 base.ts
@@ -12,14 +13,17 @@ common.ts
 configuration.ts
 git_push.sh
 index.ts
+model/channel-information-response.ts
 model/channel-permission-projection.ts
 model/channel-permission-type.ts
+model/channel-user-information-projection.ts
 model/create-channel-request.ts
 model/create-sketch-request.ts
 model/credential-provider.ts
 model/deployment-projection.ts
 model/deployment-status.ts
 model/error-response.ts
+model/file-projection-response.ts
 model/index.ts
 model/login-request.ts
 model/login-result.ts
@@ -28,5 +32,6 @@ model/refresh-token-request.ts
 model/sign-up-request.ts
 model/sketch-response.ts
 model/token-response.ts
+model/update-channel-information-request.ts
 model/update-sketch-request.ts
 model/update-user-preference-request.ts

@@ -41,7 +41,9 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
         userId: userDetail.data.userId,
         userName: userDetail.data.name,
         userEmail: userDetail.data.email,
-        userProfilePictureUrl: undefined,
+        userProfilePictureUrl: userDetail.data.profilePictureImageUrl as
+          | string
+          | undefined,
         channelPermissions: userDetail.data.channelPermissionList.map((a) => ({
           id: a.channelId,
           name: a.channelName,
@@ -65,7 +67,9 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
           userId: userDetail.data.userId,
           userName: userDetail.data.name,
           userEmail: userDetail.data.email,
-          userProfilePictureUrl: undefined,
+          userProfilePictureUrl: userDetail.data.profilePictureImageUrl as
+            | string
+            | undefined,
           channelPermissions: userDetail.data.channelPermissionList.map(
             (a) => ({
               id: a.channelId,

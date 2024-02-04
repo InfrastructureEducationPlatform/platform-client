@@ -4,6 +4,7 @@ import {
   AuthApi,
   ChannelApi,
   Configuration,
+  FileApi,
   SketchApi,
   UsersApi,
 } from '../libs/core-api/api';
@@ -77,6 +78,12 @@ export const userApi = new UsersApi(
   defaultAuthorizationInstance,
 );
 export const sketchApi = new SketchApi(
+  configuration,
+  undefined,
+  defaultAuthorizationInstance,
+);
+
+export const fileApi = new FileApi(
   configuration,
   undefined,
   defaultAuthorizationInstance,

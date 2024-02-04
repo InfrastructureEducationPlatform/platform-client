@@ -40,7 +40,13 @@ import {
 } from '../common';
 import type { Configuration } from '../configuration';
 // @ts-ignore
+import { ChannelInformationResponse } from '../model';
+// @ts-ignore
 import { CreateChannelRequest } from '../model';
+// @ts-ignore
+import { ErrorResponse } from '../model';
+// @ts-ignore
+import { UpdateChannelInformationRequest } from '../model';
 
 /**
  * ChannelApi - axios parameter creator
@@ -102,6 +108,119 @@ export const ChannelApiAxiosParamCreator = function (
         options: localVarRequestOptions,
       };
     },
+    /**
+     *
+     * @summary 특정 채널의 정보와 채널의 사용자 정보를 가져옵니다.
+     * @param {string} channelId 조회할 채널의 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChannelInformationAsync: async (
+      channelId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('getChannelInformationAsync', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}`.replace(
+        `{${'channelId'}}`,
+        encodeURIComponent(String(channelId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary 특정 채널의 기본 정보를 수정합니다.
+     * @param {string} channelId 수정할 채널 Id
+     * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateChannelInformationAsync: async (
+      channelId: string,
+      UpdateChannelInformationRequest?: UpdateChannelInformationRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists(
+        'updateChannelInformationAsync',
+        'channelId',
+        channelId,
+      );
+      const localVarPath = `/channels/{channelId}`.replace(
+        `{${'channelId'}}`,
+        encodeURIComponent(String(channelId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'PUT',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        UpdateChannelInformationRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
   };
 };
 
@@ -128,6 +247,62 @@ export const ChannelApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.createChannelAsync(
           CreateChannelRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @summary 특정 채널의 정보와 채널의 사용자 정보를 가져옵니다.
+     * @param {string} channelId 조회할 채널의 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getChannelInformationAsync(
+      channelId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ChannelInformationResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getChannelInformationAsync(
+          channelId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @summary 특정 채널의 기본 정보를 수정합니다.
+     * @param {string} channelId 수정할 채널 Id
+     * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateChannelInformationAsync(
+      channelId: string,
+      UpdateChannelInformationRequest?: UpdateChannelInformationRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.updateChannelInformationAsync(
+          channelId,
+          UpdateChannelInformationRequest,
           options,
         );
       return createRequestFunction(
@@ -166,6 +341,42 @@ export const ChannelApiFactory = function (
         .createChannelAsync(CreateChannelRequest, options)
         .then((request) => request(axios, basePath));
     },
+    /**
+     *
+     * @summary 특정 채널의 정보와 채널의 사용자 정보를 가져옵니다.
+     * @param {string} channelId 조회할 채널의 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getChannelInformationAsync(
+      channelId: string,
+      options?: any,
+    ): AxiosPromise<ChannelInformationResponse> {
+      return localVarFp
+        .getChannelInformationAsync(channelId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary 특정 채널의 기본 정보를 수정합니다.
+     * @param {string} channelId 수정할 채널 Id
+     * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateChannelInformationAsync(
+      channelId: string,
+      UpdateChannelInformationRequest?: UpdateChannelInformationRequest,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .updateChannelInformationAsync(
+          channelId,
+          UpdateChannelInformationRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
   };
 };
 
@@ -190,6 +401,46 @@ export class ChannelApi extends BaseAPI {
   ) {
     return ChannelApiFp(this.configuration)
       .createChannelAsync(CreateChannelRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary 특정 채널의 정보와 채널의 사용자 정보를 가져옵니다.
+   * @param {string} channelId 조회할 채널의 Id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ChannelApi
+   */
+  public getChannelInformationAsync(
+    channelId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return ChannelApiFp(this.configuration)
+      .getChannelInformationAsync(channelId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary 특정 채널의 기본 정보를 수정합니다.
+   * @param {string} channelId 수정할 채널 Id
+   * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ChannelApi
+   */
+  public updateChannelInformationAsync(
+    channelId: string,
+    UpdateChannelInformationRequest?: UpdateChannelInformationRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return ChannelApiFp(this.configuration)
+      .updateChannelInformationAsync(
+        channelId,
+        UpdateChannelInformationRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }
