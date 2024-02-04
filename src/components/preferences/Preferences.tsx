@@ -89,6 +89,7 @@ function InnerModalContent({
         background: 'white',
         borderRadius: '8px',
         height: '400px',
+        overflow: 'hidden',
       }}
     >
       <Flex
