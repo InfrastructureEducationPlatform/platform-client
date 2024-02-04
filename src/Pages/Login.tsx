@@ -1,10 +1,18 @@
 import { GoogleOAuthProvider, useGoogleLogin } from '@react-oauth/google';
 import { Button } from 'antd';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 
 export function Login() {
-  // const onSuccess = (res:string) =>{
-  //     return(res);
-  // }
+  const navigate = useNavigate();
+  useEffect(() => {
+    const userContext = LocalStorageUtils.getUserContext();
+    if (userContext) {
+      navigate('/home');
+    }
+  }, [navigate]);
   return (
     <div
       style={{
