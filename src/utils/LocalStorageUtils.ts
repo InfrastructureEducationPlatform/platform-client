@@ -41,7 +41,7 @@ export class LocalStorageUtils {
 
   static getUserContext(): UserContext | null {
     const userContextStr = localStorage.getItem(this.userContextKey);
-    return JSON.parse(userContextStr ?? '');
+    return userContextStr === null ? null : JSON.parse(userContextStr);
   }
 
   static setUserContext(userContext: UserContext) {
