@@ -1,11 +1,22 @@
-import { CloseOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, Flex, Menu, MenuProps, Modal, Typography } from 'antd';
-import { useState } from 'react';
+import { CloseOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Dropdown,
+  Flex,
+  Menu,
+  MenuProps,
+  Modal,
+  Typography,
+} from 'antd';
+import React, { useState } from 'react';
 
+import { ChannelPermission } from '../../types/UserContext.ts';
+import { GenerateMenuItem } from '../ChannelSelector.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
 import { GeneralAccountPreferences } from './GeneralAccountPreferences.tsx';
+import { GeneralChannelPreferences } from './GeneralChannelPreferences.tsx';
 
-type PreferencesMode = 'account-general';
+type PreferencesMode = 'account-general' | 'channel-general';
 
 export function Preferences({
   modalVisible,
@@ -38,11 +49,19 @@ function InnerModalContent({
   const { userContext: userInfo, setForceReload } = useUserContext();
   const [preferencesMode, setPreferencesMode] =
     useState<PreferencesMode>('account-general');
+  const [preferenceSelectedChannel, setPreferenceSelectedChannel] =
+    useState<ChannelPermission>(userInfo.channelPermissions[0]);
   const renderMap = {
     'account-general': (
       <GeneralAccountPreferences
         userContext={userInfo}
         setForceReload={setForceReload}
+      />
+    ),
+    'channel-general': (
+      <GeneralChannelPreferences
+        channelId={preferenceSelectedChannel.id}
+        forceReloadUserContext={setForceReload}
       />
     ),
   };
@@ -81,6 +100,55 @@ function InnerModalContent({
       key: 'channel-preference',
       label: '채널 설정',
       type: 'group',
+      children: [
+        {
+          key: 'channel-preferences',
+          label: (
+            <Dropdown
+              menu={{
+                items: GenerateMenuItem(userInfo),
+                onClick: (a) => {
+                  setPreferenceSelectedChannel(
+                    userInfo.channelPermissions.filter(
+                      (b) => b.id === a.key,
+                    )[0],
+                  );
+                },
+              }}
+              placement="topRight"
+            >
+              <Flex
+                gap={20}
+                style={{ height: '100%', justifyContent: 'space-between' }}
+              >
+                <Flex
+                  style={{
+                    flexDirection: 'column',
+                    gap: 2,
+                    justifyContent: 'center',
+                  }}
+                >
+                  <Typography.Title level={5} style={{ margin: 0 }}>
+                    {preferenceSelectedChannel.name}
+                  </Typography.Title>
+                  <Typography.Text type={'secondary'}>
+                    Permission: {preferenceSelectedChannel.permission}
+                  </Typography.Text>
+                </Flex>
+                <DownOutlined />
+              </Flex>
+            </Dropdown>
+          ),
+          style: {
+            height: '60px',
+          },
+        },
+        {
+          key: 'channel-general-settings',
+          label: '채널 정보',
+          onClick: () => setPreferencesMode('channel-general'),
+        },
+      ],
     },
   ];
   return (

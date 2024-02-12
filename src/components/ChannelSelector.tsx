@@ -27,7 +27,7 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
   return (
     <Dropdown
       menu={{
-        items: generateMenuItem(userContext),
+        items: GenerateMenuItem(userContext),
         onClick: handleMenuClick,
         style: { width: '300px' },
       }}
@@ -50,7 +50,7 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
   );
 }
 
-function ChannelSelectionMenuItems({
+export function ChannelSelectionMenuItems({
   channelName,
   channelPermissionType,
 }: {
@@ -74,7 +74,7 @@ function ChannelSelectionMenuItems({
   );
 }
 
-function generateMenuItem(userContext: UserContext): MenuProps['items'] {
+export function GenerateMenuItem(userContext: UserContext): MenuProps['items'] {
   return userContext.channelPermissions.map((a) => ({
     key: a.id,
     label: (

@@ -6,7 +6,7 @@ export type UserContext = {
   channelPermissions: ChannelPermission[];
 };
 
-type ChannelPermission = {
+export type ChannelPermission = {
   id: string;
   name: string;
   permission: 'Owner' | 'Reader';
