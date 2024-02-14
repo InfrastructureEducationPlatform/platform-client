@@ -27,8 +27,8 @@ export function GeneralChannelPreferences({
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const channelPreferenceEditCallback = useCallback(
-    debounce(async (desc: string, name: string) => {
-      await channelApi.updateChannelInformationAsync(channelId, {
+    debounce(async (targetChannelId: string, desc: string, name: string) => {
+      await channelApi.updateChannelInformationAsync(targetChannelId, {
         channelDescription: desc,
         channelName: name,
         profileImageUrl: null,
@@ -89,6 +89,7 @@ export function GeneralChannelPreferences({
               placeholder={'채널 이름을 입력해주세요'}
               onInput={(event) => {
                 channelPreferenceEditCallback(
+                  channelId,
                   channelInformation.description,
                   (event.target as HTMLInputElement).value,
                 );
