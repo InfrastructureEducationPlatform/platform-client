@@ -35,7 +35,7 @@ export function GeneralChannelPreferences({
       });
       forceReloadUserContext(new Date().toISOString());
       setForceReloadChannelKey(new Date().toISOString());
-    }, 500),
+    }, 1000),
     [],
   );
 
@@ -83,18 +83,34 @@ export function GeneralChannelPreferences({
             }}
           />
           <div>
-            <Typography.Text type={'secondary'}>채널 이름</Typography.Text>
-            <Input
-              value={channelInformation.name}
-              placeholder={'채널 이름을 입력해주세요'}
-              onInput={(event) => {
-                channelPreferenceEditCallback(
-                  channelId,
-                  channelInformation.description,
-                  (event.target as HTMLInputElement).value,
-                );
-              }}
-            />
+            <div>
+              <Typography.Text type={'secondary'}>채널 이름</Typography.Text>
+              <Input
+                value={channelInformation.name}
+                placeholder={'채널 이름을 입력해주세요'}
+                onInput={(event) => {
+                  channelPreferenceEditCallback(
+                    channelId,
+                    channelInformation.description,
+                    (event.target as HTMLInputElement).value,
+                  );
+                }}
+              />
+            </div>
+            <div style={{ marginTop: '10px' }}>
+              <Typography.Text type={'secondary'}>채널 설명</Typography.Text>
+              <Input
+                value={channelInformation.description}
+                placeholder={'채널 설명을 입력해 주세요.'}
+                onInput={(event) => {
+                  channelPreferenceEditCallback(
+                    channelId,
+                    (event.target as HTMLInputElement).value,
+                    channelInformation.name,
+                  );
+                }}
+              />
+            </div>
           </div>
         </Flex>
       </div>
