@@ -105,6 +105,7 @@ export function Preferences({
                             (b) => b.id === a.key,
                           )[0],
                         );
+                        setPreferencesMode('channel-general');
                       },
                     }}
                     placement="topRight"
