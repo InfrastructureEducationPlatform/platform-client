@@ -17,7 +17,7 @@ export function TopBarHeader() {
       key: 'settings',
       label: '설정',
       onClick: () => {
-        setPreferencesVisible(true);
+        setPreferencesVisible(() => true);
       },
     },
   ];
@@ -53,6 +53,7 @@ export function TopBarHeader() {
       <Preferences
         modalVisible={preferencesVisible}
         setModalVisible={setPreferencesVisible}
+        initialMode={'account-general'}
       />
     </Header>
   );
