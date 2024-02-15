@@ -85,7 +85,7 @@ export function GeneralChannelPreferences({
           <div>
             <Typography.Text type={'secondary'}>채널 이름</Typography.Text>
             <Input
-              defaultValue={channelInformation.name}
+              value={channelInformation.name}
               placeholder={'채널 이름을 입력해주세요'}
               onInput={(event) => {
                 channelPreferenceEditCallback(
