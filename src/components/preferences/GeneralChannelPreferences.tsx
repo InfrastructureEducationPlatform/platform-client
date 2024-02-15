@@ -22,8 +22,13 @@ export function GeneralChannelPreferences({
     (async () => {
       const response = await channelApi.getChannelInformationAsync(channelId);
       setChannelInformation(response.data);
+      setChannelName(response.data.name);
+      setChannelDescription(response.data.description);
     })();
   }, [channelId, forceReloadChannelKey]);
+
+  const [channelName, setChannelName] = useState<string>('');
+  const [channelDescription, setChannelDescription] = useState<string>('');
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const channelPreferenceEditCallback = useCallback(
@@ -86,12 +91,13 @@ export function GeneralChannelPreferences({
             <div>
               <Typography.Text type={'secondary'}>채널 이름</Typography.Text>
               <Input
-                value={channelInformation.name}
+                value={channelName}
                 placeholder={'채널 이름을 입력해주세요'}
                 onInput={(event) => {
+                  setChannelName((event.target as HTMLInputElement).value);
                   channelPreferenceEditCallback(
                     channelId,
-                    channelInformation.description,
+                    channelDescription,
                     (event.target as HTMLInputElement).value,
                   );
                 }}
@@ -100,13 +106,16 @@ export function GeneralChannelPreferences({
             <div style={{ marginTop: '10px' }}>
               <Typography.Text type={'secondary'}>채널 설명</Typography.Text>
               <Input
-                value={channelInformation.description}
+                value={channelDescription}
                 placeholder={'채널 설명을 입력해 주세요.'}
                 onInput={(event) => {
+                  setChannelDescription(
+                    (event.target as HTMLInputElement).value,
+                  );
                   channelPreferenceEditCallback(
                     channelId,
                     (event.target as HTMLInputElement).value,
-                    channelInformation.name,
+                    channelName,
                   );
                 }}
               />
