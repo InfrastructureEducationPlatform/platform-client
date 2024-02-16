@@ -37,6 +37,14 @@ export function Preferences({
     setPreferencesMode(initialMode);
   }, [initialMode, modalVisible]);
 
+  useEffect(() => {
+    setPreferenceSelectedChannel(
+      userInfo.channelPermissions.filter(
+        (b) => b.id === preferenceSelectedChannel.id,
+      )[0],
+    );
+  }, [userInfo]);
+
   return (
     <Modal
       open={modalVisible}
