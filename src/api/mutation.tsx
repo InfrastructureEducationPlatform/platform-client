@@ -11,6 +11,7 @@ export const useUpdateChannelPermissionMutation = (
   channelId: string,
   onSuccess?: () => void,
 ) => {
+  const { showError } = useErrorHandler();
   return useMutation({
     mutationKey: ['update-channel-permission', channelId],
     mutationFn: async ({
@@ -30,6 +31,9 @@ export const useUpdateChannelPermissionMutation = (
         onSuccess();
       }
     },
+    onError: (error) => {
+      showError(error);
+    },
   });
 };
 
@@ -37,6 +41,7 @@ export const useRemoveUserFromChannelMutation = (
   channelId: string,
   onSuccess?: () => void,
 ) => {
+  const { showError } = useErrorHandler();
   return useMutation({
     mutationKey: ['remove-user-from-channel', channelId],
     mutationFn: async (targetUserId: string) => {
@@ -46,6 +51,9 @@ export const useRemoveUserFromChannelMutation = (
       if (onSuccess) {
         onSuccess();
       }
+    },
+    onError: (error) => {
+      showError(error);
     },
   });
 };
