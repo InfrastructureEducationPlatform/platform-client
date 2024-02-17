@@ -1,7 +1,7 @@
 import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Flex, Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
-import React, { ReactNode, useState } from 'react';
+import React, { ForwardedRef, ReactNode, Ref, forwardRef, useState } from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
 import { UserContext } from '../types/UserContext.ts';
@@ -28,13 +28,17 @@ const leftSideMenuItem: MenuProps['items'] = [
   },
 ];
 
-export function MainLayout({ children }: { children: ReactNode }) {
+interface MainLayoutProps{
+  children: ReactNode;
+}
+
+export function MainLayout({ children, selectorRef }: { children: ReactNode, selectorRef?: React.Ref<HTMLDivElement> | undefined }) {
   return (
     <ErrorHandlerProvider>
       <AuthProvider>
         <UserContextProvider>
           <ChannelNavigationProvider>
-            <InnerLayout>{children}</InnerLayout>
+            <InnerLayout selectorRef={selectorRef}>{children}</InnerLayout>
           </ChannelNavigationProvider>
         </UserContextProvider>
       </AuthProvider>
@@ -42,7 +46,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
   );
 }
 
-function InnerLayout({ children }: { children: ReactNode }) {
+function InnerLayout({ children, selectorRef }: { children: ReactNode, selectorRef: React.Ref<HTMLDivElement> | undefined}){
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -50,7 +54,7 @@ function InnerLayout({ children }: { children: ReactNode }) {
 
   return (
     <Layout style={{ height: '100vh' }}>
-      <TopBarHeader />
+      <TopBarHeader selectorRef={selectorRef}/>
       <Layout>
         <Sider
           width={200}
