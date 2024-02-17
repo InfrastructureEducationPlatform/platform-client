@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
+import { useErrorHandler } from '../components/providers/ErrorProvider.tsx';
 import {
   AddUserToChannelRequest,
   ChannelPermissionType,
@@ -53,6 +54,7 @@ export const useAddMemberToChannelMutation = (
   channelId: string,
   onSuccess?: () => void,
 ) => {
+  const { showError } = useErrorHandler();
   return useMutation({
     mutationKey: ['add-member-to-channel', channelId],
     mutationFn: async (addUserToChannelRequest: AddUserToChannelRequest) => {
@@ -65,6 +67,9 @@ export const useAddMemberToChannelMutation = (
       if (onSuccess) {
         onSuccess();
       }
+    },
+    onError: (error) => {
+      showError(error);
     },
   });
 };

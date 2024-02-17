@@ -8,6 +8,9 @@ import {
   useState,
 } from 'react';
 
+import { ErrorResponse } from '../../libs/core-api/api';
+import { ErrorMap } from '../../utils/ErrorMap.tsx';
+
 interface ErrorContextValue {
   showError: (error: unknown) => void;
 }
@@ -24,7 +27,6 @@ export function ErrorHandlerProvider({ children }: ErrorHandlerProviderProps) {
 
   const showError = (error: unknown) => {
     if (!error) return;
-    console.error(error);
 
     // Handle Error
     let errorMessage = `요청 도중 문제가 발생했습니다: ${JSON.stringify(
@@ -32,7 +34,7 @@ export function ErrorHandlerProvider({ children }: ErrorHandlerProviderProps) {
     )}`;
 
     if (error instanceof Error) {
-      errorMessage = error.message;
+      errorMessage = convertErrorToMessage(error) ?? '';
     }
 
     setError(errorMessage);
@@ -66,3 +68,18 @@ export const useErrorHandler = (): ErrorContextValue => {
   }
   return context;
 };
+
+function convertErrorToMessage(error: unknown) {
+  if (!axios.isAxiosError<ErrorResponse>(error)) {
+    console.error('not an axios error or ErrorResponse', error);
+    return '알 수 없는 에러가 발생했습니다.';
+  }
+
+  if (error.response === undefined) {
+    console.error('no response', error);
+    return '알 수 없는 에러가 발생했습니다.(errorResponse 타입이지만, 실제 응답이 없습니다.)';
+  }
+
+  const errorTitle = error.response.data.errorTitle ?? '';
+  return ErrorMap[errorTitle] ?? errorTitle;
+}
