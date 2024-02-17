@@ -6,7 +6,10 @@ import {
 } from '../libs/core-api/api';
 import { channelApi } from './index.ts';
 
-export const useUpdateChannelPermissionMutation = (channelId: string) => {
+export const useUpdateChannelPermissionMutation = (
+  channelId: string,
+  onSuccess?: () => void,
+) => {
   return useMutation({
     mutationKey: ['update-channel-permission', channelId],
     mutationFn: async ({
@@ -21,19 +24,35 @@ export const useUpdateChannelPermissionMutation = (channelId: string) => {
         channelPermissionType: channelPermissionType,
       });
     },
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
   });
 };
 
-export const useRemoveUserFromChannelMutation = (channelId: string) => {
+export const useRemoveUserFromChannelMutation = (
+  channelId: string,
+  onSuccess?: () => void,
+) => {
   return useMutation({
     mutationKey: ['remove-user-from-channel', channelId],
     mutationFn: async (targetUserId: string) => {
       await channelApi.removeUserFromChannelAsync(channelId, targetUserId);
     },
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
+    },
   });
 };
 
-export const useAddMemberToChannelMutation = (channelId: string) => {
+export const useAddMemberToChannelMutation = (
+  channelId: string,
+  onSuccess?: () => void,
+) => {
   return useMutation({
     mutationKey: ['add-member-to-channel', channelId],
     mutationFn: async (addUserToChannelRequest: AddUserToChannelRequest) => {
@@ -41,6 +60,11 @@ export const useAddMemberToChannelMutation = (channelId: string) => {
         channelId,
         addUserToChannelRequest,
       );
+    },
+    onSuccess: () => {
+      if (onSuccess) {
+        onSuccess();
+      }
     },
   });
 };

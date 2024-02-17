@@ -113,16 +113,20 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
 
 export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
   const { userContext } = useUserContext();
-  const [forceReload] = useState(new Date().toISOString());
+  const [forceReload, setForceReload] = useState(new Date().toISOString());
   const [searchParams, setSearchParams] = useState('');
   const { data: channelInformation, isLoading } = useChannelInformationQuery(
     channelId,
     forceReload,
   );
   const { mutate: updateChannelPermission } =
-    useUpdateChannelPermissionMutation(channelId);
-  const { mutate: removeUserFromChannel } =
-    useRemoveUserFromChannelMutation(channelId);
+    useUpdateChannelPermissionMutation(channelId, () =>
+      setForceReload(new Date().toISOString()),
+    );
+  const { mutate: removeUserFromChannel } = useRemoveUserFromChannelMutation(
+    channelId,
+    () => setForceReload(new Date().toISOString()),
+  );
   const { data: channelUserSearchResult } = useChannelUserSearch(searchParams);
 
   const [openChannelMemberModal, setOpenChannelMemberModal] = useState(false);
@@ -209,6 +213,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
               <ChannelMemberListItem
                 userSearchResponse={item}
                 channelId={channelId}
+                setForceReload={setForceReload}
               />
             )}
           />
@@ -221,14 +226,18 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
 function ChannelMemberListItem({
   userSearchResponse,
   channelId,
+  setForceReload,
 }: {
   userSearchResponse: UserSearchResponse;
   channelId: string;
+  setForceReload: (a: string) => void;
 }) {
   const [channelPermission, setChannelPermission] =
     useState<ChannelPermissionType>('Reader');
-  const { mutate: addMemberToChannel } =
-    useAddMemberToChannelMutation(channelId);
+  const { mutate: addMemberToChannel } = useAddMemberToChannelMutation(
+    channelId,
+    () => setForceReload(new Date().toISOString()),
+  );
   return (
     <Flex
       style={{
