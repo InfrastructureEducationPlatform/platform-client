@@ -162,6 +162,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
           <Table
             style={{
               width: '100%',
+              minWidth: '600px',
             }}
             columns={tableColumns}
             dataSource={channelInformation.channelUserInformationList.map<ChannelMemberData>(
