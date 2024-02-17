@@ -6,6 +6,7 @@ import {
   MenuProps,
   Table,
   TableProps,
+  Tag,
   Typography,
 } from 'antd';
 import React, { useState } from 'react';
@@ -67,8 +68,8 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
   },
   {
     title: '채널 권한',
-    dataIndex: 'channelPermission',
     key: 'channelPermission',
+    render: (data: ChannelMemberData) => <Tag>{data.channelPermission}</Tag>,
   },
   {
     title: '엑션',
