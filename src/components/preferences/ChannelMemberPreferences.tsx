@@ -225,6 +225,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
                 userSearchResponse={item}
                 channelId={channelId}
                 setForceReload={setForceReload}
+                closeModal={() => setOpenChannelMemberModal(false)}
               />
             )}
           />
@@ -239,10 +240,12 @@ function ChannelMemberListItem({
   userSearchResponse,
   channelId,
   setForceReload,
+  closeModal,
 }: {
   userSearchResponse: UserSearchResponse;
   channelId: string;
   setForceReload: (a: string) => void;
+  closeModal: () => void;
 }) {
   const [channelPermission, setChannelPermission] =
     useState<ChannelPermissionType>('Reader');
@@ -292,12 +295,13 @@ function ChannelMemberListItem({
         />
         <Button
           type={'primary'}
-          onClick={() =>
+          onClick={() => {
             addMemberToChannel({
               targetUserId: userSearchResponse.userId,
               channelPermissionType: channelPermission,
-            })
-          }
+            });
+            closeModal();
+          }}
         >
           초대
         </Button>
