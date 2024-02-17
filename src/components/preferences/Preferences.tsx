@@ -5,11 +5,15 @@ import React, { useEffect, useState } from 'react';
 import { ChannelPermission } from '../../types/UserContext.ts';
 import { CustomModal } from '../CustomModal.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
+import { ChannelMemberPreferences } from './ChannelMemberPreferences.tsx';
 import { GeneralAccountPreferences } from './GeneralAccountPreferences.tsx';
 import { GeneralChannelPreferences } from './GeneralChannelPreferences.tsx';
 import { CreatePreferenceMenuItems } from './PreferenceMenuItems.tsx';
 
-export type PreferencesMode = 'account-general' | 'channel-general';
+export type PreferencesMode =
+  | 'account-general'
+  | 'channel-general'
+  | 'channel-members';
 
 export function Preferences({
   modalVisible,
@@ -58,6 +62,9 @@ export function Preferences({
         channelId={preferenceSelectedChannel.id}
         forceReloadUserContext={setForceReload}
       />
+    ),
+    'channel-members': (
+      <ChannelMemberPreferences channelId={preferenceSelectedChannel.id} />
     ),
   };
 

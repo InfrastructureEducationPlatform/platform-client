@@ -1,30 +1,32 @@
 .modal {
-    padding: 0px;
-    margin: 0px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 100vw;
-    height: 100vh;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 1000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0; /* 초기 상태는 투명 */
-    visibility: hidden; /* 초기 상태는 보이지 않음 */
-    transition: opacity 0.3s, visibility 0.3s; /* 애니메이션 효과 */
+  padding: 0px;
+  margin: 0px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0; /* 초기 상태는 투명 */
+  visibility: hidden; /* 초기 상태는 보이지 않음 */
+  transition:
+    opacity 0.3s,
+    visibility 0.3s; /* 애니메이션 효과 */
 }
 
 .modal.visible {
-    opacity: 1; /* 보이는 상태 */
-    visibility: visible; /* 보이는 상태 */
+  opacity: 1; /* 보이는 상태 */
+  visibility: visible; /* 보이는 상태 */
 }
 
 .modal-content {
-    border-radius: 8px;
-    width: 60%;
-    background: white;
-    position: relative;
+  border-radius: 8px;
+  width: 60%;
+  background: white;
+  position: relative;
 }

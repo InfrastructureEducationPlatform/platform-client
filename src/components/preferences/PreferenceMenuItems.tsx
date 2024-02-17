@@ -104,6 +104,11 @@ export function CreatePreferenceMenuItems({
           label: '채널 정보',
           onClick: () => setPreferenceMode('channel-general'),
         },
+        {
+          key: 'channel-members',
+          label: '채널 멤버',
+          onClick: () => setPreferenceMode('channel-members'),
+        },
       ],
     },
   ];

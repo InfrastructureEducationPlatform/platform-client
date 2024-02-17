@@ -842,6 +842,7 @@ components:
       type: string
     ChannelUserInformationProjection:
       required:
+        - channelPermissionType
         - email
         - name
         - userId
@@ -856,6 +857,8 @@ components:
         email:
           minLength: 1
           type: string
+        channelPermissionType:
+          $ref: '#/components/schemas/ChannelPermissionType'
         profilePictureImageUrl:
           type: string
           nullable: true
