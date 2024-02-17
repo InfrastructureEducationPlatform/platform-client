@@ -1,11 +1,12 @@
 import { RightOutlined } from '@ant-design/icons';
-import { Button, Divider, Flex, Input, Typography } from 'antd';
+import { Button, Divider, Flex, Input, Modal, Typography } from 'antd';
 import { debounce } from 'lodash';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
+import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
 
 export function GeneralAccountPreferences({
@@ -15,6 +16,7 @@ export function GeneralAccountPreferences({
   userContext: UserContext;
   setForceReload: (forceReload: string) => void;
 }) {
+  const [modal, contexHolder] = Modal.useModal();
   const navigate = useNavigate();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -95,8 +97,15 @@ export function GeneralAccountPreferences({
             paddingBottom: '5px',
           }}
           onClick={() => {
-            localStorage.clear();
-            navigate('/');
+            modal.confirm({
+              title: '로그아웃',
+              content: '로그아웃 하시겠습니까?',
+              centered: true,
+              onOk: () => {
+                LocalStorageUtils.removeUserContext();
+                navigate('/');
+              },
+            });
           }}
         >
           <Flex justify={'space-between'}>
@@ -131,6 +140,7 @@ export function GeneralAccountPreferences({
           </Flex>
         </Button>
       </div>
+      {contexHolder}
     </Flex>
   );
 }
