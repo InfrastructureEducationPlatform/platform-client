@@ -2,6 +2,7 @@ import { Button, Divider, Flex, Table, TableProps, Typography } from 'antd';
 import React, { useState } from 'react';
 
 import { useChannelInformationQuery } from '../../api/queries.tsx';
+import { useUserContext } from '../providers/UserContextProvider.tsx';
 
 type ChannelMemberData = {
   userId: string;
@@ -9,6 +10,7 @@ type ChannelMemberData = {
   userProfileImageUrl: string | undefined;
   userEmail: string;
   channelPermission: string;
+  isMe: boolean;
 };
 
 const tableColumns: TableProps<ChannelMemberData>['columns'] = [
@@ -43,13 +45,21 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
     title: '엑션',
     key: 'action',
     render: (data: ChannelMemberData) => (
-      <Button type={'link'}>채널에서 제거</Button>
+      <Flex>
+        <Button type={'link'} disabled={data.isMe}>
+          권한 변경
+        </Button>
+        <Button type={'link'} danger={true} disabled={data.isMe}>
+          채널에서 제거
+        </Button>
+      </Flex>
     ),
   },
 ];
 
 export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
-  const [forceReload, setForceReload] = useState(new Date().toISOString());
+  const { userContext } = useUserContext();
+  const [forceReload] = useState(new Date().toISOString());
   const { data: channelInformation, isLoading } = useChannelInformationQuery(
     channelId,
     forceReload,
@@ -82,6 +92,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
                 userEmail: a.email,
                 userProfileImageUrl: a.profilePictureImageUrl ?? undefined,
                 channelPermission: a.channelPermissionType,
+                isMe: a.userId === userContext.userId,
               }),
             )}
             pagination={false}
