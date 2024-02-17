@@ -1,4 +1,6 @@
+import { UserOutlined } from '@ant-design/icons';
 import {
+  Avatar,
   Button,
   Divider,
   Dropdown,
@@ -252,13 +254,13 @@ function ChannelMemberListItem({
           alignItems: 'center',
         }}
       >
-        <img
-          src={userSearchResponse.profilePictureImageUrl ?? ''}
-          style={{
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-          }}
+        <Avatar
+          src={userSearchResponse.profilePictureImageUrl}
+          icon={
+            userSearchResponse.profilePictureImageUrl ? undefined : (
+              <UserOutlined />
+            )
+          }
         />
         <div>
           <Typography.Text style={{ display: 'block' }}>
