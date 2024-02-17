@@ -18,4 +18,5 @@ export * from './sketch-response';
 export * from './token-response';
 export * from './update-channel-information-request';
 export * from './update-sketch-request';
+export * from './update-user-channel-role-request';
 export * from './update-user-preference-request';

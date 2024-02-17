@@ -301,6 +301,159 @@ paths:
           description: 채널 정보 수정에 성공한 경우
       security:
         - JwtAuthenticationFilter: []
+  '/channels/{channelId}/users':
+    put:
+      tags:
+        - Channel
+      summary: 특정 채널의 멤버의 권한을 수정합니다.
+      operationId: UpdateUserChannelRoleAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 채널 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: 사용자 ID와 채널 권한이 명시된 Request Body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserChannelRoleRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserChannelRoleRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserChannelRoleRequest'
+      responses:
+        '400':
+          description: 만약 현재 요청하는 사람이 직접 수정하려고 하는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 정보가 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 채널 수정 권한이 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 채널 정보가 존재하지 않는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: 채널 정보 수정에 성공한 경우
+      security:
+        - JwtAuthenticationFilter: []
+  '/channels/{channelId}/users/{userId}':
+    delete:
+      tags:
+        - Channel
+      summary: 특정 채널에서 사용자(멤버)를 제거합니다.
+      operationId: RemoveUserFromChannelAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 변경할 채널 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: 사용자 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '400':
+          description: 만약 현재 요청하는 사람이 본인을 삭제하려고 하는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: 인증 정보가 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 채널 수정 권한이 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 채널 정보가 존재하지 않는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '204':
+          description: 채널 정보 수정에 성공한 경우
+      security:
+        - JwtAuthenticationFilter: []
   '/deployment/{deploymentId}':
     get:
       tags:
@@ -1143,6 +1296,18 @@ components:
           type: string
           description: 스케치 설명입니다.
         blockData: {}
+      additionalProperties: false
+    UpdateUserChannelRoleRequest:
+      required:
+        - channelPermissionType
+        - userId
+      type: object
+      properties:
+        userId:
+          minLength: 1
+          type: string
+        channelPermissionType:
+          $ref: '#/components/schemas/ChannelPermissionType'
       additionalProperties: false
     UpdateUserPreferenceRequest:
       required:

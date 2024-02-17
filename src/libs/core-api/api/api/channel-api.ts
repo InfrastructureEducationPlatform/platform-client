@@ -47,6 +47,8 @@ import { CreateChannelRequest } from '../model';
 import { ErrorResponse } from '../model';
 // @ts-ignore
 import { UpdateChannelInformationRequest } from '../model';
+// @ts-ignore
+import { UpdateUserChannelRoleRequest } from '../model';
 
 /**
  * ChannelApi - axios parameter creator
@@ -160,6 +162,59 @@ export const ChannelApiAxiosParamCreator = function (
     },
     /**
      *
+     * @summary 특정 채널에서 사용자(멤버)를 제거합니다.
+     * @param {string} channelId 변경할 채널 Id
+     * @param {string} userId 사용자 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserFromChannelAsync: async (
+      channelId: string,
+      userId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('removeUserFromChannelAsync', 'channelId', channelId);
+      // verify required parameter 'userId' is not null or undefined
+      assertParamExists('removeUserFromChannelAsync', 'userId', userId);
+      const localVarPath = `/channels/{channelId}/users/{userId}`
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)))
+        .replace(`{${'userId'}}`, encodeURIComponent(String(userId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
      * @summary 특정 채널의 기본 정보를 수정합니다.
      * @param {string} channelId 수정할 채널 Id
      * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
@@ -212,6 +267,65 @@ export const ChannelApiAxiosParamCreator = function (
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         UpdateChannelInformationRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary 특정 채널의 멤버의 권한을 수정합니다.
+     * @param {string} channelId 채널 Id
+     * @param {UpdateUserChannelRoleRequest} [UpdateUserChannelRoleRequest] 사용자 ID와 채널 권한이 명시된 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserChannelRoleAsync: async (
+      channelId: string,
+      UpdateUserChannelRoleRequest?: UpdateUserChannelRoleRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('updateUserChannelRoleAsync', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}/users`.replace(
+        `{${'channelId'}}`,
+        encodeURIComponent(String(channelId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'PUT',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        UpdateUserChannelRoleRequest,
         localVarRequestOptions,
         configuration,
       );
@@ -286,6 +400,34 @@ export const ChannelApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @summary 특정 채널에서 사용자(멤버)를 제거합니다.
+     * @param {string} channelId 변경할 채널 Id
+     * @param {string} userId 사용자 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async removeUserFromChannelAsync(
+      channelId: string,
+      userId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.removeUserFromChannelAsync(
+          channelId,
+          userId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @summary 특정 채널의 기본 정보를 수정합니다.
      * @param {string} channelId 수정할 채널 Id
      * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
@@ -303,6 +445,34 @@ export const ChannelApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.updateChannelInformationAsync(
           channelId,
           UpdateChannelInformationRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @summary 특정 채널의 멤버의 권한을 수정합니다.
+     * @param {string} channelId 채널 Id
+     * @param {UpdateUserChannelRoleRequest} [UpdateUserChannelRoleRequest] 사용자 ID와 채널 권한이 명시된 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async updateUserChannelRoleAsync(
+      channelId: string,
+      UpdateUserChannelRoleRequest?: UpdateUserChannelRoleRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.updateUserChannelRoleAsync(
+          channelId,
+          UpdateUserChannelRoleRequest,
           options,
         );
       return createRequestFunction(
@@ -358,6 +528,23 @@ export const ChannelApiFactory = function (
     },
     /**
      *
+     * @summary 특정 채널에서 사용자(멤버)를 제거합니다.
+     * @param {string} channelId 변경할 채널 Id
+     * @param {string} userId 사용자 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    removeUserFromChannelAsync(
+      channelId: string,
+      userId: string,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .removeUserFromChannelAsync(channelId, userId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary 특정 채널의 기본 정보를 수정합니다.
      * @param {string} channelId 수정할 채널 Id
      * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
@@ -373,6 +560,27 @@ export const ChannelApiFactory = function (
         .updateChannelInformationAsync(
           channelId,
           UpdateChannelInformationRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @summary 특정 채널의 멤버의 권한을 수정합니다.
+     * @param {string} channelId 채널 Id
+     * @param {UpdateUserChannelRoleRequest} [UpdateUserChannelRoleRequest] 사용자 ID와 채널 권한이 명시된 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    updateUserChannelRoleAsync(
+      channelId: string,
+      UpdateUserChannelRoleRequest?: UpdateUserChannelRoleRequest,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .updateUserChannelRoleAsync(
+          channelId,
+          UpdateUserChannelRoleRequest,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -423,6 +631,25 @@ export class ChannelApi extends BaseAPI {
 
   /**
    *
+   * @summary 특정 채널에서 사용자(멤버)를 제거합니다.
+   * @param {string} channelId 변경할 채널 Id
+   * @param {string} userId 사용자 Id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ChannelApi
+   */
+  public removeUserFromChannelAsync(
+    channelId: string,
+    userId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return ChannelApiFp(this.configuration)
+      .removeUserFromChannelAsync(channelId, userId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @summary 특정 채널의 기본 정보를 수정합니다.
    * @param {string} channelId 수정할 채널 Id
    * @param {UpdateChannelInformationRequest} [UpdateChannelInformationRequest] 수정할 채널 정보
@@ -439,6 +666,29 @@ export class ChannelApi extends BaseAPI {
       .updateChannelInformationAsync(
         channelId,
         UpdateChannelInformationRequest,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary 특정 채널의 멤버의 권한을 수정합니다.
+   * @param {string} channelId 채널 Id
+   * @param {UpdateUserChannelRoleRequest} [UpdateUserChannelRoleRequest] 사용자 ID와 채널 권한이 명시된 Request Body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ChannelApi
+   */
+  public updateUserChannelRoleAsync(
+    channelId: string,
+    UpdateUserChannelRoleRequest?: UpdateUserChannelRoleRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return ChannelApiFp(this.configuration)
+      .updateUserChannelRoleAsync(
+        channelId,
+        UpdateUserChannelRoleRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));

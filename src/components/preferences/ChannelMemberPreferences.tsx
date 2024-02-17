@@ -1,7 +1,21 @@
-import { Button, Divider, Flex, Table, TableProps, Typography } from 'antd';
+import {
+  Button,
+  Divider,
+  Dropdown,
+  Flex,
+  MenuProps,
+  Table,
+  TableProps,
+  Typography,
+} from 'antd';
 import React, { useState } from 'react';
 
+import {
+  useRemoveUserFromChannelMutation,
+  useUpdateChannelPermissionMutation,
+} from '../../api/mutation.tsx';
 import { useChannelInformationQuery } from '../../api/queries.tsx';
+import { ChannelPermissionType } from '../../libs/core-api/api';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
 
 type ChannelMemberData = {
@@ -11,7 +25,22 @@ type ChannelMemberData = {
   userEmail: string;
   channelPermission: string;
   isMe: boolean;
+  removeUserFromChannel: () => void;
+  updateChannelPermission: (
+    channelPermissionType: ChannelPermissionType,
+  ) => void;
 };
+
+const permissionDropDownItems: MenuProps['items'] = [
+  {
+    key: 'Owner',
+    label: '채널 소유자',
+  },
+  {
+    key: 'Reader',
+    label: '읽기 전용',
+  },
+];
 
 const tableColumns: TableProps<ChannelMemberData>['columns'] = [
   {
@@ -46,10 +75,23 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
     key: 'action',
     render: (data: ChannelMemberData) => (
       <Flex>
-        <Button type={'link'} disabled={data.isMe}>
-          권한 변경
-        </Button>
-        <Button type={'link'} danger={true} disabled={data.isMe}>
+        <Dropdown
+          disabled={data.isMe}
+          menu={{
+            items: permissionDropDownItems,
+            onClick: (a) => {
+              data.updateChannelPermission(a.key as ChannelPermissionType);
+            },
+          }}
+        >
+          <Button type={'link'}>권한 변경</Button>
+        </Dropdown>
+        <Button
+          type={'link'}
+          danger={true}
+          disabled={data.isMe}
+          onClick={data.removeUserFromChannel}
+        >
           채널에서 제거
         </Button>
       </Flex>
@@ -64,6 +106,10 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
     channelId,
     forceReload,
   );
+  const { mutate: updateChannelPermission } =
+    useUpdateChannelPermissionMutation(channelId);
+  const { mutate: removeUserFromChannel } =
+    useRemoveUserFromChannelMutation(channelId);
   if (isLoading || !channelInformation) return null;
 
   return (
@@ -93,6 +139,12 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
                 userProfileImageUrl: a.profilePictureImageUrl ?? undefined,
                 channelPermission: a.channelPermissionType,
                 isMe: a.userId === userContext.userId,
+                removeUserFromChannel: () => removeUserFromChannel(a.userId),
+                updateChannelPermission: (channelPermissionType) =>
+                  updateChannelPermission({
+                    targetUserId: a.userId,
+                    channelPermissionType,
+                  }),
               }),
             )}
             pagination={false}

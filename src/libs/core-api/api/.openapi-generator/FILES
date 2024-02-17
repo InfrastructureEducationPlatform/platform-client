@@ -34,4 +34,5 @@ model/sketch-response.ts
 model/token-response.ts
 model/update-channel-information-request.ts
 model/update-sketch-request.ts
+model/update-user-channel-role-request.ts
 model/update-user-preference-request.ts
