@@ -62,13 +62,9 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
     key: 'userName',
     render: (data: ChannelMemberData) => (
       <Flex style={{ alignItems: 'center', gap: '10px' }}>
-        <img
+        <Avatar
           src={data.userProfileImageUrl}
-          style={{
-            width: '30px',
-            height: '30px',
-            borderRadius: '50%',
-          }}
+          icon={data.userProfileImageUrl ? undefined : <UserOutlined />}
         />
         <div>
           <Typography.Text style={{ display: 'block' }}>
