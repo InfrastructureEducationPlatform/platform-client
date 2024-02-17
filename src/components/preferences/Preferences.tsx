@@ -1,22 +1,15 @@
-import { CloseOutlined, DownOutlined, UserOutlined } from '@ant-design/icons';
-import {
-  Button,
-  Dropdown,
-  Flex,
-  Menu,
-  MenuProps,
-  Modal,
-  Typography,
-} from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
+import { Button, Flex, Menu } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 import { ChannelPermission } from '../../types/UserContext.ts';
-import { GenerateMenuItem } from '../ChannelSelector.tsx';
+import { CustomModal } from '../CustomModal.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
 import { GeneralAccountPreferences } from './GeneralAccountPreferences.tsx';
 import { GeneralChannelPreferences } from './GeneralChannelPreferences.tsx';
+import { CreatePreferenceMenuItems } from './PreferenceMenuItems.tsx';
 
-type PreferencesMode = 'account-general' | 'channel-general';
+export type PreferencesMode = 'account-general' | 'channel-general';
 
 export function Preferences({
   modalVisible,
@@ -27,175 +20,85 @@ export function Preferences({
   setModalVisible: (visible: boolean) => void;
   initialMode: PreferencesMode;
 }) {
-  const { userContext: userInfo, setForceReload } = useUserContext();
+  const { userContext: currentUserInfo, setForceReload } = useUserContext();
   const [preferencesMode, setPreferencesMode] =
     useState<PreferencesMode>(initialMode);
   const [preferenceSelectedChannel, setPreferenceSelectedChannel] =
-    useState<ChannelPermission>(userInfo.channelPermissions[0]);
+    useState<ChannelPermission>(currentUserInfo.channelPermissions[0]);
+  const menuItems = CreatePreferenceMenuItems({
+    currentUserInfo: currentUserInfo,
+    currentChannel: preferenceSelectedChannel,
+    setCurrentChannel: setPreferenceSelectedChannel,
+    setPreferenceMode: setPreferencesMode,
+  });
 
+  // Make sure we are setting to initial model when modal is visible
   useEffect(() => {
     setPreferencesMode(initialMode);
   }, [initialMode, modalVisible]);
 
+  // When user context is updated, we need to update the selected channel
   useEffect(() => {
     setPreferenceSelectedChannel(
-      userInfo.channelPermissions.filter(
+      currentUserInfo.channelPermissions.filter(
         (b) => b.id === preferenceSelectedChannel.id,
       )[0],
     );
-  }, [userInfo]);
+  }, [currentUserInfo]);
+
+  const renderMap = {
+    'account-general': (
+      <GeneralAccountPreferences
+        userContext={currentUserInfo}
+        setForceReload={setForceReload}
+      />
+    ),
+    'channel-general': (
+      <GeneralChannelPreferences
+        channelId={preferenceSelectedChannel.id}
+        forceReloadUserContext={setForceReload}
+      />
+    ),
+  };
 
   return (
-    <Modal
-      open={modalVisible}
-      centered
-      footer={null}
-      modalRender={() => {
-        const renderMap = {
-          'account-general': (
-            <GeneralAccountPreferences
-              userContext={userInfo}
-              setForceReload={setForceReload}
-            />
-          ),
-          'channel-general': (
-            <GeneralChannelPreferences
-              channelId={preferenceSelectedChannel.id}
-              forceReloadUserContext={setForceReload}
-            />
-          ),
-        };
-        const menuItems: MenuProps['items'] = [
-          {
-            key: 'account',
-            label: '계정 설정',
-            type: 'group',
-            children: [
-              {
-                key: 'profile-overview',
-                label: (
-                  <Flex style={{ flexDirection: 'column' }}>
-                    <Typography.Text>{userInfo.userName}</Typography.Text>
-                    <Typography.Text type={'secondary'}>
-                      {userInfo.userEmail}
-                    </Typography.Text>
-                  </Flex>
-                ),
-                style: {
-                  height: '60px',
-                },
-              },
-              {
-                key: 'account-general',
-                label: '내 계정 정보',
-                icon: <UserOutlined />,
-                onClick: () => setPreferencesMode('account-general'),
-              },
-            ],
-          },
-          {
-            type: 'divider',
-          },
-          {
-            key: 'channel-preference',
-            label: '채널 설정',
-            type: 'group',
-            children: [
-              {
-                key: 'channel-preferences',
-                label: (
-                  <Dropdown
-                    menu={{
-                      items: GenerateMenuItem(userInfo),
-                      onClick: (a) => {
-                        setPreferenceSelectedChannel(
-                          userInfo.channelPermissions.filter(
-                            (b) => b.id === a.key,
-                          )[0],
-                        );
-                        setPreferencesMode('channel-general');
-                      },
-                    }}
-                    placement="topRight"
-                  >
-                    <Flex
-                      gap={20}
-                      style={{
-                        height: '100%',
-                        justifyContent: 'space-between',
-                      }}
-                    >
-                      <Flex
-                        style={{
-                          flexDirection: 'column',
-                          gap: 2,
-                          justifyContent: 'center',
-                        }}
-                      >
-                        <Typography.Title level={5} style={{ margin: 0 }}>
-                          {preferenceSelectedChannel.name}
-                        </Typography.Title>
-                        <Typography.Text type={'secondary'}>
-                          Permission: {preferenceSelectedChannel.permission}
-                        </Typography.Text>
-                      </Flex>
-                      <DownOutlined />
-                    </Flex>
-                  </Dropdown>
-                ),
-                style: {
-                  height: '60px',
-                },
-              },
-              {
-                key: 'channel-general',
-                label: '채널 정보',
-                onClick: () => setPreferencesMode('channel-general'),
-              },
-            ],
-          },
-        ];
-        return (
-          <Flex
-            style={{
-              background: 'white',
-              borderRadius: '8px',
-              height: '400px',
-              overflow: 'hidden',
-            }}
-          >
-            <Flex
-              style={{
-                background: 'rgba(55, 53, 47, 0.03)',
-                width: '240px',
-              }}
-            >
-              <Menu
-                mode="inline"
-                items={menuItems}
-                defaultSelectedKeys={[initialMode]}
-                selectedKeys={[preferencesMode]}
-              />
-            </Flex>
-            {renderMap[preferencesMode]}
-            <Button
-              icon={<CloseOutlined />}
-              shape={'circle'}
-              type={'text'}
-              style={{
-                position: 'absolute',
-                top: '20px',
-                right: '20px',
-              }}
-              onClick={() => setModalVisible(false)}
-            />
-          </Flex>
-        );
-      }}
-      width={'60%'}
-      style={{
-        pointerEvents: 'all',
-      }}
-    />
+    <CustomModal isVisible={modalVisible}>
+      <Flex
+        style={{
+          background: 'white',
+          borderRadius: '8px',
+          height: '400px',
+          overflow: 'hidden',
+        }}
+      >
+        <Flex
+          style={{
+            background: 'rgba(55, 53, 47, 0.03)',
+            width: '240px',
+          }}
+        >
+          <Menu
+            mode="inline"
+            items={menuItems}
+            defaultSelectedKeys={[initialMode]}
+            selectedKeys={[preferencesMode]}
+          />
+        </Flex>
+        {renderMap[preferencesMode]}
+        <Button
+          icon={<CloseOutlined />}
+          shape={'circle'}
+          type={'text'}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+          }}
+          onClick={() => {
+            setModalVisible(false);
+          }}
+        />
+      </Flex>
+    </CustomModal>
   );
 }

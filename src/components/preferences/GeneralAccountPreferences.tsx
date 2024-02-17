@@ -36,6 +36,8 @@ export function GeneralAccountPreferences({
         flexDirection: 'column',
         padding: '20px',
         width: 'calc(100% - 240px)',
+        overflow: 'auto',
+        lineHeight: 'initial',
       }}
     >
       <div>
