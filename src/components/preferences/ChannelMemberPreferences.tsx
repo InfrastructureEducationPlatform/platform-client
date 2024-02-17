@@ -8,6 +8,7 @@ import {
   Input,
   List,
   MenuProps,
+  Modal,
   Select,
   Table,
   TableProps,
@@ -129,6 +130,8 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
 
   const [openChannelMemberModal, setOpenChannelMemberModal] = useState(false);
 
+  const [modal, contextHolder] = Modal.useModal();
+
   if (isLoading || !channelInformation) return null;
 
   return (
@@ -173,7 +176,16 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
                 userProfileImageUrl: a.profilePictureImageUrl ?? undefined,
                 channelPermission: a.channelPermissionType,
                 isMe: a.userId === userContext.userId,
-                removeUserFromChannel: () => removeUserFromChannel(a.userId),
+                removeUserFromChannel: () => {
+                  modal.confirm({
+                    title: '정말로 채널에서 제거하시겠습니까?',
+                    content: '채널에서 제거된 사용자는 다시 초대해야 합니다.',
+                    centered: true,
+                    onOk: () => {
+                      removeUserFromChannel(a.userId);
+                    },
+                  });
+                },
                 updateChannelPermission: (channelPermissionType) =>
                   updateChannelPermission({
                     targetUserId: a.userId,
@@ -218,6 +230,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
           />
         </Flex>
       </CustomModal>
+      {contextHolder}
     </Flex>
   );
 }
