@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { channelApi } from './index.ts';
+import { channelApi, userApi } from './index.ts';
 
 export function useChannelInformationQuery(
   channelId: string,
@@ -14,3 +14,15 @@ export function useChannelInformationQuery(
     },
   });
 }
+
+export const useChannelUserSearch = (searchQuery: string) => {
+  return useQuery({
+    queryKey: ['channelUserSearch', searchQuery],
+    queryFn: async () => {
+      console.log('searchQuery', searchQuery);
+      if (searchQuery === '') return [];
+      const response = await userApi.searchUserAsync(searchQuery);
+      return response.data;
+    },
+  });
+};

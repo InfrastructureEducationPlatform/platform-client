@@ -45,6 +45,8 @@ import { ErrorResponse } from '../model';
 import { MeProjection } from '../model';
 // @ts-ignore
 import { UpdateUserPreferenceRequest } from '../model';
+// @ts-ignore
+import { UserSearchResponse } from '../model';
 
 /**
  * UsersApi - axios parameter creator
@@ -82,6 +84,55 @@ export const UsersApiAxiosParamCreator = function (
       // authentication JwtAuthenticationFilter required
       // http bearer authentication required
       await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @summary 사용자를 검색합니다.(이메일/이름 동시 지원)
+     * @param {string} [query] 검색어(이메일/이름 동시 지원)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchUserAsync: async (
+      query?: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/users/search`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      if (query !== undefined) {
+        localVarQueryParameter['query'] = query;
+      }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -180,6 +231,33 @@ export const UsersApiFp = function (configuration?: Configuration) {
       );
     },
     /**
+     *
+     * @summary 사용자를 검색합니다.(이메일/이름 동시 지원)
+     * @param {string} [query] 검색어(이메일/이름 동시 지원)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async searchUserAsync(
+      query?: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<Array<UserSearchResponse>>
+    > {
+      const localVarAxiosArgs = await localVarAxiosParamCreator.searchUserAsync(
+        query,
+        options,
+      );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
      * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
      * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
@@ -230,6 +308,21 @@ export const UsersApiFactory = function (
         .then((request) => request(axios, basePath));
     },
     /**
+     *
+     * @summary 사용자를 검색합니다.(이메일/이름 동시 지원)
+     * @param {string} [query] 검색어(이메일/이름 동시 지원)
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    searchUserAsync(
+      query?: string,
+      options?: any,
+    ): AxiosPromise<Array<UserSearchResponse>> {
+      return localVarFp
+        .searchUserAsync(query, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * MeProjection에 대한 Cache Invalidation을 진행하며, 클라이언트 측에서 ME API를 호출하여 최신 정보를 받아옵니다.
      * @summary 현재 사용자의 계정 설정을 업데이트 합니다. 업데이트 이후
      * @param {UpdateUserPreferenceRequest} [UpdateUserPreferenceRequest] Update Request
@@ -264,6 +357,20 @@ export class UsersApi extends BaseAPI {
   public getUsersDetailProjectionAsync(options?: AxiosRequestConfig) {
     return UsersApiFp(this.configuration)
       .getUsersDetailProjectionAsync(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @summary 사용자를 검색합니다.(이메일/이름 동시 지원)
+   * @param {string} [query] 검색어(이메일/이름 동시 지원)
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UsersApi
+   */
+  public searchUserAsync(query?: string, options?: AxiosRequestConfig) {
+    return UsersApiFp(this.configuration)
+      .searchUserAsync(query, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

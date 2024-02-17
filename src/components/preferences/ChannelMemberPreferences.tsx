@@ -3,7 +3,10 @@ import {
   Divider,
   Dropdown,
   Flex,
+  Input,
+  List,
   MenuProps,
+  Select,
   Table,
   TableProps,
   Tag,
@@ -12,11 +15,19 @@ import {
 import React, { useState } from 'react';
 
 import {
+  useAddMemberToChannelMutation,
   useRemoveUserFromChannelMutation,
   useUpdateChannelPermissionMutation,
 } from '../../api/mutation.tsx';
-import { useChannelInformationQuery } from '../../api/queries.tsx';
-import { ChannelPermissionType } from '../../libs/core-api/api';
+import {
+  useChannelInformationQuery,
+  useChannelUserSearch,
+} from '../../api/queries.tsx';
+import {
+  ChannelPermissionType,
+  UserSearchResponse,
+} from '../../libs/core-api/api';
+import { CustomModal } from '../CustomModal.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
 
 type ChannelMemberData = {
@@ -103,6 +114,7 @@ const tableColumns: TableProps<ChannelMemberData>['columns'] = [
 export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
   const { userContext } = useUserContext();
   const [forceReload] = useState(new Date().toISOString());
+  const [searchParams, setSearchParams] = useState('');
   const { data: channelInformation, isLoading } = useChannelInformationQuery(
     channelId,
     forceReload,
@@ -111,6 +123,10 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
     useUpdateChannelPermissionMutation(channelId);
   const { mutate: removeUserFromChannel } =
     useRemoveUserFromChannelMutation(channelId);
+  const { data: channelUserSearchResult } = useChannelUserSearch(searchParams);
+
+  const [openChannelMemberModal, setOpenChannelMemberModal] = useState(false);
+
   if (isLoading || !channelInformation) return null;
 
   return (
@@ -126,7 +142,21 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
       <div>
         <Typography.Title level={4}>소속 채널 멤버</Typography.Title>
         <Divider style={{ width: '100%', margin: 0 }} />
-        <Flex style={{ marginTop: '10px', gap: '20px', alignItems: 'center' }}>
+        <Flex
+          style={{
+            marginTop: '10px',
+            gap: '10px',
+            flexDirection: 'column',
+          }}
+        >
+          <div>
+            <Button
+              type={'primary'}
+              onClick={() => setOpenChannelMemberModal(true)}
+            >
+              채널 멤버 추가
+            </Button>
+          </div>
           <Table
             style={{
               width: '100%',
@@ -152,6 +182,105 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
           />
         </Flex>
       </div>
+      <CustomModal
+        isVisible={openChannelMemberModal}
+        onOuterClick={() => setOpenChannelMemberModal(false)}
+        style={{
+          width: '600px',
+          height: '400px',
+          overflow: 'hidden',
+        }}
+      >
+        <Flex style={{ flexDirection: 'column' }}>
+          <Input
+            placeholder={'이름 혹은 이메일을 입력하세요.'}
+            size={'large'}
+            onInput={(e) => setSearchParams(e.currentTarget.value)}
+            style={{
+              border: 'none',
+              borderRadius: '0',
+              borderBottom: '1px solid #d9d9d9',
+            }}
+          />
+          <List
+            itemLayout={'horizontal'}
+            dataSource={channelUserSearchResult}
+            renderItem={(item) => (
+              <ChannelMemberListItem
+                userSearchResponse={item}
+                channelId={channelId}
+              />
+            )}
+          />
+        </Flex>
+      </CustomModal>
+    </Flex>
+  );
+}
+
+function ChannelMemberListItem({
+  userSearchResponse,
+  channelId,
+}: {
+  userSearchResponse: UserSearchResponse;
+  channelId: string;
+}) {
+  const [channelPermission, setChannelPermission] =
+    useState<ChannelPermissionType>('Reader');
+  const { mutate: addMemberToChannel } =
+    useAddMemberToChannelMutation(channelId);
+  return (
+    <Flex
+      style={{
+        justifyContent: 'space-between',
+        padding: '20px',
+        width: '100%',
+      }}
+    >
+      <Flex
+        style={{
+          gap: '20px',
+          alignItems: 'center',
+        }}
+      >
+        <img
+          src={userSearchResponse.profilePictureImageUrl ?? ''}
+          style={{
+            width: '30px',
+            height: '30px',
+            borderRadius: '50%',
+          }}
+        />
+        <div>
+          <Typography.Text style={{ display: 'block' }}>
+            {userSearchResponse.userName}
+          </Typography.Text>
+          <Typography.Text type={'secondary'}>
+            {userSearchResponse.userEmail}
+          </Typography.Text>
+        </div>
+      </Flex>
+      <Flex gap={'10px'} align={'center'}>
+        <Select
+          options={[
+            { label: '읽기 전용', value: 'Reader' },
+            { label: '채널 소유자', value: 'Owner' },
+          ]}
+          defaultValue={channelPermission}
+          onSelect={(a) => setChannelPermission(a)}
+        />
+        <Button
+          type={'primary'}
+          onClick={() =>
+            addMemberToChannel({
+              targetUserId: userSearchResponse.userId,
+              channelPermissionType: channelPermission,
+            })
+          }
+        >
+          초대
+        </Button>
+      </Flex>
     </Flex>
   );
 }

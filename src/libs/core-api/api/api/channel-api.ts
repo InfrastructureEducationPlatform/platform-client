@@ -40,6 +40,8 @@ import {
 } from '../common';
 import type { Configuration } from '../configuration';
 // @ts-ignore
+import { AddUserToChannelRequest } from '../model';
+// @ts-ignore
 import { ChannelInformationResponse } from '../model';
 // @ts-ignore
 import { CreateChannelRequest } from '../model';
@@ -58,6 +60,65 @@ export const ChannelApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     *
+     * @summary 특정 채널에 사용자(멤버)를 추가합니다.
+     * @param {string} channelId 채널 Id
+     * @param {AddUserToChannelRequest} [AddUserToChannelRequest] 추가할 사용자의 Id와 권한을 명시한 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addUserToChannelAsync: async (
+      channelId: string,
+      AddUserToChannelRequest?: AddUserToChannelRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('addUserToChannelAsync', 'channelId', channelId);
+      const localVarPath = `/channels/{channelId}/users`.replace(
+        `{${'channelId'}}`,
+        encodeURIComponent(String(channelId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        AddUserToChannelRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @summary 채널을 생성하고, 생성한 사람을 Owner로 추가합니다.
@@ -347,6 +408,34 @@ export const ChannelApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @summary 특정 채널에 사용자(멤버)를 추가합니다.
+     * @param {string} channelId 채널 Id
+     * @param {AddUserToChannelRequest} [AddUserToChannelRequest] 추가할 사용자의 Id와 권한을 명시한 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async addUserToChannelAsync(
+      channelId: string,
+      AddUserToChannelRequest?: AddUserToChannelRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.addUserToChannelAsync(
+          channelId,
+          AddUserToChannelRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @summary 채널을 생성하고, 생성한 사람을 Owner로 추가합니다.
      * @param {CreateChannelRequest} [CreateChannelRequest] 채널 생성 요청
      * @param {*} [options] Override http request option.
@@ -498,6 +587,23 @@ export const ChannelApiFactory = function (
   return {
     /**
      *
+     * @summary 특정 채널에 사용자(멤버)를 추가합니다.
+     * @param {string} channelId 채널 Id
+     * @param {AddUserToChannelRequest} [AddUserToChannelRequest] 추가할 사용자의 Id와 권한을 명시한 Request Body
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    addUserToChannelAsync(
+      channelId: string,
+      AddUserToChannelRequest?: AddUserToChannelRequest,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .addUserToChannelAsync(channelId, AddUserToChannelRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary 채널을 생성하고, 생성한 사람을 Owner로 추가합니다.
      * @param {CreateChannelRequest} [CreateChannelRequest] 채널 생성 요청
      * @param {*} [options] Override http request option.
@@ -595,6 +701,25 @@ export const ChannelApiFactory = function (
  * @extends {BaseAPI}
  */
 export class ChannelApi extends BaseAPI {
+  /**
+   *
+   * @summary 특정 채널에 사용자(멤버)를 추가합니다.
+   * @param {string} channelId 채널 Id
+   * @param {AddUserToChannelRequest} [AddUserToChannelRequest] 추가할 사용자의 Id와 권한을 명시한 Request Body
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof ChannelApi
+   */
+  public addUserToChannelAsync(
+    channelId: string,
+    AddUserToChannelRequest?: AddUserToChannelRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return ChannelApiFp(this.configuration)
+      .addUserToChannelAsync(channelId, AddUserToChannelRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @summary 채널을 생성하고, 생성한 사람을 Owner로 추가합니다.

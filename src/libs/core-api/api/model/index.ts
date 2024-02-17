@@ -1,3 +1,4 @@
+export * from './add-user-to-channel-request';
 export * from './channel-information-response';
 export * from './channel-permission-projection';
 export * from './channel-permission-type';
@@ -20,3 +21,4 @@ export * from './update-channel-information-request';
 export * from './update-sketch-request';
 export * from './update-user-channel-role-request';
 export * from './update-user-preference-request';
+export * from './user-search-response';

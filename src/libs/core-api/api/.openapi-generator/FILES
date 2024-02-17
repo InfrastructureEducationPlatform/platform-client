@@ -13,6 +13,7 @@ common.ts
 configuration.ts
 git_push.sh
 index.ts
+model/add-user-to-channel-request.ts
 model/channel-information-response.ts
 model/channel-permission-projection.ts
 model/channel-permission-type.ts
@@ -36,3 +37,4 @@ model/update-channel-information-request.ts
 model/update-sketch-request.ts
 model/update-user-channel-role-request.ts
 model/update-user-preference-request.ts
+model/user-search-response.ts
