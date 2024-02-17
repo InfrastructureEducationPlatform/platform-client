@@ -8,7 +8,7 @@ import { Preferences } from './preferences/Preferences.tsx';
 import { useChannelNavigationContext } from './providers/ChannelNavigationProvider.tsx';
 import { useUserContext } from './providers/UserContextProvider.tsx';
 
-export function TopBarHeader() {
+export function TopBarHeader({selectorRef}:{selectorRef: React.Ref<HTMLDivElement> | undefined}){
   const { userContext } = useUserContext();
   const channelNavigationContext = useChannelNavigationContext();
   const [preferencesVisible, setPreferencesVisible] = useState(false);
@@ -32,13 +32,13 @@ export function TopBarHeader() {
         justifyContent: 'space-between',
       }}
     >
-      <Flex style={{ alignItems: 'center', gap: 20 }}>
+      <Flex ref={selectorRef} style={{ alignItems: 'center', gap: 20 }}>
         <Avatar size={'large'}>
           {channelNavigationContext.currentChannel.channelName.charAt(0)}
         </Avatar>
         <ChannelSelector userContext={userContext} />
       </Flex>
-      <Flex style={{ alignItems: 'center', gap: 20 }}>
+      <Flex  style={{ alignItems: 'center', gap: 20 }}>
         <FaRegBell size={'32px'} />
         <Dropdown
           menu={{
