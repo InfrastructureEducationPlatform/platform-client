@@ -6,6 +6,7 @@ api/auth-api.ts
 api/channel-api.ts
 api/deployment-api.ts
 api/file-api.ts
+api/plugin-api.ts
 api/sketch-api.ts
 api/users-api.ts
 base.ts
@@ -26,9 +27,11 @@ model/deployment-status.ts
 model/error-response.ts
 model/file-projection-response.ts
 model/index.ts
+model/install-plugin-request.ts
 model/login-request.ts
 model/login-result.ts
 model/me-projection.ts
+model/plugin-projection.ts
 model/refresh-token-request.ts
 model/sign-up-request.ts
 model/sketch-response.ts

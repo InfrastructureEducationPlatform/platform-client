@@ -8,8 +8,8 @@ import { Join } from './Pages/Join';
 import { Login } from './Pages/Login';
 import { LoginCallback } from './Pages/LoginCallback';
 import { OnBoarding } from './Pages/Onboarding';
-import { AuthProvider } from './components/providers/AuthProvider.tsx';
 import { OnboardingTour } from './Pages/OnboardingTour.tsx';
+import { AuthProvider } from './components/providers/AuthProvider.tsx';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,7 +44,7 @@ function App() {
         />
         <Route path="/home" element={<Home />} />
         <Route path={'/sketches/:sketchId'} element={<BlockEditPage />} />
-        <Route path='/onboardingTour' element={<OnboardingTour/>}/>
+        <Route path="/onboardingTour" element={<OnboardingTour />} />
       </Routes>
     </QueryClientProvider>
   );

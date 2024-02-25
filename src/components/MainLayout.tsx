@@ -1,7 +1,13 @@
 import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { Avatar, Flex, Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
-import React, { ForwardedRef, ReactNode, Ref, forwardRef, useState } from 'react';
+import React, {
+  ForwardedRef,
+  ReactNode,
+  Ref,
+  forwardRef,
+  useState,
+} from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
 import { UserContext } from '../types/UserContext.ts';
@@ -28,11 +34,17 @@ const leftSideMenuItem: MenuProps['items'] = [
   },
 ];
 
-interface MainLayoutProps{
+interface MainLayoutProps {
   children: ReactNode;
 }
 
-export function MainLayout({ children, selectorRef }: { children: ReactNode, selectorRef?: React.Ref<HTMLDivElement> | undefined }) {
+export function MainLayout({
+  children,
+  selectorRef,
+}: {
+  children: ReactNode;
+  selectorRef?: React.Ref<HTMLDivElement> | undefined;
+}) {
   return (
     <ErrorHandlerProvider>
       <AuthProvider>
@@ -46,7 +58,13 @@ export function MainLayout({ children, selectorRef }: { children: ReactNode, sel
   );
 }
 
-function InnerLayout({ children, selectorRef }: { children: ReactNode, selectorRef: React.Ref<HTMLDivElement> | undefined}){
+function InnerLayout({
+  children,
+  selectorRef,
+}: {
+  children: ReactNode;
+  selectorRef: React.Ref<HTMLDivElement> | undefined;
+}) {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -54,7 +72,7 @@ function InnerLayout({ children, selectorRef }: { children: ReactNode, selectorR
 
   return (
     <Layout style={{ height: '100vh' }}>
-      <TopBarHeader selectorRef={selectorRef}/>
+      <TopBarHeader selectorRef={selectorRef} />
       <Layout>
         <Sider
           width={200}

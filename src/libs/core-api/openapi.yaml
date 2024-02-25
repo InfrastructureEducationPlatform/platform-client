@@ -676,6 +676,164 @@ paths:
       responses:
         '200':
           description: Success
+  '/channels/{channelId}/plugins/available':
+    get:
+      tags:
+        - Plugin
+      summary: 서비스에서 허용하는 플러그인을 모두 리스팅 합니다.
+      operationId: ListAvailablePlugins
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 플러그인 목록 조회 성공 시
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+        '401':
+          description: 인증 실패 시
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
+  '/channels/{channelId}/plugins/installed':
+    get:
+      tags:
+        - Plugin
+      operationId: ListInstalledPlugins
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PluginProjection'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Forbidden
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
+  '/channels/{channelId}/plugins/install':
+    post:
+      tags:
+        - Plugin
+      summary: 채널에 플러그인을 설치합니다.
+      operationId: InstallPluginToChannelAsync
+      parameters:
+        - name: channelId
+          in: path
+          description: 플러그인을 설치할 채널 Id
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        description: 플러그인 설치 요청
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstallPluginRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/InstallPluginRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/InstallPluginRequest'
+      responses:
+        '200':
+          description: 플러그인 설치 성공 시
+        '401':
+          description: 인증 실패 시
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 채널에 대한 권한이 없는 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
   '/channels/{channelId}/sketches':
     get:
       tags:
@@ -1265,6 +1423,17 @@ components:
           type: integer
           format: int64
       additionalProperties: false
+    InstallPluginRequest:
+      required:
+        - pluginConfiguration
+        - pluginId
+      type: object
+      properties:
+        pluginId:
+          minLength: 1
+          type: string
+        pluginConfiguration: {}
+      additionalProperties: false
     LoginRequest:
       required:
         - authenticationCode
@@ -1307,6 +1476,25 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ChannelPermissionProjection'
+      additionalProperties: false
+    PluginProjection:
+      required:
+        - description
+        - id
+        - name
+        - samplePluginConfiguration
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+        name:
+          minLength: 1
+          type: string
+        description:
+          minLength: 1
+          type: string
+        samplePluginConfiguration: {}
       additionalProperties: false
     RefreshTokenRequest:
       required:

@@ -31,10 +31,13 @@ export function Home() {
   );
 }
 
-export function SketchListView({sketchListViewRef, createSketchButtonRef}: {
-  sketchListViewRef?: React.Ref<HTMLDivElement> | undefined,
-  createSketchButtonRef?: React.Ref<HTMLDivElement> | undefined
-}){
+export function SketchListView({
+  sketchListViewRef,
+  createSketchButtonRef,
+}: {
+  sketchListViewRef?: React.Ref<HTMLDivElement> | undefined;
+  createSketchButtonRef?: React.Ref<HTMLDivElement> | undefined;
+}) {
   const [form] = Form.useForm();
   const { currentChannel } = useChannelNavigationContext();
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
@@ -61,7 +64,10 @@ export function SketchListView({sketchListViewRef, createSketchButtonRef}: {
 
   return (
     <>
-      <Flex ref={sketchListViewRef} style={{ flexDirection: 'column', padding: '20px', gap: '20px' }}>
+      <Flex
+        ref={sketchListViewRef}
+        style={{ flexDirection: 'column', padding: '20px', gap: '20px' }}
+      >
         <Flex style={{ alignItems: 'center', gap: '20px' }}>
           <Typography.Title level={2} style={{ margin: 0 }}>
             스케치 목록
@@ -81,7 +87,7 @@ export function SketchListView({sketchListViewRef, createSketchButtonRef}: {
               alignItems: 'center',
             }}
             onClick={() => setIsCreateOpenModal(true)}
-            ref = {createSketchButtonRef}
+            ref={createSketchButtonRef}
           >
             <Flex
               style={{
