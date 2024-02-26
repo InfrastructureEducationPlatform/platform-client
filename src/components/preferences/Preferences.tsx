@@ -6,6 +6,7 @@ import { ChannelPermission } from '../../types/UserContext.ts';
 import { CustomModal } from '../CustomModal.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
 import { ChannelMemberPreferences } from './ChannelMemberPreferences.tsx';
+import { ChannelPluginPreference } from './ChannelPluginPreference.tsx';
 import { GeneralAccountPreferences } from './GeneralAccountPreferences.tsx';
 import { GeneralChannelPreferences } from './GeneralChannelPreferences.tsx';
 import { CreatePreferenceMenuItems } from './PreferenceMenuItems.tsx';
@@ -13,7 +14,8 @@ import { CreatePreferenceMenuItems } from './PreferenceMenuItems.tsx';
 export type PreferencesMode =
   | 'account-general'
   | 'channel-general'
-  | 'channel-members';
+  | 'channel-members'
+  | 'channel-plugins';
 
 export function Preferences({
   modalVisible,
@@ -65,6 +67,9 @@ export function Preferences({
     ),
     'channel-members': (
       <ChannelMemberPreferences channelId={preferenceSelectedChannel.id} />
+    ),
+    'channel-plugins': (
+      <ChannelPluginPreference channelId={preferenceSelectedChannel.id} />
     ),
   };
 

@@ -720,51 +720,6 @@ paths:
             text/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-      security:
-        - JwtAuthenticationFilter: []
-  '/channels/{channelId}/plugins/installed':
-    get:
-      tags:
-        - Plugin
-      operationId: ListInstalledPlugins
-      parameters:
-        - name: channelId
-          in: path
-          required: true
-          style: simple
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Success
-          content:
-            text/plain:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PluginProjection'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PluginProjection'
-            text/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/PluginProjection'
-        '401':
-          description: Unauthorized
-          content:
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-            text/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
         '403':
           description: Forbidden
           content:
@@ -1477,12 +1432,22 @@ components:
           items:
             $ref: '#/components/schemas/ChannelPermissionProjection'
       additionalProperties: false
+    PluginInstallationProjection:
+      type: object
+      properties:
+        channelId:
+          type: string
+          nullable: true
+        installedAt:
+          type: string
+          format: date-time
+      additionalProperties: false
     PluginProjection:
       required:
         - description
         - id
         - name
-        - samplePluginConfiguration
+        - pluginTypeDefinitions
       type: object
       properties:
         id:
@@ -1494,7 +1459,30 @@ components:
         description:
           minLength: 1
           type: string
-        samplePluginConfiguration: {}
+        pluginTypeDefinitions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PluginTypeDefinition'
+        pluginInstallation:
+          $ref: '#/components/schemas/PluginInstallationProjection'
+      additionalProperties: false
+    PluginTypeDefinition:
+      type: object
+      properties:
+        fieldName:
+          type: string
+          nullable: true
+        fieldType:
+          type: string
+          nullable: true
+        fieldDescription:
+          type: string
+          nullable: true
+        isRequired:
+          type: boolean
+        defaultValue:
+          type: string
+          nullable: true
       additionalProperties: false
     RefreshTokenRequest:
       required:

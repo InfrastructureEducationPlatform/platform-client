@@ -5,6 +5,7 @@ import {
   ChannelApi,
   Configuration,
   FileApi,
+  PluginApi,
   SketchApi,
   UsersApi,
 } from '../libs/core-api/api';
@@ -84,6 +85,12 @@ export const sketchApi = new SketchApi(
 );
 
 export const fileApi = new FileApi(
+  configuration,
+  undefined,
+  defaultAuthorizationInstance,
+);
+
+export const pluginApi = new PluginApi(
   configuration,
   undefined,
   defaultAuthorizationInstance,

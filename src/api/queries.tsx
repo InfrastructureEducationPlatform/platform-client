@@ -1,7 +1,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { UserContext } from '../types/UserContext.ts';
-import { channelApi, userApi } from './index.ts';
+import { channelApi, pluginApi, userApi } from './index.ts';
 
 export function useChannelInformationQuery(
   channelId: string,
@@ -47,6 +47,17 @@ export const useUserContextQuery = (forceReload: string) => {
           permission: a.channelPermissionType,
         })),
       };
+    },
+  });
+};
+
+export const useAvailablePluginsQuery = (channelId: string) => {
+  return useQuery({
+    queryKey: ['availablePlugins', channelId],
+    queryFn: async () => {
+      const response = await pluginApi.listAvailablePlugins(channelId);
+
+      return response.data;
     },
   });
 };
