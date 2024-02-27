@@ -1334,12 +1334,11 @@ components:
       additionalProperties: false
     DeploymentStatus:
       enum:
-        - 0
-        - 1
-        - 2
-        - 3
-      type: integer
-      format: int32
+        - Created
+        - Deploying
+        - Deployed
+        - Failed
+      type: string
     ErrorResponse:
       type: object
       properties:

@@ -13,6 +13,7 @@ import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
 import { sketchApi } from '../api';
+import { DeploymentListView } from '../components/DeploymentListView.tsx';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
@@ -43,6 +44,9 @@ export function BlockEditPage() {
 }
 
 function BlockEditPageComponent() {
+  // Deployment Modal
+  const [deploymentModalVisible, setDeploymentModalVisible] = useState(false);
+
   // Sketch Provider
   const { sketchBlock, setSketchBlock } = useSketchBlockContext();
   const { currentChannel } = useChannelNavigationContext();
@@ -91,110 +95,120 @@ function BlockEditPageComponent() {
   }, [nodeToEdit]);
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        height: '100%',
-      }}
-    >
-      <BlockNodeEditDrawer
-        drawerVisible={drawerVisible}
-        setDrawerVisible={setDrawerVisible}
-        node={nodeToEdit}
-        setNode={setNodeToEdit}
-      />
-      <ReactFlow
-        nodeTypes={supportedBlockNodeTypes}
-        nodes={nodes}
-        onNodesChange={onNodesChange}
-        onNodeClick={(event, node) => {
-          setNodeToEdit(node);
-          setDrawerVisible(true);
+    <>
+      <div
+        style={{
+          position: 'relative',
+          width: '100%',
+          height: '100%',
         }}
-      />
-      <FloatButton.Group
-        trigger={'click'}
-        type={'primary'}
-        icon={<PlusOutlined />}
       >
-        <FloatButton
-          icon={<DesktopOutlined />}
-          tooltip={'EC2 블록 생성'}
-          onClick={() => {
-            const newNode: Node<VirtualMachineBlockNodeProps> = {
-              id: ulid(),
-              position: { x: 0, y: 0 },
-              data: {
-                blockTitle: '가상 머신 블록',
-                blockDescription: '가상 머신 블록입니다.',
-                vmTier: 'low',
-                vmRegion: 'korea',
-                vmOperatingSystem: 'ubuntu',
-                blockTags: [],
-              },
-              type: 'virtualMachine',
-            };
-            setNodes((nds) => nds.concat(newNode));
+        <BlockNodeEditDrawer
+          drawerVisible={drawerVisible}
+          setDrawerVisible={setDrawerVisible}
+          node={nodeToEdit}
+          setNode={setNodeToEdit}
+        />
+        <ReactFlow
+          nodeTypes={supportedBlockNodeTypes}
+          nodes={nodes}
+          onNodesChange={onNodesChange}
+          onNodeClick={(event, node) => {
+            setNodeToEdit(node);
+            setDrawerVisible(true);
           }}
         />
-        <FloatButton
-          icon={<CloudServerOutlined />}
-          tooltip={'웹 서버 블록 생성'}
-          onClick={() => {
-            const newNode: Node<WebServerBlockNodeProps> = {
-              id: ulid(),
-              position: { x: 0, y: 0 },
-              data: {
-                blockTitle: '웹 서버 블록',
-                blockDescription: '웹 서버 블록입니다.',
-                blockTags: [],
-                webServerTier: 'low',
-                webServerRegion: 'korea',
-                containerData: {
-                  registryUrl: '',
-                  username: '',
-                  secrets: '',
-                  imageTags: '',
+        <FloatButton.Group
+          trigger={'click'}
+          type={'primary'}
+          icon={<PlusOutlined />}
+        >
+          <FloatButton
+            icon={<DesktopOutlined />}
+            tooltip={'EC2 블록 생성'}
+            onClick={() => {
+              const newNode: Node<VirtualMachineBlockNodeProps> = {
+                id: ulid(),
+                position: { x: 0, y: 0 },
+                data: {
+                  blockTitle: '가상 머신 블록',
+                  blockDescription: '가상 머신 블록입니다.',
+                  vmTier: 'low',
+                  vmRegion: 'korea',
+                  vmOperatingSystem: 'ubuntu',
+                  blockTags: [],
                 },
-              },
-              type: 'webServer',
-            };
-            setNodes((nds) => nds.concat(newNode));
-          }}
-        />
-        <FloatButton
-          icon={<DatabaseOutlined />}
-          tooltip={'DB 블록 생성'}
-          onClick={() => {
-            const newNode: Node<DatabaseBlockNodeProps> = {
-              id: ulid(),
-              position: { x: 0, y: 0 },
-              data: {
-                blockTitle: '웹 서버 블록',
-                blockDescription: '웹 서버 블록입니다.',
-                blockTags: [],
-                dbTier: 'low',
-                dbRegion: 'korea',
-              },
-              type: 'database',
-            };
-            setNodes((nds) => nds.concat(newNode));
-          }}
-        />
-        <FloatButton
-          icon={<CloudOutlined />}
-          tooltip={'클라우드에 배포'}
-          onClick={() => {
-            (async () => {
-              await sketchApi.deploySketchAsync(
-                sketchBlock.sketchId,
-                currentChannel.channelId,
-              );
-            })();
-          }}
-        />
-      </FloatButton.Group>
-    </div>
+                type: 'virtualMachine',
+              };
+              setNodes((nds) => nds.concat(newNode));
+            }}
+          />
+          <FloatButton
+            icon={<CloudServerOutlined />}
+            tooltip={'웹 서버 블록 생성'}
+            onClick={() => {
+              const newNode: Node<WebServerBlockNodeProps> = {
+                id: ulid(),
+                position: { x: 0, y: 0 },
+                data: {
+                  blockTitle: '웹 서버 블록',
+                  blockDescription: '웹 서버 블록입니다.',
+                  blockTags: [],
+                  webServerTier: 'low',
+                  webServerRegion: 'korea',
+                  containerData: {
+                    registryUrl: '',
+                    username: '',
+                    secrets: '',
+                    imageTags: '',
+                  },
+                },
+                type: 'webServer',
+              };
+              setNodes((nds) => nds.concat(newNode));
+            }}
+          />
+          <FloatButton
+            icon={<DatabaseOutlined />}
+            tooltip={'DB 블록 생성'}
+            onClick={() => {
+              const newNode: Node<DatabaseBlockNodeProps> = {
+                id: ulid(),
+                position: { x: 0, y: 0 },
+                data: {
+                  blockTitle: '웹 서버 블록',
+                  blockDescription: '웹 서버 블록입니다.',
+                  blockTags: [],
+                  dbTier: 'low',
+                  dbRegion: 'korea',
+                },
+                type: 'database',
+              };
+              setNodes((nds) => nds.concat(newNode));
+            }}
+          />
+          <FloatButton
+            icon={<CloudOutlined />}
+            tooltip={'클라우드에 배포'}
+            onClick={() => {
+              (async () => {
+                await sketchApi.deploySketchAsync(
+                  sketchBlock.sketchId,
+                  currentChannel.channelId,
+                );
+              })();
+            }}
+          />
+          <FloatButton
+            tooltip={'배포 이력 및 현황 확인하기'}
+            onClick={() => setDeploymentModalVisible(true)}
+          />
+        </FloatButton.Group>
+      </div>
+      <DeploymentListView
+        modalVisible={deploymentModalVisible}
+        setModalVisible={setDeploymentModalVisible}
+      />
+    </>
   );
 }

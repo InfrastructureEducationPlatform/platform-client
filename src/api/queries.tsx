@@ -1,7 +1,8 @@
+import { UserOutlined } from '@ant-design/icons';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { UserContext } from '../types/UserContext.ts';
-import { channelApi, pluginApi, userApi } from './index.ts';
+import { channelApi, deploymentApi, pluginApi, userApi } from './index.ts';
 
 export function useChannelInformationQuery(
   channelId: string,
@@ -58,6 +59,27 @@ export const useAvailablePluginsQuery = (channelId: string) => {
       const response = await pluginApi.listAvailablePlugins(channelId);
 
       return response.data;
+    },
+  });
+};
+
+export const useDeploymentListAsMenuQuery = (forceReloadKey: string) => {
+  return useQuery({
+    placeholderData: keepPreviousData,
+    queryKey: ['deployments', forceReloadKey],
+    queryFn: async () => {
+      const response = await deploymentApi.getDeploymentInformationListAsync();
+
+      return {
+        deploymentLogReference: response.data,
+        deploymentMenuList: response.data.map((a) => {
+          return {
+            key: a.deploymentId,
+            label: a.deploymentId,
+            icon: <UserOutlined />,
+          };
+        }),
+      };
     },
   });
 };

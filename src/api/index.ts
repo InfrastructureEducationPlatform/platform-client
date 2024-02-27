@@ -4,6 +4,7 @@ import {
   AuthApi,
   ChannelApi,
   Configuration,
+  DeploymentApi,
   FileApi,
   PluginApi,
   SketchApi,
@@ -91,6 +92,12 @@ export const fileApi = new FileApi(
 );
 
 export const pluginApi = new PluginApi(
+  configuration,
+  undefined,
+  defaultAuthorizationInstance,
+);
+
+export const deploymentApi = new DeploymentApi(
   configuration,
   undefined,
   defaultAuthorizationInstance,
