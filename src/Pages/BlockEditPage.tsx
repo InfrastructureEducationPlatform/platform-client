@@ -6,6 +6,7 @@ import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
+import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
@@ -178,7 +179,14 @@ function BlockEditPageComponent() {
         <FloatButton
           icon={<CloudOutlined />}
           tooltip={'클라우드에 배포'}
-          onClick={() => {}}
+          onClick={() => {
+            (async () => {
+              await sketchApi.deploySketchAsync(
+                sketchBlock.sketchId,
+                currentChannel.channelId,
+              );
+            })();
+          }}
         />
       </FloatButton.Group>
     </div>
