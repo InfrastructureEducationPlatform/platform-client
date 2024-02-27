@@ -30,7 +30,9 @@ export function DeploymentListView({
   useEffect(() => {
     if (!data) return;
 
-    setSelectedDeployment(data.deploymentMenuList[0].key);
+    if (!selectedDeployment) {
+      setSelectedDeployment(data.deploymentMenuList[0].key);
+    }
   }, [data]);
 
   useEffect(() => {
