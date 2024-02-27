@@ -1,4 +1,10 @@
-import { CloudOutlined, PlusOutlined } from '@ant-design/icons';
+import {
+  CloudOutlined,
+  CloudServerOutlined,
+  DatabaseOutlined,
+  DesktopOutlined,
+  PlusOutlined,
+} from '@ant-design/icons';
 import { FloatButton } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -113,7 +119,7 @@ function BlockEditPageComponent() {
         icon={<PlusOutlined />}
       >
         <FloatButton
-          icon={<PlusOutlined />}
+          icon={<DesktopOutlined />}
           tooltip={'EC2 블록 생성'}
           onClick={() => {
             const newNode: Node<VirtualMachineBlockNodeProps> = {
@@ -133,7 +139,7 @@ function BlockEditPageComponent() {
           }}
         />
         <FloatButton
-          icon={<PlusOutlined />}
+          icon={<CloudServerOutlined />}
           tooltip={'웹 서버 블록 생성'}
           onClick={() => {
             const newNode: Node<WebServerBlockNodeProps> = {
@@ -158,7 +164,7 @@ function BlockEditPageComponent() {
           }}
         />
         <FloatButton
-          icon={<PlusOutlined />}
+          icon={<DatabaseOutlined />}
           tooltip={'DB 블록 생성'}
           onClick={() => {
             const newNode: Node<DatabaseBlockNodeProps> = {
