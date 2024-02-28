@@ -5,7 +5,7 @@ import {
   DesktopOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { FloatButton } from 'antd';
+import { FloatButton, Modal, Table, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
@@ -191,12 +191,16 @@ function BlockEditPageComponent() {
             icon={<CloudOutlined />}
             tooltip={'클라우드에 배포'}
             onClick={() => {
-              (async () => {
-                await sketchApi.deploySketchAsync(
-                  sketchBlock.sketchId,
-                  currentChannel.channelId,
-                );
-              })();
+              Modal.confirm({
+                title: '비용 발생 가능! 배포하시겠습니까?',
+                content: <PriceEstimateView nodeList={nodes} />,
+                onOk: async () => {
+                  await sketchApi.deploySketchAsync(
+                    sketchBlock.sketchId,
+                    currentChannel.channelId,
+                  );
+                },
+              });
             }}
           />
           <FloatButton
@@ -210,5 +214,97 @@ function BlockEditPageComponent() {
         setModalVisible={setDeploymentModalVisible}
       />
     </>
+  );
+}
+
+function PriceEstimateView({ nodeList }: { nodeList: Node[] }) {
+  const columns = [
+    {
+      title: '블록 타입',
+      dataIndex: 'blockType',
+      key: 'blockType',
+    },
+    {
+      title: '티어',
+      dataIndex: 'tier',
+      key: 'tier',
+    },
+    {
+      title: '가격(월별, USD 기준)',
+      dataIndex: 'price',
+      key: 'price',
+    },
+  ];
+  const vmTierPricingCalculator = (tier: string) => {
+    switch (tier) {
+      case 'low':
+        return 30;
+      case 'medium':
+        return 60;
+      case 'high':
+        return 121;
+      case 'custom':
+        return 40;
+    }
+  };
+
+  const webServerTierPricingCalculator = (tier: string) => {
+    switch (tier) {
+      case 'low':
+        return 40;
+      case 'medium':
+        return 80;
+      case 'high':
+        return 160;
+      case 'custom':
+        return 50;
+    }
+  };
+
+  const dbTierPricingCalculator = (tier: string) => {
+    switch (tier) {
+      case 'low':
+        return 50;
+      case 'medium':
+        return 100;
+      case 'high':
+        return 200;
+      case 'custom':
+        return 60;
+    }
+  };
+  const data = nodeList.map((node) => {
+    if (node.type === 'virtualMachine') {
+      return {
+        blockType: '가상 머신',
+        tier: node.data.vmTier,
+        price: vmTierPricingCalculator(node.data.vmTier),
+      };
+    } else if (node.type === 'webServer') {
+      return {
+        blockType: '웹 서버',
+        tier: node.data.webServerTier,
+        price: webServerTierPricingCalculator(node.data.webServerTier),
+      };
+    } else {
+      return {
+        blockType: '데이터베이스',
+        tier: node.data.dbTier,
+        price: dbTierPricingCalculator(node.data.dbTier),
+      };
+    }
+  });
+  const total = data.reduce((acc, cur) => acc + cur.price!, 0);
+  return (
+    <div>
+      <Table columns={columns} dataSource={data} pagination={false} />
+      <Typography.Text type="secondary" style={{ display: 'block' }}>
+        총 가격은 월간 ${total} 입니다.
+      </Typography.Text>
+      <Typography.Text type="secondary">
+        본 서비스는 과금 요소의 추정치만 제공하며, 실제 과금 확인은 각 클라우드
+        제공자에게 확인해 주세요.
+      </Typography.Text>
+    </div>
   );
 }
