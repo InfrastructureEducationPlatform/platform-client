@@ -44,6 +44,12 @@ export interface PluginTypeDefinition {
   isRequired?: boolean;
   /**
    *
+   * @type {boolean}
+   * @memberof PluginTypeDefinition
+   */
+  isSecret?: boolean;
+  /**
+   *
    * @type {string}
    * @memberof PluginTypeDefinition
    */

@@ -1479,6 +1479,8 @@ components:
           nullable: true
         isRequired:
           type: boolean
+        isSecret:
+          type: boolean
         defaultValue:
           type: string
           nullable: true
