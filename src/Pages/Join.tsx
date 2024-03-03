@@ -17,8 +17,8 @@ export function Join() {
     (async () => {
       // 회원가입 API
       const response = await authApi.registerAsync({
-        name: value.userEmail,
-        email: value.userName,
+        name: value.userName,
+        email: value.userEmail,
         credentialProvider: CredentialProvider.Google,
         joinToken: LocalStorageUtils.getJoinToken(),
         profileImageUrl: null,
