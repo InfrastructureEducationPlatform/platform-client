@@ -76,9 +76,15 @@ function TestChannel({
 }) {
   const { setForceReload } = useUserContext();
   const { currentChannel } = useChannelNavigationContext();
+  const navigate = useNavigate();
   useEffect(() => {
     setCurrent('channels');
   }, [setCurrent]);
+
+  // Root Channel Provider 이 변경되면 Route 도 변경해야 됨
+  useEffect(() => {
+    navigate(`/preferences/channels/${currentChannel.channelId}`);
+  }, [currentChannel, navigate]);
 
   return (
     <Routes>
