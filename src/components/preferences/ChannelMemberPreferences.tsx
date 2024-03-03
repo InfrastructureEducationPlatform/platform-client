@@ -166,6 +166,7 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
               minWidth: '600px',
             }}
             columns={tableColumns}
+            rowKey={(a) => a.userId}
             dataSource={channelInformation.channelUserInformationList.map<ChannelMemberData>(
               (a) => ({
                 userId: a.userId,

@@ -141,7 +141,11 @@ function PluginInstallModal({
     >
       <Form form={form}>
         {plugin.pluginTypeDefinitions.map((data) => (
-          <Form.Item label={data.fieldName} name={data.fieldName ?? ''}>
+          <Form.Item
+            key={`${plugin.id}.${data.fieldName}`}
+            label={data.fieldName}
+            name={data.fieldName ?? ''}
+          >
             {data.isSecret ? (
               <Input.Password placeholder={data.fieldDescription ?? ''} />
             ) : (
