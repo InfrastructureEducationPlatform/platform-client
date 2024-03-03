@@ -1,10 +1,8 @@
-import { Avatar, Dropdown, Flex, MenuProps } from 'antd';
+import { Avatar, Flex } from 'antd';
 import { Header } from 'antd/es/layout/layout';
-import { useState } from 'react';
 import { FaRegBell } from 'react-icons/fa6';
 
 import { ChannelSelector } from './ChannelSelector.tsx';
-import { Preferences } from './preferences/Preferences.tsx';
 import { useChannelNavigationContext } from './providers/ChannelNavigationProvider.tsx';
 import { useUserContext } from './providers/UserContextProvider.tsx';
 
@@ -15,16 +13,6 @@ export function TopBarHeader({
 }) {
   const { userContext } = useUserContext();
   const channelNavigationContext = useChannelNavigationContext();
-  const [preferencesVisible, setPreferencesVisible] = useState(false);
-  const userMenu: MenuProps['items'] = [
-    {
-      key: 'settings',
-      label: '설정',
-      onClick: () => {
-        setPreferencesVisible(() => true);
-      },
-    },
-  ];
   return (
     <Header
       style={{
@@ -44,23 +32,12 @@ export function TopBarHeader({
       </Flex>
       <Flex style={{ alignItems: 'center', gap: 20 }}>
         <FaRegBell size={'32px'} />
-        <Dropdown
-          menu={{
-            items: userMenu,
-          }}
-        >
-          <Avatar size={'large'} src={userContext.userProfilePictureUrl}>
-            {userContext.userProfilePictureUrl
-              ? undefined
-              : userContext.userName.charAt(0).toUpperCase()}
-          </Avatar>
-        </Dropdown>
+        <Avatar size={'large'} src={userContext.userProfilePictureUrl}>
+          {userContext.userProfilePictureUrl
+            ? undefined
+            : userContext.userName.charAt(0).toUpperCase()}
+        </Avatar>
       </Flex>
-      <Preferences
-        modalVisible={preferencesVisible}
-        setModalVisible={setPreferencesVisible}
-        initialMode={'account-general'}
-      />
     </Header>
   );
 }

@@ -1,23 +1,24 @@
 import { RightOutlined } from '@ant-design/icons';
 import { Button, Divider, Flex, Input, Modal, Typography } from 'antd';
 import { debounce } from 'lodash';
-import { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { PreferenceType } from '../../Pages/Preferences.tsx';
 import { userApi } from '../../api';
 import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
+import { useUserContext } from '../providers/UserContextProvider.tsx';
 
 export function GeneralAccountPreferences({
-  userContext,
-  setForceReload,
+  setCurrent,
 }: {
-  userContext: UserContext;
-  setForceReload: (forceReload: string) => void;
+  setCurrent: (current: PreferenceType) => void;
 }) {
   const [modal, contexHolder] = Modal.useModal();
   const navigate = useNavigate();
+  const { userContext, setForceReload } = useUserContext();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const preferenceEditCallback = useCallback(
@@ -32,12 +33,15 @@ export function GeneralAccountPreferences({
     [],
   );
 
+  useEffect(() => {
+    setCurrent('account');
+  }, [setCurrent]);
+
   return (
     <Flex
       style={{
         flexDirection: 'column',
         padding: '20px',
-        width: 'calc(100% - 240px)',
         overflow: 'auto',
         lineHeight: 'initial',
       }}

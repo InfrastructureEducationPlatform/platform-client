@@ -9,6 +9,7 @@ import { Login } from './Pages/Login';
 import { LoginCallback } from './Pages/LoginCallback';
 import { OnBoarding } from './Pages/Onboarding';
 import { OnboardingTour } from './Pages/OnboardingTour.tsx';
+import { PreferencePage } from './Pages/Preferences.tsx';
 import { AuthProvider } from './components/providers/AuthProvider.tsx';
 
 const queryClient = new QueryClient({
@@ -45,6 +46,7 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path={'/sketches/:sketchId'} element={<BlockEditPage />} />
         <Route path="/onboardingTour" element={<OnboardingTour />} />
+        <Route path="/preferences/*" element={<PreferencePage />} />
       </Routes>
     </QueryClientProvider>
   );

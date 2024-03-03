@@ -2,6 +2,7 @@ import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import React, { ReactNode, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { TopBarHeader } from './TopBarHeader.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
@@ -11,15 +12,7 @@ import { UserContextProvider } from './providers/UserContextProvider.tsx';
 
 const { Content, Sider } = Layout;
 
-export type PageKey = 'sketch-list';
-
-const leftSideMenuItem: MenuProps['items'] = [
-  {
-    key: 'sketch-list',
-    label: '스케치 리스트',
-    icon: <LaptopOutlined />,
-  },
-];
+export type PageKey = 'sketch-list' | 'preferences';
 
 export function MainLayout({
   children,
@@ -54,6 +47,25 @@ function InnerLayout({
   selectorRef: React.Ref<HTMLDivElement> | undefined;
   pageKey: PageKey;
 }) {
+  const navigate = useNavigate();
+  const leftSideMenuItem: MenuProps['items'] = [
+    {
+      key: 'sketch-list',
+      label: '스케치 리스트',
+      icon: <LaptopOutlined />,
+      onClick: () => {
+        navigate('/home');
+      },
+    },
+    {
+      key: 'preferences',
+      label: '환경설정',
+      icon: <LaptopOutlined />,
+      onClick: () => {
+        navigate('/preferences');
+      },
+    },
+  ];
   const [collapsed, setCollapsed] = useState(false);
 
   return (
