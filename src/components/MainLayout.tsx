@@ -1,4 +1,9 @@
-import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import {
+  LaptopOutlined,
+  LeftOutlined,
+  RightOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Layout, Menu } from 'antd';
 import React, { ReactNode, useState } from 'react';
@@ -60,7 +65,7 @@ function InnerLayout({
     {
       key: 'preferences',
       label: '환경설정',
-      icon: <LaptopOutlined />,
+      icon: <SettingOutlined />,
       onClick: () => {
         navigate('/preferences');
       },
