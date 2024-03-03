@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { useCallback, useEffect, useState } from 'react';
 
 import { channelApi } from '../../api';
-import { ChannelInformationResponse } from '../../libs/core-api/api';
+import { useChannelInformationQuery } from '../../api/queries.tsx';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
 
 export function GeneralChannelPreferences({
@@ -15,17 +15,17 @@ export function GeneralChannelPreferences({
 }) {
   const [forceReloadChannelKey, setForceReloadChannelKey] =
     useState<string>('');
-  const [channelInformation, setChannelInformation] =
-    useState<ChannelInformationResponse>();
+  const { data: channelInformation } = useChannelInformationQuery(
+    channelId,
+    forceReloadChannelKey,
+  );
 
   useEffect(() => {
-    (async () => {
-      const response = await channelApi.getChannelInformationAsync(channelId);
-      setChannelInformation(response.data);
-      setChannelName(response.data.name);
-      setChannelDescription(response.data.description);
-    })();
-  }, [channelId, forceReloadChannelKey]);
+    if (channelInformation !== undefined) {
+      setChannelName(channelInformation.name);
+      setChannelDescription(channelInformation.description);
+    }
+  }, [channelInformation]);
 
   const [channelName, setChannelName] = useState<string>('');
   const [channelDescription, setChannelDescription] = useState<string>('');

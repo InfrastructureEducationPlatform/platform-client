@@ -10,6 +10,7 @@ export function useChannelInformationQuery(
   forceReload: string,
 ) {
   return useQuery({
+    placeholderData: keepPreviousData,
     queryKey: ['channelInformation', channelId, forceReload],
     queryFn: async () => {
       const response = await channelApi.getChannelInformationAsync(channelId);
@@ -22,7 +23,6 @@ export const useChannelUserSearch = (searchQuery: string) => {
   return useQuery({
     queryKey: ['channelUserSearch', searchQuery],
     queryFn: async () => {
-      console.log('searchQuery', searchQuery);
       if (searchQuery === '') return [];
       const response = await userApi.searchUserAsync(searchQuery);
       return response.data;
@@ -55,6 +55,7 @@ export const useUserContextQuery = (forceReload: string) => {
 
 export const useAvailablePluginsQuery = (channelId: string) => {
   return useQuery({
+    placeholderData: keepPreviousData,
     queryKey: ['availablePlugins', channelId],
     queryFn: async () => {
       const response = await pluginApi.listAvailablePlugins(channelId);
