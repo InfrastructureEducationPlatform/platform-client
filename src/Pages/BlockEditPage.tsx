@@ -62,7 +62,7 @@ function BlockEditPageComponent() {
 
   // Deployment select modal
   const [pluginSelectModalVisible, setPluginSelectModalVisible] =
-    useState(true);
+    useState(false);
 
   // Node Change Callback
   const onNodesChange: OnNodesChange = useCallback(

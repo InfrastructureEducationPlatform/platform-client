@@ -20,7 +20,12 @@ export function SelectInstalledPluginModal({
 }) {
   const { data: installedPlugins } = useInstalledPluginsQuery(channelId);
   return (
-    <Modal title="배포 플러그인 선택" open={isOpen} footer={null}>
+    <Modal
+      title="배포 플러그인 선택"
+      open={isOpen}
+      footer={null}
+      onCancel={() => setIsOpen(false)}
+    >
       {installedPlugins?.map((plugin) => (
         <InstalledPluginEntry
           plugin={plugin}
