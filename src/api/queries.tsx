@@ -1,6 +1,7 @@
 import { UserOutlined } from '@ant-design/icons';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
+import { InstalledPluginsProjection } from '../types/InstalledPluginsProjection.ts';
 import { UserContext } from '../types/UserContext.ts';
 import { channelApi, deploymentApi, pluginApi, userApi } from './index.ts';
 
@@ -59,6 +60,27 @@ export const useAvailablePluginsQuery = (channelId: string) => {
       const response = await pluginApi.listAvailablePlugins(channelId);
 
       return response.data;
+    },
+  });
+};
+
+export const useInstalledPluginsQuery = (channelId: string) => {
+  return useQuery({
+    queryKey: ['installedPlugins', channelId],
+    queryFn: async (): Promise<InstalledPluginsProjection[]> => {
+      const response = await pluginApi.listAvailablePlugins(channelId);
+
+      return response.data
+        .filter((data) => data.pluginInstallation !== null)
+        .map((data) => ({
+          id: data.id,
+          name: data.name,
+          description: data.description,
+          pluginInstallation: {
+            channelId: data.pluginInstallation!.channelId!,
+            installedAt: data.pluginInstallation!.installedAt!,
+          },
+        }));
     },
   });
 };

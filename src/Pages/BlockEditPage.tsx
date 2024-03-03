@@ -5,16 +5,16 @@ import {
   DesktopOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { FloatButton, Modal, Table, Typography } from 'antd';
+import { FloatButton, Table, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
-import { sketchApi } from '../api';
 import { DeploymentListView } from '../components/DeploymentListView.tsx';
 import { MainLayout } from '../components/MainLayout.tsx';
+import { SelectInstalledPluginModal } from '../components/SelectInstalledPluginModal.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
@@ -59,6 +59,10 @@ function BlockEditPageComponent() {
   // Drawer 관련 State
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [nodeToEdit, setNodeToEdit] = useState<Node | undefined>(undefined);
+
+  // Deployment select modal
+  const [pluginSelectModalVisible, setPluginSelectModalVisible] =
+    useState(true);
 
   // Node Change Callback
   const onNodesChange: OnNodesChange = useCallback(
@@ -191,16 +195,7 @@ function BlockEditPageComponent() {
             icon={<CloudOutlined />}
             tooltip={'클라우드에 배포'}
             onClick={() => {
-              Modal.confirm({
-                title: '비용 발생 가능! 배포하시겠습니까?',
-                content: <PriceEstimateView nodeList={nodes} />,
-                onOk: async () => {
-                  await sketchApi.deploySketchAsync(
-                    sketchBlock.sketchId,
-                    currentChannel.channelId,
-                  );
-                },
-              });
+              setPluginSelectModalVisible(true);
             }}
           />
           <FloatButton
@@ -212,6 +207,12 @@ function BlockEditPageComponent() {
       <DeploymentListView
         modalVisible={deploymentModalVisible}
         setModalVisible={setDeploymentModalVisible}
+      />
+      <SelectInstalledPluginModal
+        isOpen={pluginSelectModalVisible}
+        setIsOpen={setPluginSelectModalVisible}
+        channelId={currentChannel.channelId}
+        sketchId={sketchBlock.sketchId}
       />
     </>
   );
