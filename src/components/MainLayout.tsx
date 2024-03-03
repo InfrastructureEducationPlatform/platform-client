@@ -4,8 +4,7 @@ import {
   RightOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Layout, Menu } from 'antd';
+import { ConfigProvider, Layout, Menu, MenuProps } from 'antd';
 import React, { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -78,7 +77,7 @@ function InnerLayout({
       <TopBarHeader selectorRef={selectorRef} />
       <Layout>
         <Sider
-          width={200}
+          width={300}
           style={{ background: 'white' }}
           collapsible
           collapsed={collapsed}
@@ -93,13 +92,21 @@ function InnerLayout({
             </div>
           }
         >
-          <Menu
-            mode="inline"
-            defaultSelectedKeys={[pageKey]}
-            defaultOpenKeys={['sub1']}
-            style={{ height: '100%', borderRight: 0 }}
-            items={leftSideMenuItem}
-          />
+          <ConfigProvider
+            theme={{
+              components: {
+                Menu: { iconSize: 24, fontSize: 16, itemHeight: 50 },
+              },
+            }}
+          >
+            <Menu
+              mode="inline"
+              defaultSelectedKeys={[pageKey]}
+              defaultOpenKeys={['sub1']}
+              style={{ height: '100%', borderRight: 0 }}
+              items={leftSideMenuItem}
+            />
+          </ConfigProvider>
         </Sider>
         <Layout>
           <Content style={{ overflow: 'scroll' }}>{children}</Content>
