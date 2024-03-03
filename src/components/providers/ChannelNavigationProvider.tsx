@@ -26,6 +26,7 @@ export function ChannelNavigationProvider({
   const [channelId, setChannelId] = useState<string>(
     getSelectedChannelIdOrDefault(userContext),
   );
+
   const [currentChannel, setCurrentChannel] = useState<CurrentChannel>(() => {
     const selectedChannel = userContext.channelPermissions.filter(
       (a) => a.id === channelId,
@@ -44,7 +45,7 @@ export function ChannelNavigationProvider({
       channelId: selectedChannel.id,
       channelName: selectedChannel.name,
     });
-  }, [channelId]);
+  }, [channelId, userContext.channelPermissions]);
 
   if (!currentChannel) {
     return <div>로딩중</div>;
