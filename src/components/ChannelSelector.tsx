@@ -2,7 +2,6 @@ import { DownOutlined } from '@ant-design/icons';
 import { Avatar, Dropdown, Flex, MenuProps, Typography } from 'antd';
 import Title from 'antd/es/typography/Title';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import { UserContext } from '../types/UserContext.ts';
 import { useChannelNavigationContext } from './providers/ChannelNavigationProvider.tsx';
@@ -10,15 +9,8 @@ import { useChannelNavigationContext } from './providers/ChannelNavigationProvid
 const { Text } = Typography;
 
 export function ChannelSelector({ userContext }: { userContext: UserContext }) {
-  const navigate = useNavigate();
   const { currentChannel, setChannelInformation } =
     useChannelNavigationContext();
-
-  const handleMenuClick: MenuProps['onClick'] = (data) => {
-    console.log(data.key);
-    setChannelInformation(data.key);
-    navigate('/home');
-  };
 
   const selectedChannelPermission = userContext.channelPermissions.filter(
     (a) => a.id === currentChannel.channelId,
@@ -28,7 +20,9 @@ export function ChannelSelector({ userContext }: { userContext: UserContext }) {
     <Dropdown
       menu={{
         items: GenerateMenuItem(userContext),
-        onClick: handleMenuClick,
+        onClick: (data) => {
+          setChannelInformation(data.key);
+        },
         style: { width: '300px' },
       }}
       placement="topRight"
