@@ -1,4 +1,3 @@
-import { UserOutlined } from '@ant-design/icons';
 import { Flex, Menu, MenuProps, Typography } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
@@ -21,13 +20,11 @@ export function PreferencePage() {
     {
       label: '계정 정보/설정',
       key: 'account',
-      icon: <UserOutlined />,
       onClick: () => navigate('/preferences/account'),
     },
     {
       label: '채널 설정',
       key: 'channels',
-      icon: <UserOutlined />,
       onClick: () => navigate('/preferences/channels'),
     },
   ];
