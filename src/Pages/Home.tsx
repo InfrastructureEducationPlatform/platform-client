@@ -25,7 +25,7 @@ type CreateSketchType = {
 
 export function Home() {
   return (
-    <MainLayout>
+    <MainLayout pageKey={'sketch-list'}>
       <SketchListView />
     </MainLayout>
   );

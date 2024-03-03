@@ -1,22 +1,8 @@
-import { PlusOutlined } from '@ant-design/icons';
 import { Tour, TourProps } from 'antd';
-import Meta from 'antd/es/card/Meta';
-import React, {
-  ForwardRefRenderFunction,
-  MutableRefObject,
-  Ref,
-  forwardRef,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useRef } from 'react';
 
-import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
-import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
-import { SketchProjection } from '../types/SketchProjection.ts';
-import { Home, SketchListView } from './Home.tsx';
+import { SketchListView } from './Home.tsx';
 
 type CreateSketchType = {
   name: string;
@@ -63,7 +49,7 @@ export function OnboardingTour() {
   ];
   return (
     <>
-      <MainLayout selectorRef={refSelector}>
+      <MainLayout selectorRef={refSelector} pageKey={'sketch-list'}>
         <SketchListView
           sketchListViewRef={refTest}
           createSketchButtonRef={refSketchButton}

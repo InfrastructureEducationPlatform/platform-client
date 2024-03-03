@@ -1,56 +1,43 @@
 import { LaptopOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Avatar, Flex, Layout, Menu, theme } from 'antd';
 import type { MenuProps } from 'antd';
-import React, {
-  ForwardedRef,
-  ReactNode,
-  Ref,
-  forwardRef,
-  useState,
-} from 'react';
-import { FaRegBell } from 'react-icons/fa6';
+import { Layout, Menu } from 'antd';
+import React, { ReactNode, useState } from 'react';
 
-import { UserContext } from '../types/UserContext.ts';
-import { ChannelSelector } from './ChannelSelector.tsx';
 import { TopBarHeader } from './TopBarHeader.tsx';
 import { AuthProvider } from './providers/AuthProvider.tsx';
-import {
-  ChannelNavigationProvider,
-  useChannelNavigationContext,
-} from './providers/ChannelNavigationProvider.tsx';
+import { ChannelNavigationProvider } from './providers/ChannelNavigationProvider.tsx';
 import { ErrorHandlerProvider } from './providers/ErrorProvider.tsx';
-import {
-  UserContextProvider,
-  useUserContext,
-} from './providers/UserContextProvider.tsx';
+import { UserContextProvider } from './providers/UserContextProvider.tsx';
 
-const { Header, Content, Sider } = Layout;
+const { Content, Sider } = Layout;
+
+export type PageKey = 'sketch-list';
 
 const leftSideMenuItem: MenuProps['items'] = [
   {
-    key: '1',
+    key: 'sketch-list',
     label: '스케치 리스트',
     icon: <LaptopOutlined />,
   },
 ];
 
-interface MainLayoutProps {
-  children: ReactNode;
-}
-
 export function MainLayout({
   children,
   selectorRef,
+  pageKey,
 }: {
   children: ReactNode;
   selectorRef?: React.Ref<HTMLDivElement> | undefined;
+  pageKey: PageKey;
 }) {
   return (
     <ErrorHandlerProvider>
       <AuthProvider>
         <UserContextProvider>
           <ChannelNavigationProvider>
-            <InnerLayout selectorRef={selectorRef}>{children}</InnerLayout>
+            <InnerLayout pageKey={pageKey} selectorRef={selectorRef}>
+              {children}
+            </InnerLayout>
           </ChannelNavigationProvider>
         </UserContextProvider>
       </AuthProvider>
@@ -61,13 +48,12 @@ export function MainLayout({
 function InnerLayout({
   children,
   selectorRef,
+  pageKey,
 }: {
   children: ReactNode;
   selectorRef: React.Ref<HTMLDivElement> | undefined;
+  pageKey: PageKey;
 }) {
-  const {
-    token: { colorBgContainer },
-  } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -92,7 +78,7 @@ function InnerLayout({
         >
           <Menu
             mode="inline"
-            defaultSelectedKeys={['1']}
+            defaultSelectedKeys={[pageKey]}
             defaultOpenKeys={['sub1']}
             style={{ height: '100%', borderRight: 0 }}
             items={leftSideMenuItem}

@@ -35,7 +35,7 @@ export function BlockEditPage() {
   const { sketchId } = useParams();
 
   return (
-    <MainLayout>
+    <MainLayout pageKey={'sketch-list'}>
       <SketchProvider sketchId={sketchId!}>
         <BlockEditPageComponent />
       </SketchProvider>
