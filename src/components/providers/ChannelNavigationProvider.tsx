@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
@@ -23,20 +23,18 @@ export function ChannelNavigationProvider({
   children: React.ReactNode;
 }) {
   const { userContext } = useUserContext();
-  const [currentChannel, setCurrentChannel] = useState<CurrentChannel>();
   const [channelId, setChannelId] = useState<string>(
     getSelectedChannelIdOrDefault(userContext),
   );
-
-  useEffect(() => {
+  const [currentChannel, setCurrentChannel] = useState<CurrentChannel>(() => {
     const selectedChannel = userContext.channelPermissions.filter(
       (a) => a.id === channelId,
     )[0];
-    setCurrentChannel({
+    return {
       channelId: selectedChannel.id,
       channelName: selectedChannel.name,
-    });
-  }, [channelId, userContext.channelPermissions]);
+    };
+  });
 
   if (!currentChannel) {
     return <div>로딩중</div>;
