@@ -22,6 +22,7 @@ export function TopBarHeader({
         paddingLeft: '20px',
         paddingRight: '20px',
         justifyContent: 'space-between',
+        borderBottom: '1px solid #e6e6e6',
       }}
     >
       <Flex ref={selectorRef} style={{ alignItems: 'center', gap: 20 }}>
