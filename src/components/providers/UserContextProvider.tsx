@@ -21,20 +21,27 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
   const [forceReload, setForceReload] = useState<string>('');
   const navigate = useNavigate();
   const { data: userContext, isLoading } = useUserContextQuery(forceReload);
+  const [childrenReal, setChildrenReal] = useState<ReactNode>(<div>로딩중</div>);
+  
 
   useEffect(() => {
+    console.log('userContext', userContext);
     if (!userContext || isLoading) {
       return;
     }
 
-    if (userContext.channelPermissions.length == 0) {
+    if (userContext.channelPermissions.length === 0) {
       // 채널 생성 온보딩이 필요한 경우
       navigate('/onBoarding');
+      return;
+    }
+    else{
+      setChildrenReal(children);
     }
   }, [userContext]);
 
   if (!userContext) {
-    return <div>로딩중</div>;
+    return childrenReal;
   }
 
   return (
@@ -44,7 +51,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
         setForceReload,
       }}
     >
-      {children}
+      {childrenReal}
     </UsrContext.Provider>
   );
 }
