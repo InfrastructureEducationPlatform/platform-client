@@ -33,4 +33,6 @@ export const ErrorMap: { [key: string]: string } = {
   CannotAddSelf: '자신을 채널에 추가할 수 없습니다.',
   CannotAddDuplicatePermission:
     '채널에 이미 해당 권한을 가진 사용자가 존재합니다.',
+  ChannelOwnershipTransferNeededBeforeDelete:
+    '삭제 전에 소유권을 이전해야 합니다.',
 };

@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { PreferenceType } from '../../Pages/Preferences.tsx';
 import { userApi } from '../../api';
+import { useDeleteAccount } from '../../api/mutation.tsx';
 import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
@@ -19,6 +20,7 @@ export function GeneralAccountPreferences({
   const [modal, contexHolder] = Modal.useModal();
   const navigate = useNavigate();
   const { userContext, setForceReload } = useUserContext();
+  const { mutateAsync: deleteAccount } = useDeleteAccount();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const preferenceEditCallback = useCallback(
@@ -131,6 +133,20 @@ export function GeneralAccountPreferences({
             height: 'unset',
             paddingTop: '5px',
             paddingBottom: '5px',
+          }}
+          onClick={() => {
+            modal.confirm({
+              title: '계정 삭제',
+              content:
+                '계정을 삭제하시겠습니까? 이 작업은 되돌릴 수 없으며, 사용자의 1명인 채널도 모두 삭제됩니다.',
+              centered: true,
+              onOk: async () => {
+                await deleteAccount();
+                LocalStorageUtils.removeUserContext();
+                localStorage.clear();
+                navigate('/');
+              },
+            });
           }}
         >
           <Flex justify={'space-between'}>

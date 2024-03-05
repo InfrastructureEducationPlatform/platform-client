@@ -21,7 +21,6 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
   const [forceReload, setForceReload] = useState<string>('');
   const navigate = useNavigate();
   const { data: userContext, isLoading } = useUserContextQuery(forceReload);
-  
 
   useEffect(() => {
     if (!userContext || isLoading) {

@@ -5,7 +5,7 @@ import {
   AddUserToChannelRequest,
   ChannelPermissionType,
 } from '../libs/core-api/api';
-import { channelApi } from './index.ts';
+import { channelApi, userApi } from './index.ts';
 
 export const useUpdateChannelPermissionMutation = (
   channelId: string,
@@ -75,6 +75,19 @@ export const useAddMemberToChannelMutation = (
       if (onSuccess) {
         onSuccess();
       }
+    },
+    onError: (error) => {
+      showError(error);
+    },
+  });
+};
+
+export const useDeleteAccount = () => {
+  const { showError } = useErrorHandler();
+  return useMutation({
+    mutationKey: ['delete-account'],
+    mutationFn: async () => {
+      await userApi.deleteUserAsync();
     },
     onError: (error) => {
       showError(error);

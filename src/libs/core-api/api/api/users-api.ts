@@ -57,6 +57,49 @@ export const UsersApiAxiosParamCreator = function (
 ) {
   return {
     /**
+     * 해당 API는 이용자가 탈퇴하려는 본인 1명인 채널까지 모두 삭제합니다.
+     * @summary 사용자를 서비스에서 제거합니다.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserAsync: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/users`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      *
      * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
      * @param {*} [options] Override http request option.
@@ -211,6 +254,26 @@ export const UsersApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = UsersApiAxiosParamCreator(configuration);
   return {
     /**
+     * 해당 API는 이용자가 탈퇴하려는 본인 1명인 채널까지 모두 삭제합니다.
+     * @summary 사용자를 서비스에서 제거합니다.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async deleteUserAsync(
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.deleteUserAsync(options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      *
      * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
      * @param {*} [options] Override http request option.
@@ -297,6 +360,17 @@ export const UsersApiFactory = function (
   const localVarFp = UsersApiFp(configuration);
   return {
     /**
+     * 해당 API는 이용자가 탈퇴하려는 본인 1명인 채널까지 모두 삭제합니다.
+     * @summary 사용자를 서비스에서 제거합니다.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    deleteUserAsync(options?: any): AxiosPromise<void> {
+      return localVarFp
+        .deleteUserAsync(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      *
      * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
      * @param {*} [options] Override http request option.
@@ -347,6 +421,19 @@ export const UsersApiFactory = function (
  * @extends {BaseAPI}
  */
 export class UsersApi extends BaseAPI {
+  /**
+   * 해당 API는 이용자가 탈퇴하려는 본인 1명인 채널까지 모두 삭제합니다.
+   * @summary 사용자를 서비스에서 제거합니다.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UsersApi
+   */
+  public deleteUserAsync(options?: AxiosRequestConfig) {
+    return UsersApiFp(this.configuration)
+      .deleteUserAsync(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
