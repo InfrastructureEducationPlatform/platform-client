@@ -42,9 +42,9 @@ import type { Configuration } from '../configuration';
 // @ts-ignore
 import { CreateSketchRequest } from '../model';
 // @ts-ignore
-import { DeploymentProjection } from '../model';
-// @ts-ignore
 import { ErrorResponse } from '../model';
+// @ts-ignore
+import { LightDeploymentProjection } from '../model';
 // @ts-ignore
 import { SketchResponse } from '../model';
 // @ts-ignore
@@ -397,7 +397,7 @@ export const SketchApiFp = function (configuration?: Configuration) {
       (
         axios?: AxiosInstance,
         basePath?: string,
-      ) => AxiosPromise<DeploymentProjection>
+      ) => AxiosPromise<LightDeploymentProjection>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.deploySketchAsync(
@@ -544,7 +544,7 @@ export const SketchApiFactory = function (
       sketchId: string,
       pluginId?: string,
       options?: any,
-    ): AxiosPromise<DeploymentProjection> {
+    ): AxiosPromise<LightDeploymentProjection> {
       return localVarFp
         .deploySketchAsync(channelId, sketchId, pluginId, options)
         .then((request) => request(axios, basePath));

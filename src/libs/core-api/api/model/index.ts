@@ -11,6 +11,7 @@ export * from './deployment-status';
 export * from './error-response';
 export * from './file-projection-response';
 export * from './install-plugin-request';
+export * from './light-deployment-projection';
 export * from './login-request';
 export * from './login-result';
 export * from './me-projection';

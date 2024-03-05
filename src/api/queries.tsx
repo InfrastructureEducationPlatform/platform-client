@@ -1,6 +1,7 @@
 import { UserOutlined } from '@ant-design/icons';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
+import { DeploymentListElementProps } from '../Pages/DeploymentListPage.tsx';
 import { InstalledPluginsProjection } from '../types/InstalledPluginsProjection.ts';
 import { UserContext } from '../types/UserContext.ts';
 import { channelApi, deploymentApi, pluginApi, userApi } from './index.ts';
@@ -103,6 +104,43 @@ export const useDeploymentListAsMenuQuery = (forceReloadKey: string) => {
           };
         }),
       };
+    },
+  });
+};
+
+export const useDeploymentInformationListQuery = (forceReloadKey: string) => {
+  return useQuery({
+    placeholderData: keepPreviousData,
+    queryKey: ['deploymentInformationList', forceReloadKey],
+    queryFn: async (): Promise<DeploymentListElementProps[]> => {
+      const response = await deploymentApi.getDeploymentInformationListAsync();
+
+      return response.data.map((a) => {
+        return {
+          deploymentId: a.deploymentId,
+          channelName: a.channelName,
+          sketchId: a.sketchId,
+          sketchName: a.sketchName,
+          deployDate: a.createdAt,
+          deployStatus: a.deploymentStatus,
+        };
+      });
+    },
+  });
+};
+
+export const useDeploymentInformationQuery = (
+  deploymentId: string,
+  forceReloadKey: string,
+) => {
+  return useQuery({
+    placeholderData: keepPreviousData,
+    queryKey: ['deploymentInformation', deploymentId, forceReloadKey],
+    queryFn: async () => {
+      const response =
+        await deploymentApi.getDeploymentInformationAsync(deploymentId);
+
+      return response.data;
     },
   });
 };

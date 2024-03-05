@@ -28,6 +28,18 @@ export interface DeploymentProjection {
    * @type {string}
    * @memberof DeploymentProjection
    */
+  channelId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof DeploymentProjection
+   */
+  channelName: string;
+  /**
+   *
+   * @type {string}
+   * @memberof DeploymentProjection
+   */
   deploymentId: string;
   /**
    *
@@ -35,6 +47,12 @@ export interface DeploymentProjection {
    * @memberof DeploymentProjection
    */
   sketchId: string;
+  /**
+   *
+   * @type {string}
+   * @memberof DeploymentProjection
+   */
+  sketchName: string;
   /**
    *
    * @type {string}

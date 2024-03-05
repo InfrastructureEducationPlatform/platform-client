@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 
 import { BlockEditPage } from './Pages/BlockEditPage.tsx';
 import { CreateChannel } from './Pages/CreateChannel';
+import { DeploymentListPage } from './Pages/DeploymentListPage.tsx';
 import { Home } from './Pages/Home';
 import { Join } from './Pages/Join';
 import { Login } from './Pages/Login';
@@ -47,6 +48,7 @@ function App() {
         <Route path={'/sketches/:sketchId'} element={<BlockEditPage />} />
         <Route path="/onboardingTour" element={<OnboardingTour />} />
         <Route path="/preferences/*" element={<PreferencePage />} />
+        <Route path={'/deployments/*'} element={<DeploymentListPage />} />
       </Routes>
     </QueryClientProvider>
   );

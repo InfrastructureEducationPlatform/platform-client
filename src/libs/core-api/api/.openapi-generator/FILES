@@ -28,6 +28,7 @@ model/error-response.ts
 model/file-projection-response.ts
 model/index.ts
 model/install-plugin-request.ts
+model/light-deployment-projection.ts
 model/login-request.ts
 model/login-result.ts
 model/me-projection.ts

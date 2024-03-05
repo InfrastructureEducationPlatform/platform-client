@@ -16,7 +16,7 @@ import { UserContextProvider } from './providers/UserContextProvider.tsx';
 
 const { Content, Sider } = Layout;
 
-export type PageKey = 'sketch-list' | 'preferences';
+export type PageKey = 'sketch-list' | 'preferences' | 'deployment-list';
 
 export function MainLayout({
   children,
@@ -67,6 +67,14 @@ function InnerLayout({
       icon: <SettingOutlined />,
       onClick: () => {
         navigate('/preferences');
+      },
+    },
+    {
+      key: 'deployment-list',
+      label: '배포 리스트',
+      icon: <SettingOutlined />,
+      onClick: () => {
+        navigate('/deployments');
       },
     },
   ];
