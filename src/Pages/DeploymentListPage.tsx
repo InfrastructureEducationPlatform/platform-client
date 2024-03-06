@@ -52,7 +52,9 @@ export function DeploymentListPage() {
       key: 'action',
       render: (_, record) => (
         <Button
-          onClick={() => navigate(`/deployments/${record.deploymentId}`)}
+          onClick={() =>
+            navigate(`/deployments/${record.deploymentId}/general`)
+          }
           type={'link'}
         >
           배포 상세
