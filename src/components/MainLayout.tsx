@@ -62,19 +62,19 @@ function InnerLayout({
       },
     },
     {
-      key: 'preferences',
-      label: '환경설정',
-      icon: <SettingOutlined />,
-      onClick: () => {
-        navigate('/preferences');
-      },
-    },
-    {
       key: 'deployment-list',
       label: '배포 리스트',
       icon: <SettingOutlined />,
       onClick: () => {
         navigate('/deployments');
+      },
+    },
+    {
+      key: 'preferences',
+      label: '환경설정',
+      icon: <SettingOutlined />,
+      onClick: () => {
+        navigate('/preferences');
       },
     },
   ];
