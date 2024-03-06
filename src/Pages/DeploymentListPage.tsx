@@ -70,6 +70,7 @@ export function DeploymentListPage() {
           height: '100%',
           flexDirection: 'column',
           padding: '20px',
+          overflow: 'auto',
         }}
       >
         <Routes>

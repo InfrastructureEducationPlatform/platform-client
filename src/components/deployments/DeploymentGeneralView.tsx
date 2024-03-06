@@ -1,7 +1,8 @@
-import { Descriptions, DescriptionsProps, Flex } from 'antd';
-import { useEffect } from 'react';
+import { Descriptions, DescriptionsProps, Flex, Typography } from 'antd';
+import React, { useEffect } from 'react';
 
 import { DeploymentProjection } from '../../libs/core-api/api';
+import { DeploymentGeneralBlockDetail } from './details/DeploymentGeneralBlockDetail.tsx';
 
 export function DeploymentGeneralView({
   setCurrent,
@@ -16,10 +17,22 @@ export function DeploymentGeneralView({
 
   return (
     <Flex style={{ flexDirection: 'column', padding: '15px' }} gap={20}>
-      <DeploymentGeneralProperties
-        deploymentProjection={deploymentProjection}
-      />
-      밑에는 실제 블록들의 스펙 등등(플러그인 적용된?)
+      <div>
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          배포 기본 정보
+        </Typography.Title>
+        <DeploymentGeneralProperties
+          deploymentProjection={deploymentProjection}
+        />
+      </div>
+      <Flex style={{ flexDirection: 'column', gap: '15px' }}>
+        <Typography.Title level={4} style={{ margin: 0 }}>
+          배포 블록 상세 정보
+        </Typography.Title>
+        <DeploymentGeneralBlockDetail
+          deploymentProjection={deploymentProjection}
+        />
+      </Flex>
     </Flex>
   );
 }
