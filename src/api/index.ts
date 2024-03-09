@@ -7,6 +7,7 @@ import {
   DeploymentApi,
   FileApi,
   PluginApi,
+  PricingApi,
   SketchApi,
   UsersApi,
 } from '../libs/core-api/api';
@@ -98,6 +99,12 @@ export const pluginApi = new PluginApi(
 );
 
 export const deploymentApi = new DeploymentApi(
+  configuration,
+  undefined,
+  defaultAuthorizationInstance,
+);
+
+export const pricingApi = new PricingApi(
   configuration,
   undefined,
   defaultAuthorizationInstance,

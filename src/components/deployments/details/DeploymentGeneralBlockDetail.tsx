@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useSketchBlockQuery } from '../../../api/queries.tsx';
+import { usePricingQuery, useSketchBlockQuery } from '../../../api/queries.tsx';
 import { DeploymentProjection } from '../../../libs/core-api/api';
 import {
   DatabaseBlock,
@@ -21,7 +21,9 @@ export function DeploymentGeneralBlockDetail({
     deploymentProjection.sketchId,
   );
 
-  if (!data) {
+  const { data: priceList } = usePricingQuery();
+
+  if (!data || !priceList) {
     return <div>블록 정보를 불러오는 중...</div>;
   }
 
@@ -31,6 +33,8 @@ export function DeploymentGeneralBlockDetail({
         <DeploymentVmBlockDetail
           key={node.id}
           nodeData={node as VirtualMachineBlock}
+          priceInfo={priceList}
+          plugin={deploymentProjection.pluginId}
         />
       );
     }
@@ -39,6 +43,8 @@ export function DeploymentGeneralBlockDetail({
         <DeploymentWebServerBlockDetail
           key={node.id}
           nodeData={node as WebServerBlock}
+          priceInfo={priceList}
+          plugin={deploymentProjection.pluginId}
         />
       );
     }
@@ -47,6 +53,8 @@ export function DeploymentGeneralBlockDetail({
         <DeploymentDatabaseBlockDetail
           key={node.id}
           nodeData={node as DatabaseBlock}
+          priceInfo={priceList}
+          plugin={deploymentProjection.pluginId}
         />
       );
     }

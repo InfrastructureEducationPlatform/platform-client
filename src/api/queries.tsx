@@ -13,6 +13,7 @@ import {
   channelApi,
   deploymentApi,
   pluginApi,
+  pricingApi,
   sketchApi,
   userApi,
 } from './index.ts';
@@ -164,6 +165,17 @@ export const useSketchBlockQuery = (channelId: string, sketchId: string) => {
       const response = await sketchApi.getSketchAsync(channelId, sketchId);
 
       return response.data.blockSketch.blockList as MultipleBlockType[];
+    },
+  });
+};
+
+export const usePricingQuery = () => {
+  return useQuery({
+    queryKey: ['pricing'],
+    queryFn: async () => {
+      const response = await pricingApi.getAllPricingInformationAsync();
+
+      return response.data;
     },
   });
 };

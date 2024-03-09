@@ -12,11 +12,17 @@
  * Do not edit the class manually.
  */
 
-export * from './api/auth-api';
-export * from './api/channel-api';
-export * from './api/deployment-api';
-export * from './api/file-api';
-export * from './api/plugin-api';
-export * from './api/pricing-api';
-export * from './api/sketch-api';
-export * from './api/users-api';
+/**
+ *
+ * @export
+ * @enum {string}
+ */
+
+export const PricingMachineType = {
+  VirtualMachine: 'VirtualMachine',
+  WebServer: 'WebServer',
+  DatabaseServer: 'DatabaseServer',
+} as const;
+
+export type PricingMachineType =
+  (typeof PricingMachineType)[keyof typeof PricingMachineType];

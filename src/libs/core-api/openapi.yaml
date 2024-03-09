@@ -789,6 +789,45 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JwtAuthenticationFilter: []
+  /pricing:
+    get:
+      tags:
+        - Pricing
+      summary: 서버에 등록된 모든 가격 정보를 불러옵니다.
+      operationId: GetAllPricingInformationAsync
+      responses:
+        '200':
+          description: 성공적으로 가격 정보를 불러왔습니다.
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingInformationProjection'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingInformationProjection'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PricingInformationProjection'
+        '401':
+          description: 인증 토큰이 없어 인증에 실패한 경우
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
   '/channels/{channelId}/sketches':
     get:
       tags:
@@ -1529,6 +1568,53 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+    PriceInfoPerVendorProjection:
+      required:
+        - pricePerHour
+        - pricingInformationId
+        - tierInformation
+        - vendor
+      type: object
+      properties:
+        pricingInformationId:
+          minLength: 1
+          type: string
+        vendor:
+          $ref: '#/components/schemas/VendorType'
+        pricePerHour:
+          type: number
+          format: double
+        tierInformation:
+          minLength: 1
+          type: string
+      additionalProperties: false
+    PricingInformationProjection:
+      required:
+        - id
+        - machineType
+        - priceInfoPerVendors
+        - tier
+      type: object
+      properties:
+        id:
+          minLength: 1
+          type: string
+        machineType:
+          $ref: '#/components/schemas/PricingMachineType'
+        tier:
+          minLength: 1
+          type: string
+        priceInfoPerVendors:
+          type: array
+          items:
+            $ref: '#/components/schemas/PriceInfoPerVendorProjection'
+      additionalProperties: false
+    PricingMachineType:
+      enum:
+        - VirtualMachine
+        - WebServer
+        - DatabaseServer
+      type: string
     RefreshTokenRequest:
       required:
         - accessToken
@@ -1702,6 +1788,10 @@ components:
           type: string
           nullable: true
       additionalProperties: false
+    VendorType:
+      enum:
+        - AWS
+      type: string
   securitySchemes:
     JwtAuthenticationFilter:
       type: http
