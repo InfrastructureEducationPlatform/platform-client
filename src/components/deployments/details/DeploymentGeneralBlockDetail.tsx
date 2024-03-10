@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { usePricingQuery, useSketchBlockQuery } from '../../../api/queries.tsx';
+import { usePricingQuery } from '../../../api/queries.tsx';
 import { DeploymentProjection } from '../../../libs/core-api/api';
 import {
   DatabaseBlock,
@@ -11,15 +11,14 @@ import { DeploymentDatabaseBlockDetail } from './DeploymentDatabaseBlockDetail.t
 import { DeploymentVmBlockDetail } from './DeploymentVmBlockDetail.tsx';
 import { DeploymentWebServerBlockDetail } from './DeploymentWebServerBlockDetail.tsx';
 
+type MultipleBlockType = VirtualMachineBlock | WebServerBlock | DatabaseBlock;
 export function DeploymentGeneralBlockDetail({
   deploymentProjection,
 }: {
   deploymentProjection: DeploymentProjection;
 }) {
-  const { data } = useSketchBlockQuery(
-    deploymentProjection.channelId,
-    deploymentProjection.sketchId,
-  );
+  const data = deploymentProjection.capturedBlockSketch
+    .blockList as MultipleBlockType[];
 
   const { data: priceList } = usePricingQuery();
 

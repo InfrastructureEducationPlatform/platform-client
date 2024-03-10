@@ -2,11 +2,6 @@ import { UserOutlined } from '@ant-design/icons';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { DeploymentListElementProps } from '../Pages/DeploymentListPage.tsx';
-import {
-  DatabaseBlock,
-  VirtualMachineBlock,
-  WebServerBlock,
-} from '../types/BlockTypes.ts';
 import { InstalledPluginsProjection } from '../types/InstalledPluginsProjection.ts';
 import { UserContext } from '../types/UserContext.ts';
 import {
@@ -14,7 +9,6 @@ import {
   deploymentApi,
   pluginApi,
   pricingApi,
-  sketchApi,
   userApi,
 } from './index.ts';
 
@@ -153,18 +147,6 @@ export const useDeploymentInformationQuery = (
         await deploymentApi.getDeploymentInformationAsync(deploymentId);
 
       return response.data;
-    },
-  });
-};
-
-type MultipleBlockType = VirtualMachineBlock | WebServerBlock | DatabaseBlock;
-export const useSketchBlockQuery = (channelId: string, sketchId: string) => {
-  return useQuery({
-    queryKey: ['sketchBlock', channelId, sketchId],
-    queryFn: async () => {
-      const response = await sketchApi.getSketchAsync(channelId, sketchId);
-
-      return response.data.blockSketch.blockList as MultipleBlockType[];
     },
   });
 };

@@ -77,4 +77,10 @@ export interface DeploymentProjection {
    * @memberof DeploymentProjection
    */
   deploymentOutput?: any | null;
+  /**
+   *
+   * @type {any}
+   * @memberof DeploymentProjection
+   */
+  capturedBlockSketch: any;
 }

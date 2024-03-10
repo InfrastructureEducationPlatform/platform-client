@@ -1372,6 +1372,7 @@ components:
       type: string
     DeploymentProjection:
       required:
+        - capturedBlockSketch
         - channelId
         - channelName
         - createdAt
@@ -1407,6 +1408,7 @@ components:
           format: date-time
         deploymentOutput:
           nullable: true
+        capturedBlockSketch: {}
       additionalProperties: false
     DeploymentStatus:
       enum:
