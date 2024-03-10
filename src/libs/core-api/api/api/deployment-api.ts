@@ -53,6 +53,56 @@ export const DeploymentApiAxiosParamCreator = function (
 ) {
   return {
     /**
+     * 배포 리스트 중, 가장 최신만 지원합니다.
+     * @summary 특정 배포를 삭제합니다.
+     * @param {string} deploymentId 삭제할 배포 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    destroyDeploymentAsync: async (
+      deploymentId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'deploymentId' is not null or undefined
+      assertParamExists('destroyDeploymentAsync', 'deploymentId', deploymentId);
+      const localVarPath = `/deployment/{deploymentId}`.replace(
+        `{${'deploymentId'}}`,
+        encodeURIComponent(String(deploymentId)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
      * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
      * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
      * @param {string} deploymentId 조회할 배포 정보 ID
@@ -161,6 +211,31 @@ export const DeploymentApiFp = function (configuration?: Configuration) {
     DeploymentApiAxiosParamCreator(configuration);
   return {
     /**
+     * 배포 리스트 중, 가장 최신만 지원합니다.
+     * @summary 특정 배포를 삭제합니다.
+     * @param {string} deploymentId 삭제할 배포 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async destroyDeploymentAsync(
+      deploymentId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.destroyDeploymentAsync(
+          deploymentId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
      * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
      * @param {string} deploymentId 조회할 배포 정보 ID
@@ -228,6 +303,21 @@ export const DeploymentApiFactory = function (
   const localVarFp = DeploymentApiFp(configuration);
   return {
     /**
+     * 배포 리스트 중, 가장 최신만 지원합니다.
+     * @summary 특정 배포를 삭제합니다.
+     * @param {string} deploymentId 삭제할 배포 Id
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    destroyDeploymentAsync(
+      deploymentId: string,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .destroyDeploymentAsync(deploymentId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
      * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)
      * @param {string} deploymentId 조회할 배포 정보 ID
@@ -265,6 +355,23 @@ export const DeploymentApiFactory = function (
  * @extends {BaseAPI}
  */
 export class DeploymentApi extends BaseAPI {
+  /**
+   * 배포 리스트 중, 가장 최신만 지원합니다.
+   * @summary 특정 배포를 삭제합니다.
+   * @param {string} deploymentId 삭제할 배포 Id
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof DeploymentApi
+   */
+  public destroyDeploymentAsync(
+    deploymentId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return DeploymentApiFp(this.configuration)
+      .destroyDeploymentAsync(deploymentId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    * 해당 API는 과도한 DB조회를 막기 위해 최초 요청으로부터 1분간 캐싱합니다.
    * @summary 특정 배포 정보를 가져옵니다.(FE Polling혹은 배포 정보 조회)

@@ -5,7 +5,7 @@ import {
   AddUserToChannelRequest,
   ChannelPermissionType,
 } from '../libs/core-api/api';
-import { channelApi, userApi } from './index.ts';
+import { channelApi, deploymentApi, userApi } from './index.ts';
 
 export const useUpdateChannelPermissionMutation = (
   channelId: string,
@@ -91,6 +91,15 @@ export const useDeleteAccount = () => {
     },
     onError: (error) => {
       showError(error);
+    },
+  });
+};
+
+export const useDeleteDeployment = () => {
+  return useMutation({
+    mutationKey: ['delete-deployment'],
+    mutationFn: async (deploymentId: string) => {
+      await deploymentApi.destroyDeploymentAsync(deploymentId);
     },
   });
 };

@@ -1,7 +1,16 @@
-import { Button, Divider, Flex, Table, TableProps, Typography } from 'antd';
+import {
+  Button,
+  Divider,
+  Flex,
+  Modal,
+  Table,
+  TableProps,
+  Typography,
+} from 'antd';
 import React from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
+import { useDeleteDeployment } from '../api/mutation.tsx';
 import { useDeploymentInformationListQuery } from '../api/queries.tsx';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { DeploymentDetailView } from '../components/deployments/DeploymentDetailView.tsx';
@@ -13,11 +22,14 @@ export type DeploymentListElementProps = {
   sketchId: string;
   deployDate: string;
   deployStatus: string;
+  isLatestDeployment: boolean;
 };
 
 export function DeploymentListPage() {
   const { data } = useDeploymentInformationListQuery('');
+  const [modal, contexHolder] = Modal.useModal();
   const navigate = useNavigate();
+  const { mutateAsync: deleteDeployment } = useDeleteDeployment();
   const columns: TableProps<DeploymentListElementProps>['columns'] = [
     {
       title: '채널 이름',
@@ -51,14 +63,34 @@ export function DeploymentListPage() {
       title: '작업',
       key: 'action',
       render: (_, record) => (
-        <Button
-          onClick={() =>
-            navigate(`/deployments/${record.deploymentId}/general`)
-          }
-          type={'link'}
-        >
-          배포 상세
-        </Button>
+        <Flex>
+          <Button
+            onClick={() =>
+              navigate(`/deployments/${record.deploymentId}/general`)
+            }
+            type={'link'}
+          >
+            배포 상세
+          </Button>
+          <Button
+            type={'link'}
+            danger
+            disabled={!record.isLatestDeployment}
+            onClick={() => {
+              modal.confirm({
+                title: '배포 삭제',
+                content:
+                  '정말 이 배포를 삭제하시겠습니까? 인프라 내에 보존된 데이터는 모두 유실됩니다.',
+                centered: true,
+                onOk: async () => {
+                  await deleteDeployment(record.deploymentId);
+                },
+              });
+            }}
+          >
+            배포 삭제
+          </Button>
+        </Flex>
       ),
     },
   ];
@@ -99,6 +131,7 @@ export function DeploymentListPage() {
           <Route path="/:deploymentId/*" element={<DeploymentDetailView />} />
         </Routes>
       </Flex>
+      {contexHolder}
     </MainLayout>
   );
 }

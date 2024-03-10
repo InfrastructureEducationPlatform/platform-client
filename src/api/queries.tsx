@@ -121,7 +121,12 @@ export const useDeploymentInformationListQuery = (forceReloadKey: string) => {
     queryFn: async (): Promise<DeploymentListElementProps[]> => {
       const response = await deploymentApi.getDeploymentInformationListAsync();
 
-      return response.data.map((a) => {
+      const sortedData = response.data.sort((a, b) =>
+        a.deploymentId.localeCompare(b.deploymentId),
+      );
+
+      // 정렬된 배열의 마지막 요소에 isLatestDeployment = true 추가
+      return sortedData.map((a, index) => {
         return {
           deploymentId: a.deploymentId,
           channelName: a.channelName,
@@ -129,6 +134,7 @@ export const useDeploymentInformationListQuery = (forceReloadKey: string) => {
           sketchName: a.sketchName,
           deployDate: a.createdAt,
           deployStatus: a.deploymentStatus,
+          isLatestDeployment: index === sortedData.length - 1,
         };
       });
     },
