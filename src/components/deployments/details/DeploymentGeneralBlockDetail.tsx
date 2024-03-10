@@ -34,6 +34,7 @@ export function DeploymentGeneralBlockDetail({
           nodeData={node as VirtualMachineBlock}
           priceInfo={priceList}
           plugin={deploymentProjection.pluginId}
+          deploymentProjection={deploymentProjection}
         />
       );
     }
