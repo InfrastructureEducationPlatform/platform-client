@@ -185,6 +185,8 @@ function BlockEditPageComponent() {
                   blockTags: [],
                   dbTier: 'low',
                   dbRegion: 'korea',
+                  masterUsername: '',
+                  masterPassword: '',
                 },
                 type: 'database',
               };

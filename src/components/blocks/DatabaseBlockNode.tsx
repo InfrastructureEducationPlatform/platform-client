@@ -16,6 +16,8 @@ import { CommonBlockProps } from '../../types/CommonBlockProps.ts';
 export type DatabaseBlockNodeProps = CommonBlockProps & {
   dbTier: 'low' | 'medium' | 'high' | 'custom';
   dbRegion: 'korea' | 'defaultAccount';
+  masterUsername: string;
+  masterPassword: string;
 };
 
 export function DatabaseBlockNode(props: NodeProps<DatabaseBlockNodeProps>) {
@@ -29,6 +31,16 @@ export function DatabaseBlockNode(props: NodeProps<DatabaseBlockNodeProps>) {
       key: '2',
       label: 'DB 지역',
       children: props.data.dbRegion,
+    },
+    {
+      key: '3',
+      label: 'DB Username',
+      children: props.data.masterUsername,
+    },
+    {
+      key: '4',
+      label: 'DB Password',
+      children: '********',
     },
   ];
 

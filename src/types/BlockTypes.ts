@@ -37,6 +37,8 @@ export type DatabaseBlock = Block & {
   databaseFeatures: {
     tier: 'low' | 'medium' | 'high' | 'custom';
     region: 'korea' | 'defaultAccount';
+    masterUsername: string;
+    masterPassword: string;
   };
 };
 

@@ -369,6 +369,22 @@ function DatabaseBlockNodeEditContents({
       </Form.Item>
 
       <Form.Item<DatabaseBlockNodeProps>
+        label="DB Username"
+        name={'masterUsername'}
+        rules={[{ required: true, message: 'DB 사용자 이름은 필수 입니다!' }]}
+      >
+        <Input />
+      </Form.Item>
+
+      <Form.Item<DatabaseBlockNodeProps>
+        label="DB Password"
+        name={'masterPassword'}
+        rules={[{ required: true, message: 'DB 비밀번호는 필수입니다!' }]}
+      >
+        <Input.Password />
+      </Form.Item>
+
+      <Form.Item<DatabaseBlockNodeProps>
         label="DB Tier"
         name={'dbTier'}
         rules={[

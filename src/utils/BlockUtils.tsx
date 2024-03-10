@@ -94,6 +94,8 @@ function convertDatabaseBlockToNode(block: DatabaseBlock): Node {
       blockTags: block.tags,
       dbTier: block.databaseFeatures.tier,
       dbRegion: block.databaseFeatures.region,
+      masterUsername: block.databaseFeatures.masterUsername,
+      masterPassword: block.databaseFeatures.masterPassword,
     },
   };
 }
@@ -174,6 +176,8 @@ function convertDatabseNodeToBlock(node: Node): DatabaseBlock {
     databaseFeatures: {
       tier: node.data.dbTier,
       region: node.data.dbRegion,
+      masterUsername: node.data.masterUsername,
+      masterPassword: node.data.masterPassword,
     },
   };
 }
