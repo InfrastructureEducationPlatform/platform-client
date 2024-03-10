@@ -116,7 +116,7 @@ function VmDeploymentTutorialModal({
 }) {
   const [current, setCurrent] = useState(0);
   const outputFeature = deploymentProjection.deploymentOutput.find(
-    (a) => a.id === blockId,
+    (a: any) => a.id === blockId,
   ).virtualMachineOutput as VirtualMachineOutput;
   const markdown = `
   ### SSH Client 설치 (TODO: 각 OS별로 설치 방법 추가)
