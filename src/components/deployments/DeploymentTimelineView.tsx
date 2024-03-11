@@ -10,13 +10,26 @@ import {
 export function DeploymentTimelineView({
   setCurrent,
   deploymentProjection,
+  setForceReloadKey,
 }: {
   setCurrent: (key: string) => void;
   deploymentProjection: DeploymentProjection;
+  setForceReloadKey: (key: string) => void;
 }) {
   useEffect(() => {
     setCurrent('timeline');
   }, [setCurrent]);
+
+  // Setup Refetch Key
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setForceReloadKey(new Date().toISOString());
+    }, 2000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [setForceReloadKey]);
 
   const convertDeploymentStatus = (status: DeploymentStatus) => {
     switch (status) {

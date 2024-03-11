@@ -14,8 +14,12 @@ import { DeploymentTimelineView } from './DeploymentTimelineView.tsx';
 
 export function DeploymentDetailView() {
   const navigate = useNavigate();
+  const [forceReloadKey, setForceReloadKey] = useState('');
   const { deploymentId } = useParams();
-  const { data } = useDeploymentInformationQuery(deploymentId ?? '', '');
+  const { data } = useDeploymentInformationQuery(
+    deploymentId ?? '',
+    forceReloadKey,
+  );
   const [selectedKey, setSelectedKey] = useState('general');
 
   const menuItems: MenuProps['items'] = [
@@ -71,6 +75,7 @@ export function DeploymentDetailView() {
             <DeploymentTimelineView
               setCurrent={setSelectedKey}
               deploymentProjection={data}
+              setForceReloadKey={setForceReloadKey}
             />
           }
         />
