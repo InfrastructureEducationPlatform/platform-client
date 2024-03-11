@@ -45,6 +45,7 @@ export function DeploymentGeneralBlockDetail({
           nodeData={node as WebServerBlock}
           priceInfo={priceList}
           plugin={deploymentProjection.pluginId}
+          deploymentProjection={deploymentProjection}
         />
       );
     }
