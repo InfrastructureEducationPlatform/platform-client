@@ -66,12 +66,14 @@ export function DeploymentDatabaseBlockDetail({
           배포 결과 및 연결 문자열 보기
         </Button>
       </Flex>
-      <DBDeploymentTutorialModal
-        modalVisible={isModalVisible}
-        setModalVisible={setIsModalVisible}
-        deploymentProjection={deploymentProjection}
-        blockId={nodeData.id}
-      />
+      {isModalVisible && (
+        <DBDeploymentTutorialModal
+          modalVisible={isModalVisible}
+          setModalVisible={setIsModalVisible}
+          deploymentProjection={deploymentProjection}
+          blockId={nodeData.id}
+        />
+      )}
     </Card>
   );
 }

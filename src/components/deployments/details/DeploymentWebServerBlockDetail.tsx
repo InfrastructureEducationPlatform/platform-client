@@ -81,12 +81,14 @@ export function DeploymentWebServerBlockDetail({
           배포 결과 및 연결 문자열 보기
         </Button>
       </Flex>
-      <WebDeploymentTutorialModal
-        modalVisible={isModalVisible}
-        setModalVisible={setIsModalVisible}
-        deploymentProjection={deploymentProjection}
-        blockId={nodeData.id}
-      />
+      {isModalVisible && (
+        <WebDeploymentTutorialModal
+          modalVisible={isModalVisible}
+          setModalVisible={setIsModalVisible}
+          deploymentProjection={deploymentProjection}
+          blockId={nodeData.id}
+        />
+      )}
     </Card>
   );
 }

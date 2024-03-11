@@ -71,12 +71,14 @@ export function DeploymentVmBlockDetail({
           배포 결과 및 연결 문자열 보기
         </Button>
       </Flex>
-      <VmDeploymentTutorialModal
-        modalVisible={isModalVisible}
-        setModalVisible={setIsModalVisible}
-        deploymentProjection={deploymentProjection}
-        blockId={nodeData.id}
-      />
+      {isModalVisible && (
+        <VmDeploymentTutorialModal
+          modalVisible={isModalVisible}
+          setModalVisible={setIsModalVisible}
+          deploymentProjection={deploymentProjection}
+          blockId={nodeData.id}
+        />
+      )}
     </Card>
   );
 }
