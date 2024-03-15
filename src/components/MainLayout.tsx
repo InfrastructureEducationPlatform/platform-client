@@ -22,15 +22,17 @@ export function MainLayout({
   children,
   selectorRef,
   pageKey,
+  userContextReloadKey,
 }: {
   children: ReactNode;
   selectorRef?: React.Ref<HTMLDivElement> | undefined;
   pageKey: PageKey;
+  userContextReloadKey?: string,
 }) {
   return (
     <ErrorHandlerProvider>
       <AuthProvider>
-        <UserContextProvider>
+        <UserContextProvider isReload = {userContextReloadKey}>
           <ChannelNavigationProvider>
             <InnerLayout pageKey={pageKey} selectorRef={selectorRef}>
               {children}

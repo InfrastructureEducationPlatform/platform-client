@@ -11,7 +11,7 @@ import {
 } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
@@ -24,8 +24,11 @@ type CreateSketchType = {
 };
 
 export function Home() {
+  const location = useLocation();
+  const state = {...location.state};
+  const userContextReloadKey = state.userContextReloadKey;
   return (
-    <MainLayout pageKey={'sketch-list'}>
+    <MainLayout pageKey={'sketch-list'} userContextReloadKey={userContextReloadKey}>
       <SketchListView />
     </MainLayout>
   );
