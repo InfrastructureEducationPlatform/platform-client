@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { channelApi, userApi } from '../api';
 import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
+import { useUserContextQuery } from '../api/queries.tsx';
+import { useState } from 'react';
 
 type CreateChannelType = {
   channelName: string;
@@ -12,7 +14,6 @@ type CreateChannelType = {
 
 export function CreateChannel() {
   const navigate = useNavigate();
-
   const onSubmit = (value: CreateChannelType) => {
     (async () => {
       const response = await channelApi.createChannelAsync({
@@ -27,7 +28,7 @@ export function CreateChannel() {
         LocalStorageUtils.setSelectedChannelId(
           userResponse.data.channelPermissionList[0].channelId,
         );
-        navigate('/home');
+        navigate('/home', {state: {userContextReloadKey: 'true'}});
       }
     })();
   };
