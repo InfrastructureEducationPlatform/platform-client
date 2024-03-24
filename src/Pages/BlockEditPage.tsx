@@ -25,10 +25,10 @@ import { ulid } from 'ulid';
 import { DeploymentListView } from '../components/DeploymentListView.tsx';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { SelectInstalledPluginModal } from '../components/SelectInstalledPluginModal.tsx';
-import { BlockNodeEditDrawer } from '../components/blocks/BlockNodeEditDrawer.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { WebServerBlockNodeProps } from '../components/blocks/WebServerBlockNode.tsx';
+import { BlockNodeEditDrawer } from '../components/blocks/editor/BlockNodeEditDrawer.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import {
   SketchProvider,
