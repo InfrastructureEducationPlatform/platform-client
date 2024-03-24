@@ -214,3 +214,22 @@ function convertDatabseNodeToBlock(node: Node): DatabaseBlock {
     },
   };
 }
+
+export function getConnectionEnvironment(
+  nodes: Node[],
+  targetNodeId: string,
+): { [key: string]: string } {
+  const node = nodes.find((node) => node.id === targetNodeId)!;
+
+  // Each value will be evaluated by the server.
+  if (node.type === 'database') {
+    return {
+      DB_HOST: '',
+      DB_PORT: '',
+      DB_USERNAME: '',
+      DB_PASSWORD: '',
+    };
+  }
+
+  return {};
+}

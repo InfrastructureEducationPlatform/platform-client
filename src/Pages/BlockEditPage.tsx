@@ -38,6 +38,7 @@ import {
   convertBlockToEdges,
   convertBlockToNode,
   convertNodeToBlock,
+  getConnectionEnvironment,
   supportedBlockNodeTypes,
   supportedEdgeTypes,
 } from '../utils/BlockUtils.tsx';
@@ -111,7 +112,7 @@ function BlockEditPageComponent() {
         );
       sourceNode.data.connectionMetadata.push({
         targetBlockId: connection.target!,
-        env: {},
+        env: getConnectionEnvironment(nodes, connection.target!),
       });
       setEdges((eds) => addEdge(newEdge, eds));
       setNodes((nds) =>

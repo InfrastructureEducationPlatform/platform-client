@@ -4,9 +4,12 @@ import {
   BaseEdge,
   EdgeLabelRenderer,
   EdgeProps,
+  Node,
   getBezierPath,
   useReactFlow,
 } from 'reactflow';
+
+import { WebServerBlockNodeProps } from '../blocks/WebServerBlockNode.tsx';
 
 export default function CustomEdge({
   id,
@@ -18,8 +21,10 @@ export default function CustomEdge({
   targetPosition,
   style = {},
   markerEnd,
+  source,
+  target,
 }: EdgeProps) {
-  const { setEdges } = useReactFlow();
+  const { setEdges, setNodes, getNodes } = useReactFlow();
   const [edgePath, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,
@@ -30,6 +35,21 @@ export default function CustomEdge({
   });
 
   const onEdgeClick = () => {
+    // get node with source Id
+    const sourceNode = getNodes().find(
+      (node) => node.id === source,
+    )! as Node<WebServerBlockNodeProps>;
+
+    // remove connectionMetadata with target Id
+    sourceNode.data.connectionMetadata =
+      sourceNode.data.connectionMetadata.filter(
+        (connection) => connection.targetBlockId !== target,
+      );
+
+    // update nodes and remove edge
+    setNodes((nodes) =>
+      nodes.map((node) => (node.id === source ? sourceNode : node)),
+    );
     setEdges((edges) => edges.filter((edge) => edge.id !== id));
   };
 
@@ -48,7 +68,7 @@ export default function CustomEdge({
           }}
           className="nodrag nopan"
         >
-          <Button onClick={onEdgeClick}>연결 수정</Button>
+          <Button onClick={onEdgeClick}>x</Button>
         </div>
       </EdgeLabelRenderer>
     </>
