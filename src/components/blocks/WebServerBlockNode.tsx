@@ -21,6 +21,7 @@ export type WebServerBlockNodeProps = CommonBlockProps & {
     imageTags: string;
     username: string | undefined;
     secrets: string | undefined;
+    containerPort: number;
   };
   connectionMetadata: {
     dbRef: string;
@@ -47,6 +48,11 @@ export function WebServerBlockNode(props: NodeProps<WebServerBlockNodeProps>) {
       label: '이미지 주소',
       children: `${props.data.containerData.registryUrl}/${props.data.containerData.imageTags}`,
     },
+    {
+      key: '4',
+      label: '컨테이너 포트',
+      children: props.data.containerData.containerPort,
+    },
   ];
   return (
     <div>
@@ -56,7 +62,7 @@ export function WebServerBlockNode(props: NodeProps<WebServerBlockNodeProps>) {
         style={{
           position: 'relative',
           width: '500px',
-          height: '300px',
+          height: '350px',
           border: props.selected
             ? '2px solid #1890ff'
             : '2px solid rgb(0 0 0 / 0%)',
@@ -80,6 +86,7 @@ export function WebServerBlockNode(props: NodeProps<WebServerBlockNodeProps>) {
           title={'컨테이너 정보'}
           size={'default'}
           items={webDetailDescriptions}
+          column={1}
         />
       </Card>
     </div>

@@ -1,4 +1,4 @@
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, InputNumber, Select } from 'antd';
 import React from 'react';
 
 import { WebServerBlockNodeProps } from '../WebServerBlockNode.tsx';
@@ -18,7 +18,6 @@ export function WebServerBlockEditor({
       layout={'vertical'}
       form={form}
       onFinish={(value) => {
-        console.log(node);
         const newNode = {
           ...node,
           data: {
@@ -119,6 +118,20 @@ export function WebServerBlockEditor({
         initialValue={node.data.containerData.imageTags}
       >
         <Input />
+      </Form.Item>
+
+      <Form.Item<WebServerBlockNodeProps>
+        label="Container Port"
+        name={['containerData', 'containerPort']}
+        rules={[
+          {
+            required: true,
+            message: 'Container Port를 설정해 주세요!',
+          },
+        ]}
+        initialValue={node.data.containerData.containerPort}
+      >
+        <InputNumber controls={false} style={{ width: '100%' }} />
       </Form.Item>
 
       <Form.Item<WebServerBlockNodeProps>
