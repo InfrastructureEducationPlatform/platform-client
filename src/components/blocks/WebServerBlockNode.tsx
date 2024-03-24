@@ -22,6 +22,10 @@ export type WebServerBlockNodeProps = CommonBlockProps & {
     username: string | undefined;
     secrets: string | undefined;
   };
+  connectionMetadata: {
+    targetBlockId: string;
+    env: { [key: string]: string };
+  }[];
 };
 
 export function WebServerBlockNode(props: NodeProps<WebServerBlockNodeProps>) {

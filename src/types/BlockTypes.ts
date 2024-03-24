@@ -29,6 +29,10 @@ export type WebServerBlock = Block & {
       username: string | undefined;
       secrets: string | undefined;
     };
+    connectionMetadata: {
+      targetBlockId: string;
+      env: { [key: string]: string };
+    }[];
   };
 };
 

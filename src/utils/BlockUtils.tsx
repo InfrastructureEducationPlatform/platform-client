@@ -1,4 +1,4 @@
-import { Node } from 'reactflow';
+import { Edge, Node } from 'reactflow';
 
 import { DatabaseBlockNode } from '../components/blocks/DatabaseBlockNode.tsx';
 import {
@@ -9,6 +9,7 @@ import {
   WebServerBlockNode,
   WebServerBlockNodeProps,
 } from '../components/blocks/WebServerBlockNode.tsx';
+import CustomEdge from '../components/edges/CustomEdge.tsx';
 import {
   DatabaseBlock,
   ExtendedBlock,
@@ -21,6 +22,10 @@ export const supportedBlockNodeTypes = {
   virtualMachine: VirtualMachineBlockNode,
   webServer: WebServerBlockNode,
   database: DatabaseBlockNode,
+};
+
+export const supportedEdgeTypes = {
+  'custom-edge': CustomEdge,
 };
 
 // Convert Block(usually from saved data from server) to Node(react-flow)
@@ -39,6 +44,32 @@ export function convertBlockToNode(block: ExtendedBlock): Node {
   }
 
   throw new Error(`Block Type ${block.type} is not supported!`);
+}
+
+export function convertBlockToEdges(block: ExtendedBlock[]): Edge[] {
+  const edges: Edge[] = [];
+
+  block.forEach((block) => {
+    if (block.type === 'webServer') {
+      const webServerBlock = block as WebServerBlock;
+      webServerBlock.webServerFeatures.connectionMetadata.forEach(
+        (connection) => {
+          edges.push({
+            id: `${block.id}-${connection.targetBlockId}`,
+            source: block.id,
+            target: connection.targetBlockId,
+            animated: true,
+            type: 'custom-edge',
+            data: {
+              env: connection.env,
+            },
+          });
+        },
+      );
+    }
+  });
+
+  return edges;
 }
 
 // Convert VM Block(usually from saved data from server) to Node(react-flow)
@@ -78,6 +109,7 @@ function convertWebServerBlockToNode(
         secrets: block.webServerFeatures.containerMetadata.secrets,
         imageTags: block.webServerFeatures.containerMetadata.imageTags,
       },
+      connectionMetadata: block.webServerFeatures.connectionMetadata,
     },
   };
 }
@@ -159,6 +191,7 @@ function convertWebServerNodeToBlock(
         secrets: node.data.containerData.secrets,
         imageTags: node.data.containerData.imageTags,
       },
+      connectionMetadata: node.data.connectionMetadata,
     },
   };
 }

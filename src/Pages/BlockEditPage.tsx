@@ -8,7 +8,17 @@ import {
 import { FloatButton, Table, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Node, OnNodesChange, ReactFlow, applyNodeChanges } from 'reactflow';
+import {
+  Connection,
+  Edge,
+  EdgeChange,
+  Node,
+  OnNodesChange,
+  ReactFlow,
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+} from 'reactflow';
 import 'reactflow/dist/style.css';
 import { ulid } from 'ulid';
 
@@ -25,9 +35,11 @@ import {
   useSketchBlockContext,
 } from '../components/providers/SketchProvider.tsx';
 import {
+  convertBlockToEdges,
   convertBlockToNode,
   convertNodeToBlock,
   supportedBlockNodeTypes,
+  supportedEdgeTypes,
 } from '../utils/BlockUtils.tsx';
 
 export function BlockEditPage() {
@@ -55,6 +67,9 @@ function BlockEditPageComponent() {
   const [nodes, setNodes] = useState<Node[]>(
     sketchBlock.blockList.map<Node>((a) => convertBlockToNode(a)),
   );
+  const [edges, setEdges] = useState<Edge[]>(
+    convertBlockToEdges(sketchBlock.blockList),
+  );
 
   // Drawer 관련 State
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -70,6 +85,40 @@ function BlockEditPageComponent() {
       setNodes((nds) => applyNodeChanges(changes, nds));
     },
     [setNodes],
+  );
+
+  // Edge Change Callback
+  const onEdgesChange = useCallback(
+    (changes: EdgeChange[]) => {
+      console.log('onEdgesChange', changes);
+      setEdges((eds) => applyEdgeChanges(changes, eds));
+    },
+    [setEdges],
+  );
+  const onConnect = useCallback(
+    (connection: Connection) => {
+      const newEdge = { ...connection, type: 'custom-edge' };
+
+      // Get Source Node
+      const sourceNode = nodes.find(
+        (node) => node.id === connection.source,
+      )! as Node<WebServerBlockNodeProps>;
+
+      // Target Block ID should be unique. discard already connected target block.
+      sourceNode.data.connectionMetadata =
+        sourceNode.data.connectionMetadata.filter(
+          (each) => each.targetBlockId !== connection.target,
+        );
+      sourceNode.data.connectionMetadata.push({
+        targetBlockId: connection.target!,
+        env: {},
+      });
+      setEdges((eds) => addEdge(newEdge, eds));
+      setNodes((nds) =>
+        nds.map((node) => (node.id === sourceNode.id ? sourceNode : node)),
+      );
+    },
+    [setEdges, setNodes],
   );
 
   // Update sketchBlock when nodes are changed (saving to server)
@@ -115,12 +164,16 @@ function BlockEditPageComponent() {
         />
         <ReactFlow
           nodeTypes={supportedBlockNodeTypes}
+          edgeTypes={supportedEdgeTypes}
           nodes={nodes}
+          edges={edges}
           onNodesChange={onNodesChange}
           onNodeClick={(event, node) => {
             setNodeToEdit(node);
             setDrawerVisible(true);
           }}
+          onConnect={onConnect}
+          onEdgesChange={onEdgesChange}
         />
         <FloatButton.Group
           trigger={'click'}
@@ -166,6 +219,7 @@ function BlockEditPageComponent() {
                     secrets: '',
                     imageTags: '',
                   },
+                  connectionMetadata: [],
                 },
                 type: 'webServer',
               };
