@@ -9,7 +9,7 @@ import {
 } from 'antd';
 import Meta from 'antd/es/card/Meta';
 import React from 'react';
-import { NodeProps } from 'reactflow';
+import { Handle, NodeProps, Position } from 'reactflow';
 
 import { CommonBlockProps } from '../../types/CommonBlockProps.ts';
 
@@ -45,30 +45,34 @@ export function DatabaseBlockNode(props: NodeProps<DatabaseBlockNodeProps>) {
   ];
 
   return (
-    <Card
-      key={props.id}
-      style={{
-        position: 'relative',
-        width: '450px',
-        height: '280px',
-        border: props.selected
-          ? '2px solid #1890ff'
-          : '2px solid rgb(0 0 0 / 0%)',
-      }}
-    >
-      <Flex gap={'15px'}>
-        <Avatar icon={<LaptopOutlined />} size={40} />
-        <Meta
-          title={props.data.blockTitle}
-          description={props.data.blockDescription}
+    <div>
+      <Handle type={'target'} position={Position.Left} isConnectable={true} />
+      <Card
+        key={props.id}
+        style={{
+          position: 'relative',
+          width: '450px',
+          height: '280px',
+          border: props.selected
+            ? '2px solid #1890ff'
+            : '2px solid rgb(0 0 0 / 0%)',
+          margin: '2px',
+        }}
+      >
+        <Flex gap={'15px'}>
+          <Avatar icon={<LaptopOutlined />} size={40} />
+          <Meta
+            title={props.data.blockTitle}
+            description={props.data.blockDescription}
+          />
+        </Flex>
+        <Divider style={{ marginTop: 15, marginBottom: 15 }} />
+        <Descriptions
+          title={'DB 서버 정보'}
+          size={'default'}
+          items={dbDescriptions}
         />
-      </Flex>
-      <Divider style={{ marginTop: 15, marginBottom: 15 }} />
-      <Descriptions
-        title={'DB 서버 정보'}
-        size={'default'}
-        items={dbDescriptions}
-      />
-    </Card>
+      </Card>
+    </div>
   );
 }
