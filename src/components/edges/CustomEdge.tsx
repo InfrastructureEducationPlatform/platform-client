@@ -41,10 +41,12 @@ export default function CustomEdge({
     )! as Node<WebServerBlockNodeProps>;
 
     // remove connectionMetadata with target Id
-    sourceNode.data.connectionMetadata =
-      sourceNode.data.connectionMetadata.filter(
-        (connection) => connection.targetBlockId !== target,
-      );
+    sourceNode.data.connectionMetadata = {
+      dbRef:
+        sourceNode.data.connectionMetadata.dbRef === target
+          ? ''
+          : sourceNode.data.connectionMetadata.dbRef,
+    };
 
     // update nodes and remove edge
     setNodes((nodes) =>

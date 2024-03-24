@@ -30,9 +30,8 @@ export type WebServerBlock = Block & {
       secrets: string | undefined;
     };
     connectionMetadata: {
-      targetBlockId: string;
-      env: { [key: string]: string };
-    }[];
+      dbRef: string;
+    };
   };
 };
 

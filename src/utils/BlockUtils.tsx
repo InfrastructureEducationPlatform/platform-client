@@ -52,20 +52,18 @@ export function convertBlockToEdges(block: ExtendedBlock[]): Edge[] {
   block.forEach((block) => {
     if (block.type === 'webServer') {
       const webServerBlock = block as WebServerBlock;
-      webServerBlock.webServerFeatures.connectionMetadata.forEach(
-        (connection) => {
-          edges.push({
-            id: `${block.id}-${connection.targetBlockId}`,
-            source: block.id,
-            target: connection.targetBlockId,
-            animated: true,
-            type: 'custom-edge',
-            data: {
-              env: connection.env,
-            },
-          });
-        },
-      );
+
+      Object.entries(
+        webServerBlock.webServerFeatures.connectionMetadata,
+      ).forEach(([key, value]) => {
+        edges.push({
+          id: `${block.id}-${key}`,
+          source: block.id,
+          target: value,
+          animated: true,
+          type: 'custom-edge',
+        });
+      });
     }
   });
 
@@ -218,18 +216,14 @@ function convertDatabseNodeToBlock(node: Node): DatabaseBlock {
 export function getConnectionEnvironment(
   nodes: Node[],
   targetNodeId: string,
-): { [key: string]: string } {
+  previousConnectionMeta: { dbRef: string },
+): { dbRef: string } {
   const node = nodes.find((node) => node.id === targetNodeId)!;
 
   // Each value will be evaluated by the server.
   if (node.type === 'database') {
-    return {
-      DB_HOST: '',
-      DB_PORT: '',
-      DB_USERNAME: '',
-      DB_PASSWORD: '',
-    };
+    return { ...previousConnectionMeta, dbRef: node.id };
   }
 
-  return {};
+  return { ...previousConnectionMeta };
 }

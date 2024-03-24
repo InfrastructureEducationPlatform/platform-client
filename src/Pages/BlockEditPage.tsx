@@ -105,21 +105,17 @@ function BlockEditPageComponent() {
         (node) => node.id === connection.source,
       )! as Node<WebServerBlockNodeProps>;
 
-      // Target Block ID should be unique. discard already connected target block.
-      sourceNode.data.connectionMetadata =
-        sourceNode.data.connectionMetadata.filter(
-          (each) => each.targetBlockId !== connection.target,
-        );
-      sourceNode.data.connectionMetadata.push({
-        targetBlockId: connection.target!,
-        env: getConnectionEnvironment(nodes, connection.target!),
-      });
+      sourceNode.data.connectionMetadata = getConnectionEnvironment(
+        nodes,
+        connection.target!,
+        sourceNode.data.connectionMetadata,
+      );
       setEdges((eds) => addEdge(newEdge, eds));
       setNodes((nds) =>
         nds.map((node) => (node.id === sourceNode.id ? sourceNode : node)),
       );
     },
-    [setEdges, setNodes],
+    [setEdges, setNodes, nodes],
   );
 
   // Update sketchBlock when nodes are changed (saving to server)
@@ -220,7 +216,9 @@ function BlockEditPageComponent() {
                     secrets: '',
                     imageTags: '',
                   },
-                  connectionMetadata: [],
+                  connectionMetadata: {
+                    dbRef: '',
+                  },
                 },
                 type: 'webServer',
               };
