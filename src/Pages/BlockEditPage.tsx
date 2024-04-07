@@ -2,11 +2,11 @@ import {
   CloudOutlined,
   CloudServerOutlined,
   DatabaseOutlined,
-  DesktopOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import { FloatButton, Table, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import { FaBox } from 'react-icons/fa6';
 import { useParams } from 'react-router-dom';
 import {
   Connection,
@@ -80,6 +80,9 @@ function BlockEditPageComponent() {
   const [pluginSelectModalVisible, setPluginSelectModalVisible] =
     useState(false);
 
+  // Float Button Node 버튼 관련 State
+  const [isNodeButtonOpen, setIsNodeButtonOpen] = useState(false);
+
   // Node Change Callback
   const onNodesChange: OnNodesChange = useCallback(
     (changes) => {
@@ -104,7 +107,6 @@ function BlockEditPageComponent() {
       const sourceNode = nodes.find(
         (node) => node.id === connection.source,
       )! as Node<WebServerBlockNodeProps>;
-
       sourceNode.data.connectionMetadata = getConnectionEnvironment(
         nodes,
         connection.target!,
@@ -144,6 +146,8 @@ function BlockEditPageComponent() {
     );
   }, [nodeToEdit]);
 
+  useEffect(() => {}, [isNodeButtonOpen]);
+
   return (
     <>
       <div
@@ -176,77 +180,10 @@ function BlockEditPageComponent() {
           trigger={'click'}
           type={'primary'}
           icon={<PlusOutlined />}
+          onOpenChange={(isOpen) => {
+            !isOpen && setIsNodeButtonOpen(false);
+          }}
         >
-          <FloatButton
-            icon={<DesktopOutlined />}
-            tooltip={'EC2 블록 생성'}
-            onClick={() => {
-              const newNode: Node<VirtualMachineBlockNodeProps> = {
-                id: ulid(),
-                position: { x: 0, y: 0 },
-                data: {
-                  blockTitle: '가상 머신 블록',
-                  blockDescription: '가상 머신 블록입니다.',
-                  vmTier: 'low',
-                  vmRegion: 'korea',
-                  vmOperatingSystem: 'ubuntu',
-                  blockTags: [],
-                },
-                type: 'virtualMachine',
-              };
-              setNodes((nds) => nds.concat(newNode));
-            }}
-          />
-          <FloatButton
-            icon={<CloudServerOutlined />}
-            tooltip={'웹 서버 블록 생성'}
-            onClick={() => {
-              const newNode: Node<WebServerBlockNodeProps> = {
-                id: ulid(),
-                position: { x: 0, y: 0 },
-                data: {
-                  blockTitle: '웹 서버 블록',
-                  blockDescription: '웹 서버 블록입니다.',
-                  blockTags: [],
-                  webServerTier: 'low',
-                  webServerRegion: 'korea',
-                  containerData: {
-                    registryUrl: '',
-                    username: '',
-                    secrets: '',
-                    imageTags: '',
-                    containerPort: 80,
-                  },
-                  connectionMetadata: {
-                    dbRef: '',
-                  },
-                },
-                type: 'webServer',
-              };
-              setNodes((nds) => nds.concat(newNode));
-            }}
-          />
-          <FloatButton
-            icon={<DatabaseOutlined />}
-            tooltip={'DB 블록 생성'}
-            onClick={() => {
-              const newNode: Node<DatabaseBlockNodeProps> = {
-                id: ulid(),
-                position: { x: 0, y: 0 },
-                data: {
-                  blockTitle: '웹 서버 블록',
-                  blockDescription: '웹 서버 블록입니다.',
-                  blockTags: [],
-                  dbTier: 'low',
-                  dbRegion: 'korea',
-                  masterUsername: '',
-                  masterPassword: '',
-                },
-                type: 'database',
-              };
-              setNodes((nds) => nds.concat(newNode));
-            }}
-          />
           <FloatButton
             icon={<CloudOutlined />}
             tooltip={'클라우드에 배포'}
@@ -258,6 +195,85 @@ function BlockEditPageComponent() {
             tooltip={'배포 이력 및 현황 확인하기'}
             onClick={() => setDeploymentModalVisible(true)}
           />
+          <FloatButton
+            icon={<FaBox />}
+            onClick={() => {
+              setIsNodeButtonOpen(!isNodeButtonOpen);
+            }}
+          />
+          {isNodeButtonOpen && (
+            <FloatButton.Group shape="square" style={{ right: 80 }}>
+              <FloatButton
+                tooltip={'EC2 블록 생성'}
+                onClick={() => {
+                  const newNode: Node<VirtualMachineBlockNodeProps> = {
+                    id: ulid(),
+                    position: { x: 0, y: 0 },
+                    data: {
+                      blockTitle: '가상 머신 블록',
+                      blockDescription: '가상 머신 블록입니다.',
+                      vmTier: 'low',
+                      vmRegion: 'korea',
+                      vmOperatingSystem: 'ubuntu',
+                      blockTags: [],
+                    },
+                    type: 'virtualMachine',
+                  };
+                  setNodes((nds) => nds.concat(newNode));
+                }}
+              />
+              <FloatButton
+                icon={<CloudServerOutlined />}
+                style={{}}
+                tooltip={'웹 서버 블록 생성'}
+                onClick={() => {
+                  const newNode: Node<WebServerBlockNodeProps> = {
+                    id: ulid(),
+                    position: { x: 0, y: 0 },
+                    data: {
+                      blockTitle: '웹 서버 블록',
+                      blockDescription: '웹 서버 블록입니다.',
+                      blockTags: [],
+                      webServerTier: 'low',
+                      webServerRegion: 'korea',
+                      containerData: {
+                        registryUrl: '',
+                        username: '',
+                        secrets: '',
+                        imageTags: '',
+                      },
+                      connectionMetadata: {
+                        dbRef: '',
+                      },
+                    },
+                    type: 'webServer',
+                  };
+                  setNodes((nds) => nds.concat(newNode));
+                }}
+              />
+              <FloatButton
+                icon={<DatabaseOutlined />}
+                tooltip={'DB 블록 생성'}
+                onClick={() => {
+                  const newNode: Node<DatabaseBlockNodeProps> = {
+                    id: ulid(),
+                    position: { x: 0, y: 0 },
+                    data: {
+                      blockTitle: '웹 서버 블록',
+                      blockDescription: '웹 서버 블록입니다.',
+                      blockTags: [],
+                      dbTier: 'low',
+                      dbRegion: 'korea',
+                      masterUsername: '',
+                      masterPassword: '',
+                    },
+                    type: 'database',
+                  };
+                  setNodes((nds) => nds.concat(newNode));
+                }}
+              />
+            </FloatButton.Group>
+          )}
         </FloatButton.Group>
       </div>
       <DeploymentListView

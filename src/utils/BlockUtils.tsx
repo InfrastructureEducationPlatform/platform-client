@@ -1,4 +1,4 @@
-import { Edge, Node } from 'reactflow';
+import { Edge, MarkerType, Node } from 'reactflow';
 
 import { DatabaseBlockNode } from '../components/blocks/DatabaseBlockNode.tsx';
 import {
@@ -62,11 +62,12 @@ export function convertBlockToEdges(block: ExtendedBlock[]): Edge[] {
           target: value,
           animated: true,
           type: 'custom-edge',
+          markerEnd: {type: MarkerType.ArrowClosed},
         });
       });
     }
   });
-
+  console.log('convertBlockToEdges', edges);
   return edges;
 }
 
