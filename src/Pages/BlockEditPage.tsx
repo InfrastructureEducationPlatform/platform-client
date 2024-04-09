@@ -197,6 +197,7 @@ function BlockEditPageComponent() {
           />
           <FloatButton
             icon={<FaBox />}
+            tooltip={'블록 생성'}
             onClick={() => {
               setIsNodeButtonOpen(!isNodeButtonOpen);
             }}
