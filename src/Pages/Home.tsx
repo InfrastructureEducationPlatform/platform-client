@@ -1,15 +1,16 @@
-import { PlusOutlined } from '@ant-design/icons';
+import { EditOutlined, EllipsisOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import {
   Button,
   Card,
   Divider,
+  Dropdown,
   Flex,
   Form,
   Input,
+  MenuProps,
   Modal,
   Typography,
 } from 'antd';
-import Meta from 'antd/es/card/Meta';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,6 +18,7 @@ import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
+import { FaTrashCan } from 'react-icons/fa6';
 
 type CreateSketchType = {
   name: string;
@@ -33,7 +35,6 @@ export function Home() {
     </MainLayout>
   );
 }
-
 export function SketchListView({
   sketchListViewRef,
   createSketchButtonRef,
@@ -105,21 +106,53 @@ export function SketchListView({
               </Typography.Title>
             </Flex>
           </Card>
-          {sketchList.map((sketch) => (
-            <Card
+          {sketchList.map((sketch) => {
+            const items: MenuProps['items'] = [
+              {
+                label: "Rename",
+                key: 'rename',
+              },
+              {
+                type: 'divider',
+              },
+              {
+                label: "Delete",
+                key: 'delete',
+                danger: true,
+                onClick: () => {
+                  
+                }
+              },
+            ];
+            return (<Card
+              style={{ width: 300 }}
               key={sketch.id}
-              style={{ width: '300px', height: '280px' }}
               cover={
                 <img
                   alt="example"
                   src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                />
+                  onClick={() => navigate(`/sketches/${sketch.id}`)} />
               }
-              onClick={() => navigate(`/sketches/${sketch.id}`)}
             >
-              <Meta title={sketch.name} description={sketch.description} />
-            </Card>
-          ))}
+              <div style={{display: 'flex', flexDirection:'column'}}>
+                <div style={{flex:1,display:'flex', flexDirection:'row', alignContent:'space-between'}}>
+                  <div style={{flex: 9, overflow:'hidden', width: '250px'}}>
+                    <Typography.Text ellipsis style={{fontSize: 16, fontWeight:600}}>
+                      {sketch.name}
+                    </Typography.Text>
+                  </div>
+                  <Dropdown menu={{items}} trigger={['click']}>
+                    <EllipsisOutlined />
+                  </Dropdown>
+                </div>
+                <div style={{flex:1}}>
+                  <Typography.Text ellipsis style={{flex: 1,fontSize: 12, color: 'gray'}}>
+                    {sketch.description}
+                  </Typography.Text >
+                </div>
+              </div>
+            </Card>);
+            })}
         </Flex>
       </Flex>
       <Modal
