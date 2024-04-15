@@ -18,7 +18,6 @@ import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
-import { FaTrashCan } from 'react-icons/fa6';
 
 type CreateSketchType = {
   name: string;
@@ -27,7 +26,7 @@ type CreateSketchType = {
 
 export function Home() {
   const location = useLocation();
-  const state = {...location.state};
+  const state = { ...location.state };
   const userContextReloadKey = state.userContextReloadKey;
   return (
     <MainLayout pageKey={'sketch-list'} userContextReloadKey={userContextReloadKey}>
@@ -42,12 +41,35 @@ export function SketchListView({
   sketchListViewRef?: React.Ref<HTMLDivElement> | undefined;
   createSketchButtonRef?: React.Ref<HTMLDivElement> | undefined;
 }) {
-  const [form] = Form.useForm();
+  const [createForm] = Form.useForm();
+  const [modifyForm] = Form.useForm();
   const { currentChannel } = useChannelNavigationContext();
   const [sketchList, setSketchList] = useState<SketchProjection[]>([]);
   const [isCreateOpenModal, setIsCreateOpenModal] = useState<boolean>(false);
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
   const navigate = useNavigate();
+  const [isModifyOpenModal, setIsModifyOpenModal] = useState<boolean>(false);
+  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({'id':'', 'name':'', 'description':'', 'createdAt':'', 'updatedAt':''});
+  const items: MenuProps['items'] = [
+    {
+      label: "설명 수정",
+      key: 'rename',
+      onClick: () => {
+        setIsModifyOpenModal(true);
+      }
+    },
+    {
+      type: 'divider',
+    },
+    {
+      label: "Delete",
+      key: 'delete',
+      danger: true,
+      onClick: () => {
+
+      }
+    },
+  ];
 
   useEffect(() => {
     (async () => {
@@ -65,7 +87,9 @@ export function SketchListView({
       );
     })();
   }, [currentChannel, isSketchCreated]);
-
+  useEffect(()=>{
+    modifyForm.setFieldsValue(selectedSketch);
+  },[selectedSketch]);
   return (
     <>
       <Flex
@@ -85,6 +109,7 @@ export function SketchListView({
           <Card
             style={{
               width: '300px',
+              minWidth: '300px',
               height: '280px',
               display: 'flex',
               justifyContent: 'center',
@@ -107,60 +132,49 @@ export function SketchListView({
             </Flex>
           </Card>
           {sketchList.map((sketch) => {
-            const items: MenuProps['items'] = [
-              {
-                label: "Rename",
-                key: 'rename',
-              },
-              {
-                type: 'divider',
-              },
-              {
-                label: "Delete",
-                key: 'delete',
-                danger: true,
-                onClick: () => {
-                  
+
+            return (
+              <Card
+                style={{ width: '300px', minWidth: '300px', }}
+                key={sketch.id}
+                cover={
+                  <img
+                    alt="example"
+                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+                    onClick={() => navigate(`/sketches/${sketch.id}`)} />
                 }
-              },
-            ];
-            return (<Card
-              style={{ width: 300 }}
-              key={sketch.id}
-              cover={
-                <img
-                  alt="example"
-                  src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                  onClick={() => navigate(`/sketches/${sketch.id}`)} />
-              }
-            >
-              <div style={{display: 'flex', flexDirection:'column'}}>
-                <div style={{flex:1,display:'flex', flexDirection:'row', alignContent:'space-between'}}>
-                  <div style={{flex: 9, overflow:'hidden', width: '250px'}}>
-                    <Typography.Text ellipsis style={{fontSize: 16, fontWeight:600}}>
-                      {sketch.name}
-                    </Typography.Text>
+              >
+                <div className='SketchOption' style={{ display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'row', alignContent: 'space-between' }}>
+                    <div style={{ flex: 9, overflow: 'hidden' }}>
+                      <Typography.Text ellipsis style={{ fontSize: 16, fontWeight: 600 }}>
+                        {sketch.name}
+                      </Typography.Text>
+                    </div>
+                    <Dropdown menu={{ items }} trigger={['click']}>
+                      <EllipsisOutlined onClick={()=> {
+                        setSelectedSketch(sketch);
+                      }}/>
+                    </Dropdown>
                   </div>
-                  <Dropdown menu={{items}} trigger={['click']}>
-                    <EllipsisOutlined />
-                  </Dropdown>
+                  <div style={{ flex: 1 }}>
+                    <Typography.Text ellipsis style={{ flex: 1, fontSize: 12, color: 'gray' }}>
+                      {sketch.description}
+                    </Typography.Text >
+                  </div>
                 </div>
-                <div style={{flex:1}}>
-                  <Typography.Text ellipsis style={{flex: 1,fontSize: 12, color: 'gray'}}>
-                    {sketch.description}
-                  </Typography.Text >
-                </div>
-              </div>
-            </Card>);
-            })}
+
+              </Card>);
+          })}
         </Flex>
       </Flex>
       <Modal
+        key={'createSketchModal'}
         open={isCreateOpenModal}
         footer={[
-          <Button onClick={() => setIsCreateOpenModal(false)}>취소</Button>,
-          <Button form={'createSketchForm'} type="primary" htmlType="submit">
-            채널 생성
+          <Button key={'cancleBtn'} onClick={() => setIsCreateOpenModal(false)}>취소</Button>,
+          <Button key = {'submitBtn'}form={'createSketchForm'} type="primary" htmlType="submit">
+            스케치 생성
           </Button>,
         ]}
         closable={false}
@@ -173,7 +187,7 @@ export function SketchListView({
             <Divider style={{ margin: 0, marginTop: '10px' }} />
           </div>
           <Form
-            form={form}
+            form={createForm}
             id={'createSketchForm'}
             name="basic"
             onFinish={(value) => {
@@ -188,7 +202,7 @@ export function SketchListView({
                 });
                 setIsSketchCreated(!isSketchCreated);
                 setIsCreateOpenModal(false);
-                form.resetFields();
+                createForm.resetFields();
               })();
             }}
             autoComplete="off"
@@ -202,7 +216,6 @@ export function SketchListView({
             >
               <Input />
             </Form.Item>
-
             <Form.Item<CreateSketchType>
               label="스케치 설명"
               name={'description'}
@@ -215,6 +228,136 @@ export function SketchListView({
           </Form>
         </Flex>
       </Modal>
+      <Modal
+        key={'modifySketchModal'}
+        open={isModifyOpenModal}
+        footer={[
+          <Button key = 'cancleBtn' onClick={() => setIsModifyOpenModal(false)}>취소</Button>,
+          <Button key = 'submitBtn' form={'modifySketchForm'} type="primary" htmlType="submit">
+            스케치 수정
+          </Button>,
+        ]}
+        closable={false}
+      >
+        <Flex style={{ flexDirection: 'column', gap: '20px' }}>
+          <div>
+            <Typography.Title level={3} style={{ margin: 0 }}>
+              스케치 정보
+            </Typography.Title>
+            <Divider style={{ margin: 0, marginTop: '10px' }} />
+          </div>
+        <Form
+          form={modifyForm}
+          id={'modifySketchForm'}
+          name="modifySketchForm"
+          onFinish={(value) => {
+            
+            (async () => {
+              await sketchApi.updateSketchAsync(
+                currentChannel.channelId, 
+                selectedSketch.id, 
+                {
+                  name: value.name,
+                  description: value.description,
+                  blockData: {},
+                }
+              );
+            })();
+          }}
+          autoComplete="off"
+        >
+          <Form.Item
+            key={'sketchName'}
+            label="스케치 이름"
+            name={'name'}
+            rules={[
+              { required: true, message: '스케치 이름을 입력해 주세요!' },
+            ]}
+            initialValue={selectedSketch.name}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            key={'sketchDescription'}
+            label="스케치 설명"
+            name={'description'}
+            rules={[
+              { required: true, message: '스케치 설명을 입력해 주세요!' },
+            ]}
+            initialValue={selectedSketch.description}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            key={'sketchCreatedAt'}
+            label="스케치 생성일"
+            name={'createdAt'}
+          >
+            {selectedSketch.createdAt}
+          </Form.Item>
+          <Form.Item
+            key={'sketchUpdatedAt'}
+            label="스케치 수정일"
+            name={'updatedAt'}
+          >
+            {selectedSketch.updatedAt}
+          </Form.Item>
+        </Form>
+        </Flex>
+      </Modal>
     </>
   );
+}
+
+interface FieldData extends SketchProjection {
+}
+
+interface CustomizedFormProps {
+  onChange: (fields: FieldData[]) => void;
+  fields: FieldData[];
+}
+
+const SketchInfoForm: React.FC<CustomizedFormProps> = ({ onChange, fields }) => {
+  return <Form
+    key={'modifySketchForm'}
+    name="global_state"
+    layout='inline'
+    fields={fields}
+    onFieldsChange={(_, allFields) => {
+      const updatedFields: FieldData[] = allFields.map((field) => ({
+        id: field.value[0],
+        name: field.value[1],
+        description: field.value[2],
+        createdAt: field.value[3],
+        updatedAt: field.value[4],
+      }));
+      onChange(updatedFields);
+    }}
+    autoComplete="off"
+  >
+    <Form.Item
+      key={'sketchName'}
+      label="스케치 이름"
+      name={'name'}
+      rules={[
+        { required: true, message: '스케치 이름을 입력해 주세요!' },
+      ]}
+      initialValue={fields[0].name}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      key={'sketchDescription'}
+      label="스케치 설명"
+      name={'description'}
+      rules={[
+        { required: true, message: '스케치 설명을 입력해 주세요!' },
+      ]}
+      initialValue={fields[0].description}
+    >
+      <Input />
+    </Form.Item>
+  </Form>
 }
