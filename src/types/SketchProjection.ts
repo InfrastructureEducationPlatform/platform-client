@@ -4,4 +4,5 @@ export type SketchProjection = {
   description: string;
   createdAt: string;
   updatedAt: string;
+  blockSketch: string;
 };

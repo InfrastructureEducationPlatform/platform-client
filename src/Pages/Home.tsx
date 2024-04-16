@@ -9,6 +9,7 @@ import {
   Input,
   MenuProps,
   Modal,
+  Spin,
   Typography,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -49,7 +50,7 @@ export function SketchListView({
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
   const navigate = useNavigate();
   const [isModifyOpenModal, setIsModifyOpenModal] = useState<boolean>(false);
-  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({'id':'', 'name':'', 'description':'', 'createdAt':'', 'updatedAt':''});
+  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({'id':'', 'name':'', 'description':'', 'createdAt':'', 'updatedAt':'', 'blockSketch':''});
   const items: MenuProps['items'] = [
     {
       label: "설명 수정",
@@ -70,6 +71,7 @@ export function SketchListView({
       }
     },
   ];
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
@@ -83,6 +85,7 @@ export function SketchListView({
           description: a.description,
           createdAt: a.createdAt,
           updatedAt: a.updatedAt,
+          blockSketch: a.blockSketch,
         })),
       );
     })();
@@ -94,7 +97,7 @@ export function SketchListView({
     <>
       <Flex
         ref={sketchListViewRef}
-        style={{ flexDirection: 'column', padding: '20px', gap: '20px' }}
+        style={{ flexDirection: 'column', padding: '20px', gap: '20px', zIndex:2 }}
       >
         <Flex style={{ alignItems: 'center', gap: '20px' }}>
           <Typography.Title level={2} style={{ margin: 0 }}>
@@ -251,17 +254,32 @@ export function SketchListView({
           id={'modifySketchForm'}
           name="modifySketchForm"
           onFinish={(value) => {
-            
+            setIsLoading(true);
+            // 스케치 이름, 설명 수정 요청
             (async () => {
-              await sketchApi.updateSketchAsync(
+              const result = await sketchApi.updateSketchAsync(
                 currentChannel.channelId, 
                 selectedSketch.id, 
                 {
                   name: value.name,
                   description: value.description,
-                  blockData: {},
+                  blockData: selectedSketch.blockSketch,
                 }
               );
+
+              // 모든 sketch를 다시 불러오지 않고, 수정된 sketch만 업데이트 및 렌더링
+              setSketchList(sketchList.map((sketch)=>{
+                if(sketch.id === selectedSketch.id){
+                  return {
+                    ...sketch,
+                    name: result.data.name,
+                    description: result.data.description,
+                    modifiedAt: result.data.updatedAt,
+                  };
+                }
+                return sketch;
+              }))
+              setIsLoading(false);
             })();
           }}
           autoComplete="off"
@@ -294,70 +312,32 @@ export function SketchListView({
             label="스케치 생성일"
             name={'createdAt'}
           >
-            {selectedSketch.createdAt}
+            {dateParsing(selectedSketch.createdAt)}
           </Form.Item>
           <Form.Item
             key={'sketchUpdatedAt'}
             label="스케치 수정일"
             name={'updatedAt'}
           >
-            {selectedSketch.updatedAt}
+            {dateParsing(selectedSketch.updatedAt)}
           </Form.Item>
         </Form>
         </Flex>
       </Modal>
+      <Spin spinning={isLoading} fullscreen />
     </>
   );
 }
 
-interface FieldData extends SketchProjection {
+// 10 이하의 숫자의 경우 앞자리에 0을 붙여주는 함수
+function padZero(num: number): string {
+  return num < 10 ? `0${num}` : `${num}`;
 }
 
-interface CustomizedFormProps {
-  onChange: (fields: FieldData[]) => void;
-  fields: FieldData[];
+// yyyy-MM-ddTHH:mm:ss... 형식의 문자열을 yyyy년 MM월 dd일 HH:mm:ss의 문자열로 변환하는 함수
+const dateParsing = (date: string) => {
+  const dt = new Date(date);
+  const outputString: string = `${dt.getFullYear()}년 ${padZero(dt.getMonth() + 1)}월 ${padZero(dt.getDate())}일 ${padZero(dt.getHours())}:${padZero(dt.getMinutes())}:${padZero(dt.getSeconds())}`;
+  return outputString;
 }
 
-const SketchInfoForm: React.FC<CustomizedFormProps> = ({ onChange, fields }) => {
-  return <Form
-    key={'modifySketchForm'}
-    name="global_state"
-    layout='inline'
-    fields={fields}
-    onFieldsChange={(_, allFields) => {
-      const updatedFields: FieldData[] = allFields.map((field) => ({
-        id: field.value[0],
-        name: field.value[1],
-        description: field.value[2],
-        createdAt: field.value[3],
-        updatedAt: field.value[4],
-      }));
-      onChange(updatedFields);
-    }}
-    autoComplete="off"
-  >
-    <Form.Item
-      key={'sketchName'}
-      label="스케치 이름"
-      name={'name'}
-      rules={[
-        { required: true, message: '스케치 이름을 입력해 주세요!' },
-      ]}
-      initialValue={fields[0].name}
-    >
-      <Input />
-    </Form.Item>
-
-    <Form.Item
-      key={'sketchDescription'}
-      label="스케치 설명"
-      name={'description'}
-      rules={[
-        { required: true, message: '스케치 설명을 입력해 주세요!' },
-      ]}
-      initialValue={fields[0].description}
-    >
-      <Input />
-    </Form.Item>
-  </Form>
-}
