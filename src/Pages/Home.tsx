@@ -9,7 +9,6 @@ import {
   Input,
   MenuProps,
   Modal,
-  Spin,
   Typography,
 } from 'antd';
 import React, { useEffect, useState } from 'react';
@@ -19,7 +18,8 @@ import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
-
+import { Bounce, toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 type CreateSketchType = {
   name: string;
   description: string;
@@ -50,7 +50,9 @@ export function SketchListView({
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
   const navigate = useNavigate();
   const [isModifyOpenModal, setIsModifyOpenModal] = useState<boolean>(false);
-  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({'id':'', 'name':'', 'description':'', 'createdAt':'', 'updatedAt':'', 'blockSketch':''});
+  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({ 'id': '', 'name': '', 'description': '', 'createdAt': '', 'updatedAt': '', 'blockSketch': '' });
+
+  // 스케치 개체 옵션 메뉴
   const items: MenuProps['items'] = [
     {
       label: "설명 수정",
@@ -90,14 +92,16 @@ export function SketchListView({
       );
     })();
   }, [currentChannel, isSketchCreated]);
-  useEffect(()=>{
+
+  // 옵션 목록을 누르면, 해당 스케치 정보를 modifyForm에 채워넣는다.
+  useEffect(() => {
     modifyForm.setFieldsValue(selectedSketch);
-  },[selectedSketch]);
+  }, [selectedSketch]);
   return (
     <>
       <Flex
         ref={sketchListViewRef}
-        style={{ flexDirection: 'column', padding: '20px', gap: '20px', zIndex:2 }}
+        style={{ flexDirection: 'column', padding: '20px', gap: '20px', zIndex: 2 }}
       >
         <Flex style={{ alignItems: 'center', gap: '20px' }}>
           <Typography.Title level={2} style={{ margin: 0 }}>
@@ -155,9 +159,9 @@ export function SketchListView({
                       </Typography.Text>
                     </div>
                     <Dropdown menu={{ items }} trigger={['click']}>
-                      <EllipsisOutlined onClick={()=> {
+                      <EllipsisOutlined onClick={() => {
                         setSelectedSketch(sketch);
-                      }}/>
+                      }} />
                     </Dropdown>
                   </div>
                   <div style={{ flex: 1 }}>
@@ -176,7 +180,7 @@ export function SketchListView({
         open={isCreateOpenModal}
         footer={[
           <Button key={'cancleBtn'} onClick={() => setIsCreateOpenModal(false)}>취소</Button>,
-          <Button key = {'submitBtn'}form={'createSketchForm'} type="primary" htmlType="submit">
+          <Button key={'submitBtn'} form={'createSketchForm'} type="primary" htmlType="submit">
             스케치 생성
           </Button>,
         ]}
@@ -235,8 +239,8 @@ export function SketchListView({
         key={'modifySketchModal'}
         open={isModifyOpenModal}
         footer={[
-          <Button key = 'cancleBtn' onClick={() => setIsModifyOpenModal(false)}>취소</Button>,
-          <Button key = 'submitBtn' form={'modifySketchForm'} type="primary" htmlType="submit">
+          <Button key='cancleBtn' onClick={() => setIsModifyOpenModal(false)}>취소</Button>,
+          <Button key='submitBtn' form={'modifySketchForm'} type="primary" htmlType="submit">
             스케치 수정
           </Button>,
         ]}
@@ -249,82 +253,118 @@ export function SketchListView({
             </Typography.Title>
             <Divider style={{ margin: 0, marginTop: '10px' }} />
           </div>
-        <Form
-          form={modifyForm}
-          id={'modifySketchForm'}
-          name="modifySketchForm"
-          onFinish={(value) => {
-            setIsLoading(true);
-            // 스케치 이름, 설명 수정 요청
-            (async () => {
-              const result = await sketchApi.updateSketchAsync(
-                currentChannel.channelId, 
-                selectedSketch.id, 
-                {
-                  name: value.name,
-                  description: value.description,
-                  blockData: selectedSketch.blockSketch,
-                }
-              );
+          <Form
+            form={modifyForm}
+            id={'modifySketchForm'}
+            name="modifySketchForm"
+            onFinish={(value) => {
+              // 수정된 스케치 정보를 서버에 전송하고, 전송 상태 및 수정 상태를 Promise 상태로 반환. Toast 함수의 Promise를 위해 다음과 같이 정의.
+              const modifySketch = (): Promise<boolean> => {
+                // 수정 및 스케치 업로드가 모두 성공했는지 확인하는 함수.
+                const modifyResult = async () => {
+                  // 수정 요청 API 호출
+                  const modifyReqResult = await sketchApi.updateSketchAsync(
+                    currentChannel.channelId,
+                    selectedSketch.id,
+                    {
+                      name: value.name,
+                      description: value.description,
+                      blockData: selectedSketch.blockSketch,
+                    }
+                  );
 
-              // 모든 sketch를 다시 불러오지 않고, 수정된 sketch만 업데이트 및 렌더링
-              setSketchList(sketchList.map((sketch)=>{
-                if(sketch.id === selectedSketch.id){
-                  return {
-                    ...sketch,
-                    name: result.data.name,
-                    description: result.data.description,
-                    modifiedAt: result.data.updatedAt,
-                  };
+                  // 수정 성공인 경우, true를 반환.
+                  if (modifyReqResult.status === 200) {
+                    // 모든 스케치 목록을 다시 불러오지 않고, 수정된 스케치만 업데이트 및 렌더링
+                    setSketchList(sketchList.map((sketch) => {
+                      if (sketch.id === selectedSketch.id) {
+                        return {
+                          ...sketch,
+                          name: modifyReqResult.data.name,
+                          description: modifyReqResult.data.description,
+                        };
+                      }
+                      return sketch;
+                    }));
+                    return true;
+                  }
+                  else
+                    return false;
                 }
-                return sketch;
-              }))
-              setIsLoading(false);
-            })();
-          }}
-          autoComplete="off"
-        >
-          <Form.Item
-            key={'sketchName'}
-            label="스케치 이름"
-            name={'name'}
-            rules={[
-              { required: true, message: '스케치 이름을 입력해 주세요!' },
-            ]}
-            initialValue={selectedSketch.name}
-          >
-            <Input />
-          </Form.Item>
 
-          <Form.Item
-            key={'sketchDescription'}
-            label="스케치 설명"
-            name={'description'}
-            rules={[
-              { required: true, message: '스케치 설명을 입력해 주세요!' },
-            ]}
-            initialValue={selectedSketch.description}
+                // Toast에 전달할 Promise 객체 반환
+                return new Promise((resolve, reject) => {
+                  modifyResult().then((value) => {
+                    if (value === true)
+                      resolve(true);
+                    else
+                      reject(false);
+                  }).catch((err) => {
+                    reject(false);
+                  });
+                }
+                )
+
+              };
+
+              // Toast 함수를 통해 수정 상태를 알림.
+              toast.promise(modifySketch, { pending: '스케치 정보 수정 중...', success: '스케치 정보 수정 완료!', error: '스케치 정보 수정 실패!' })
+
+            }}
+            autoComplete="off"
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            key={'sketchCreatedAt'}
-            label="스케치 생성일"
-            name={'createdAt'}
-          >
-            {dateParsing(selectedSketch.createdAt)}
-          </Form.Item>
-          <Form.Item
-            key={'sketchUpdatedAt'}
-            label="스케치 수정일"
-            name={'updatedAt'}
-          >
-            {dateParsing(selectedSketch.updatedAt)}
-          </Form.Item>
-        </Form>
+            <Form.Item
+              key={'sketchName'}
+              label="스케치 이름"
+              name={'name'}
+              rules={[
+                { required: true, message: '스케치 이름을 입력해 주세요!' },
+              ]}
+              initialValue={selectedSketch.name}
+            >
+              <Input />
+            </Form.Item>
+
+            <Form.Item
+              key={'sketchDescription'}
+              label="스케치 설명"
+              name={'description'}
+              rules={[
+                { required: true, message: '스케치 설명을 입력해 주세요!' },
+              ]}
+              initialValue={selectedSketch.description}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              key={'sketchCreatedAt'}
+              label="스케치 생성일"
+              name={'createdAt'}
+            >
+              {dateParsing(selectedSketch.createdAt)}
+            </Form.Item>
+            <Form.Item
+              key={'sketchUpdatedAt'}
+              label="스케치 수정일"
+              name={'updatedAt'}
+            >
+              {dateParsing(selectedSketch.updatedAt)}
+            </Form.Item>
+          </Form>
         </Flex>
       </Modal>
-      <Spin spinning={isLoading} fullscreen />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={3000}
+        hideProgressBar={true}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        draggable
+        pauseOnHover
+        theme="light"
+        transition={Bounce}
+      />
     </>
   );
 }
