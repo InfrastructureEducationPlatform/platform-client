@@ -139,7 +139,7 @@ function PluginInstallModal({
       onOk={() => handleInstall()}
       onCancel={() => setModalVisible(false)}
     >
-      <Form form={form}>
+      <Form form={form} labelCol={{ span: 6 }}>
         {plugin.pluginTypeDefinitions.map((data) => (
           <Form.Item
             key={`${plugin.id}.${data.fieldName}`}
