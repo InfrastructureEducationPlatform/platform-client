@@ -242,6 +242,7 @@ function BlockEditPageComponent() {
                         username: '',
                         secrets: '',
                         imageTags: '',
+                        containerPort: 80,
                       },
                       connectionMetadata: {
                         dbRef: '',
