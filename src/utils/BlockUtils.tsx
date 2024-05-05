@@ -1,5 +1,6 @@
 import { Edge, MarkerType, Node } from 'reactflow';
 
+import { CacheBlockNode } from '../components/blocks/CacheBlockNode.tsx';
 import { DatabaseBlockNode } from '../components/blocks/DatabaseBlockNode.tsx';
 import {
   VirtualMachineBlockNode,
@@ -11,6 +12,7 @@ import {
 } from '../components/blocks/WebServerBlockNode.tsx';
 import CustomEdge from '../components/edges/CustomEdge.tsx';
 import {
+  CacheBlock,
   DatabaseBlock,
   ExtendedBlock,
   VirtualMachineBlock,
@@ -22,6 +24,7 @@ export const supportedBlockNodeTypes = {
   virtualMachine: VirtualMachineBlockNode,
   webServer: WebServerBlockNode,
   database: DatabaseBlockNode,
+  cache: CacheBlockNode,
 };
 
 export const supportedEdgeTypes = {
@@ -43,6 +46,10 @@ export function convertBlockToNode(block: ExtendedBlock): Node {
     return convertDatabaseBlockToNode(block as DatabaseBlock);
   }
 
+  if (block.type === 'cache') {
+    return convertCacheBlockToNode(block as CacheBlock);
+  }
+
   throw new Error(`Block Type ${block.type} is not supported!`);
 }
 
@@ -62,7 +69,7 @@ export function convertBlockToEdges(block: ExtendedBlock[]): Edge[] {
           target: value,
           animated: true,
           type: 'custom-edge',
-          markerEnd: {type: MarkerType.ArrowClosed},
+          markerEnd: { type: MarkerType.ArrowClosed },
         });
       });
     }
@@ -132,6 +139,22 @@ function convertDatabaseBlockToNode(block: DatabaseBlock): Node {
   };
 }
 
+// Convert Cache Block(usually from saved data from server) to Node(react-flow)
+function convertCacheBlockToNode(block: CacheBlock): Node {
+  return {
+    id: block.id,
+    position: { x: block.x, y: block.y },
+    type: block.type,
+    data: {
+      blockTitle: block.name,
+      blockDescription: block.description,
+      blockTags: block.tags,
+      cacheTier: block.cacheFeatures.tier,
+      cacheRegion: block.cacheFeatures.region,
+    },
+  };
+}
+
 // Convert Node(react-flow) to Block(usually for saving to server)
 // this will examine blockType and convert it to Block(see each sub-function for more reference.)
 export function convertNodeToBlock(node: Node): ExtendedBlock {
@@ -145,6 +168,10 @@ export function convertNodeToBlock(node: Node): ExtendedBlock {
 
   if (node.type === 'database') {
     return convertDatabseNodeToBlock(node);
+  }
+
+  if (node.type === 'cache') {
+    return convertCacheNodeToBlock(node);
   }
 
   throw new Error(`Node Type ${node.type} is not supported!`);
@@ -216,16 +243,37 @@ function convertDatabseNodeToBlock(node: Node): DatabaseBlock {
   };
 }
 
+function convertCacheNodeToBlock(node: Node): CacheBlock {
+  return {
+    id: node.id,
+    x: node.position.x,
+    y: node.position.y,
+    type: 'cache',
+    name: node.data.blockTitle,
+    description: node.data.blockDescription,
+    tags: node.data.blockTags,
+    advancedMeta: {},
+    cacheFeatures: {
+      tier: node.data.cacheTier,
+      region: node.data.cacheRegion,
+    },
+  };
+}
+
 export function getConnectionEnvironment(
   nodes: Node[],
   targetNodeId: string,
-  previousConnectionMeta: { dbRef: string },
-): { dbRef: string } {
+  previousConnectionMeta: { dbRef: string; cacheRef: string },
+): { dbRef: string; cacheRef: string } {
   const node = nodes.find((node) => node.id === targetNodeId)!;
 
   // Each value will be evaluated by the server.
   if (node.type === 'database') {
     return { ...previousConnectionMeta, dbRef: node.id };
+  }
+
+  if (node.type === 'cache') {
+    return { ...previousConnectionMeta, cacheRef: node.id };
   }
 
   return { ...previousConnectionMeta };

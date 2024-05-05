@@ -25,6 +25,7 @@ import { ulid } from 'ulid';
 import { DeploymentListView } from '../components/DeploymentListView.tsx';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { SelectInstalledPluginModal } from '../components/SelectInstalledPluginModal.tsx';
+import { CacheBlockNodeProps } from '../components/blocks/CacheBlockNode.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { WebServerBlockNodeProps } from '../components/blocks/WebServerBlockNode.tsx';
@@ -246,6 +247,7 @@ function BlockEditPageComponent() {
                       },
                       connectionMetadata: {
                         dbRef: '',
+                        cacheRef: '',
                       },
                     },
                     type: 'webServer',
@@ -270,6 +272,25 @@ function BlockEditPageComponent() {
                       masterPassword: '',
                     },
                     type: 'database',
+                  };
+                  setNodes((nds) => nds.concat(newNode));
+                }}
+              />
+              <FloatButton
+                icon={<DatabaseOutlined />}
+                tooltip={'캐시 블록 생성'}
+                onClick={() => {
+                  const newNode: Node<CacheBlockNodeProps> = {
+                    id: ulid(),
+                    position: { x: 0, y: 0 },
+                    data: {
+                      blockTitle: '캐시 서버 블록',
+                      blockDescription: '캐시 서버 블록입니다.',
+                      blockTags: [],
+                      cacheRegion: 'korea',
+                      cacheTier: 'low',
+                    },
+                    type: 'cache',
                   };
                   setNodes((nds) => nds.concat(newNode));
                 }}

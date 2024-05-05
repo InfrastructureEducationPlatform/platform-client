@@ -25,6 +25,7 @@ export type WebServerBlockNodeProps = CommonBlockProps & {
   };
   connectionMetadata: {
     dbRef: string;
+    cacheRef: string;
   };
 };
 

@@ -2,6 +2,7 @@ import { Drawer } from 'antd';
 import React, { ReactNode } from 'react';
 import { Node } from 'reactflow';
 
+import { CacheBlockEditor } from './CacheNodeEditDrawer.tsx';
 import { DatabaseBlockEditor } from './DatabaseBlockEditor.tsx';
 import { VirtualMachineBlockEditor } from './VirtualMachineBlockEditor.tsx';
 import { WebServerBlockEditor } from './WebServerBlockEditor.tsx';
@@ -33,6 +34,13 @@ keyMap.set('webServer', (commonBlockNodeContentProps) => (
 ));
 keyMap.set('database', (commonBlockNodeContentProps) => (
   <DatabaseBlockEditor
+    node={commonBlockNodeContentProps.node}
+    setNode={commonBlockNodeContentProps.setNode}
+    setDrawerVisible={commonBlockNodeContentProps.setDrawerVisible}
+  />
+));
+keyMap.set('cache', (commonBlockNodeContentProps) => (
+  <CacheBlockEditor
     node={commonBlockNodeContentProps.node}
     setNode={commonBlockNodeContentProps.setNode}
     setDrawerVisible={commonBlockNodeContentProps.setDrawerVisible}

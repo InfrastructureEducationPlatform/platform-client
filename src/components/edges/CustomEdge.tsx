@@ -1,18 +1,16 @@
-import { Button, ColorPicker, Flex } from 'antd';
-import React, { useState } from 'react';
+import { Button, Flex } from 'antd';
+import React from 'react';
+import { FaRegTrashCan } from 'react-icons/fa6';
 import {
   BaseEdge,
   EdgeLabelRenderer,
   EdgeProps,
-  MarkerType,
   Node,
   getBezierPath,
   useReactFlow,
 } from 'reactflow';
 
 import { WebServerBlockNodeProps } from '../blocks/WebServerBlockNode.tsx';
-import { CaretLeftOutlined, CaretRightOutlined, EllipsisOutlined, SwapOutlined } from '@ant-design/icons';
-import { FaRegTrashCan, FaTrashCan } from 'react-icons/fa6';
 
 export default function CustomEdge({
   id,
@@ -37,7 +35,6 @@ export default function CustomEdge({
     targetPosition,
   });
 
-
   const onEdgeClick = () => {
     // get node with source Id
     console.log('clicked');
@@ -50,6 +47,10 @@ export default function CustomEdge({
         sourceNode.data.connectionMetadata.dbRef === target
           ? ''
           : sourceNode.data.connectionMetadata.dbRef,
+      cacheRef:
+        sourceNode.data.connectionMetadata.cacheRef === target
+          ? ''
+          : sourceNode.data.connectionMetadata.cacheRef,
     };
 
     // update nodes and remove edge
@@ -61,9 +62,8 @@ export default function CustomEdge({
 
   return (
     <>
-      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style}/>
+      <BaseEdge path={edgePath} markerEnd={markerEnd} style={style} />
       <EdgeLabelRenderer>
-        
         <div
           style={{
             position: 'absolute',
@@ -75,10 +75,13 @@ export default function CustomEdge({
           }}
           className="nodrag nopan"
         >
-          <Button onClick={onEdgeClick}><Flex><FaRegTrashCan/></Flex></Button>
-          </div>
+          <Button onClick={onEdgeClick}>
+            <Flex>
+              <FaRegTrashCan />
+            </Flex>
+          </Button>
+        </div>
       </EdgeLabelRenderer>
     </>
   );
 }
-
