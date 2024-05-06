@@ -3,6 +3,10 @@ import { Edge, MarkerType, Node } from 'reactflow';
 import { CacheBlockNode } from '../components/blocks/CacheBlockNode.tsx';
 import { DatabaseBlockNode } from '../components/blocks/DatabaseBlockNode.tsx';
 import {
+  MessageQueueBlockNode,
+  MessageQueueBlockNodeProps,
+} from '../components/blocks/MessageQueueBlockNode.tsx';
+import {
   VirtualMachineBlockNode,
   VirtualMachineBlockNodeProps,
 } from '../components/blocks/VirtualMachineBlockNode.tsx';
@@ -15,6 +19,7 @@ import {
   CacheBlock,
   DatabaseBlock,
   ExtendedBlock,
+  MqBlock,
   VirtualMachineBlock,
   WebServerBlock,
 } from '../types/BlockTypes.ts';
@@ -25,6 +30,7 @@ export const supportedBlockNodeTypes = {
   webServer: WebServerBlockNode,
   database: DatabaseBlockNode,
   cache: CacheBlockNode,
+  mq: MessageQueueBlockNode,
 };
 
 export const supportedEdgeTypes = {
@@ -48,6 +54,10 @@ export function convertBlockToNode(block: ExtendedBlock): Node {
 
   if (block.type === 'cache') {
     return convertCacheBlockToNode(block as CacheBlock);
+  }
+
+  if (block.type === 'mq') {
+    return convertMQBlockToNode(block as MqBlock);
   }
 
   throw new Error(`Block Type ${block.type} is not supported!`);
@@ -155,6 +165,26 @@ function convertCacheBlockToNode(block: CacheBlock): Node {
   };
 }
 
+// Convert MQ Block(usually from saved data from server) to Node(react-flow)
+function convertMQBlockToNode(
+  block: MqBlock,
+): Node<MessageQueueBlockNodeProps> {
+  return {
+    id: block.id,
+    position: { x: block.x, y: block.y },
+    type: block.type,
+    data: {
+      blockTitle: block.name,
+      blockDescription: block.description,
+      blockTags: block.tags,
+      mqTier: block.mqFeatures.tier,
+      mqRegion: block.mqFeatures.region,
+      mqUsername: block.mqFeatures.username,
+      mqPassword: block.mqFeatures.password,
+    },
+  };
+}
+
 // Convert Node(react-flow) to Block(usually for saving to server)
 // this will examine blockType and convert it to Block(see each sub-function for more reference.)
 export function convertNodeToBlock(node: Node): ExtendedBlock {
@@ -172,6 +202,10 @@ export function convertNodeToBlock(node: Node): ExtendedBlock {
 
   if (node.type === 'cache') {
     return convertCacheNodeToBlock(node);
+  }
+
+  if (node.type === 'mq') {
+    return convertMQNodeToBlock(node);
   }
 
   throw new Error(`Node Type ${node.type} is not supported!`);
@@ -260,11 +294,30 @@ function convertCacheNodeToBlock(node: Node): CacheBlock {
   };
 }
 
+function convertMQNodeToBlock(node: Node): MqBlock {
+  return {
+    id: node.id,
+    x: node.position.x,
+    y: node.position.y,
+    type: 'mq',
+    name: node.data.blockTitle,
+    description: node.data.blockDescription,
+    tags: node.data.blockTags,
+    advancedMeta: {},
+    mqFeatures: {
+      tier: node.data.mqTier,
+      region: node.data.mqRegion,
+      username: node.data.mqUsername,
+      password: node.data.mqPassword,
+    },
+  };
+}
+
 export function getConnectionEnvironment(
   nodes: Node[],
   targetNodeId: string,
-  previousConnectionMeta: { dbRef: string; cacheRef: string },
-): { dbRef: string; cacheRef: string } {
+  previousConnectionMeta: { dbRef: string; cacheRef: string; mqRef: string },
+): { dbRef: string; cacheRef: string; mqRef: string } {
   const node = nodes.find((node) => node.id === targetNodeId)!;
 
   // Each value will be evaluated by the server.
@@ -274,6 +327,10 @@ export function getConnectionEnvironment(
 
   if (node.type === 'cache') {
     return { ...previousConnectionMeta, cacheRef: node.id };
+  }
+
+  if (node.type === 'mq') {
+    return { ...previousConnectionMeta, mqRef: node.id };
   }
 
   return { ...previousConnectionMeta };

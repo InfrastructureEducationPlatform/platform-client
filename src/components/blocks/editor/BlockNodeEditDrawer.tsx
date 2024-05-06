@@ -4,6 +4,7 @@ import { Node } from 'reactflow';
 
 import { CacheBlockEditor } from './CacheNodeEditDrawer.tsx';
 import { DatabaseBlockEditor } from './DatabaseBlockEditor.tsx';
+import { MessageQueueEditDrawer } from './MessageQueueEditDrawer.tsx';
 import { VirtualMachineBlockEditor } from './VirtualMachineBlockEditor.tsx';
 import { WebServerBlockEditor } from './WebServerBlockEditor.tsx';
 
@@ -41,6 +42,13 @@ keyMap.set('database', (commonBlockNodeContentProps) => (
 ));
 keyMap.set('cache', (commonBlockNodeContentProps) => (
   <CacheBlockEditor
+    node={commonBlockNodeContentProps.node}
+    setNode={commonBlockNodeContentProps.setNode}
+    setDrawerVisible={commonBlockNodeContentProps.setDrawerVisible}
+  />
+));
+keyMap.set('mq', (commonBlockNodeContentProps) => (
+  <MessageQueueEditDrawer
     node={commonBlockNodeContentProps.node}
     setNode={commonBlockNodeContentProps.setNode}
     setDrawerVisible={commonBlockNodeContentProps.setDrawerVisible}

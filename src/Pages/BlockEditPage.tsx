@@ -27,6 +27,7 @@ import { MainLayout } from '../components/MainLayout.tsx';
 import { SelectInstalledPluginModal } from '../components/SelectInstalledPluginModal.tsx';
 import { CacheBlockNodeProps } from '../components/blocks/CacheBlockNode.tsx';
 import { DatabaseBlockNodeProps } from '../components/blocks/DatabaseBlockNode.tsx';
+import { MessageQueueBlockNodeProps } from '../components/blocks/MessageQueueBlockNode.tsx';
 import { VirtualMachineBlockNodeProps } from '../components/blocks/VirtualMachineBlockNode.tsx';
 import { WebServerBlockNodeProps } from '../components/blocks/WebServerBlockNode.tsx';
 import { BlockNodeEditDrawer } from '../components/blocks/editor/BlockNodeEditDrawer.tsx';
@@ -248,6 +249,7 @@ function BlockEditPageComponent() {
                       connectionMetadata: {
                         dbRef: '',
                         cacheRef: '',
+                        mqRef: '',
                       },
                     },
                     type: 'webServer',
@@ -291,6 +293,25 @@ function BlockEditPageComponent() {
                       cacheTier: 'low',
                     },
                     type: 'cache',
+                  };
+                  setNodes((nds) => nds.concat(newNode));
+                }}
+              />
+              <FloatButton
+                icon={<DatabaseOutlined />}
+                tooltip={'MQ 블록 생성'}
+                onClick={() => {
+                  const newNode: Node<MessageQueueBlockNodeProps> = {
+                    id: ulid(),
+                    position: { x: 0, y: 0 },
+                    data: {
+                      blockTitle: '메시지 큐 블록',
+                      blockDescription: '메시지 큐 블록입니다.',
+                      blockTags: [],
+                      mqRegion: 'korea',
+                      mqTier: 'low',
+                    },
+                    type: 'mq',
                   };
                   setNodes((nds) => nds.concat(newNode));
                 }}

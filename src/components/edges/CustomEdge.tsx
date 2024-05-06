@@ -51,6 +51,10 @@ export default function CustomEdge({
         sourceNode.data.connectionMetadata.cacheRef === target
           ? ''
           : sourceNode.data.connectionMetadata.cacheRef,
+      mqRef:
+        sourceNode.data.connectionMetadata.mqRef === target
+          ? ''
+          : sourceNode.data.connectionMetadata.mqRef,
     };
 
     // update nodes and remove edge
