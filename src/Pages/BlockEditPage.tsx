@@ -310,6 +310,8 @@ function BlockEditPageComponent() {
                       blockTags: [],
                       mqRegion: 'korea',
                       mqTier: 'low',
+                      mqUsername: '',
+                      mqPassword: '',
                     },
                     type: 'mq',
                   };
