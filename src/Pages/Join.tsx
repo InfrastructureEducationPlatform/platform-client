@@ -27,7 +27,7 @@ export function Join() {
       // 요청에 성공 한 경우(서버 응답 값에 토큰이 정상적으로 있는 경우) 엑세스 토큰을 로컬스토리지에 등록하고 홈페이지로 이동
       if (response.data.token) {
         LocalStorageUtils.setAccessToken(response.data.token);
-        navigate('/'); // Navigate to home
+        navigate('/onboardingTour'); // Navigate to home
       }
     })();
   };

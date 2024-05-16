@@ -51,7 +51,6 @@ export function SketchListView({
   const navigate = useNavigate();
   const [isModifyOpenModal, setIsModifyOpenModal] = useState<boolean>(false);
   const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({ 'id': '', 'name': '', 'description': '', 'createdAt': '', 'updatedAt': '', 'blockSketch': '' });
-
   // 스케치 개체 옵션 메뉴
   const items: MenuProps['items'] = [
     {
@@ -159,6 +158,7 @@ export function SketchListView({
                       </Typography.Text>
                     </div>
                     <Dropdown menu={{ items }} trigger={['click']}>
+                      
                       <EllipsisOutlined onClick={() => {
                         setSelectedSketch(sketch);
                       }} />
