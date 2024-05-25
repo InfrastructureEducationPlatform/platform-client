@@ -3,6 +3,7 @@ import React from 'react';
 
 import { DatabaseBlockNodeProps } from '../DatabaseBlockNode.tsx';
 import { CommonBlockNodeContentProps } from './BlockNodeEditDrawer.tsx';
+import { validateInput, validationConfig } from '../../../utils/validators.ts';
 
 const { Option } = Select;
 export function DatabaseBlockEditor({
@@ -33,7 +34,12 @@ export function DatabaseBlockEditor({
       <Form.Item<DatabaseBlockNodeProps>
         label="리소스 이름"
         name={'blockTitle'}
-        rules={[{ required: true, message: '리소스 이름은 필수 필드입니다!' }]}
+        rules={[
+          {validator(_, value){
+            return validateInput({value, ...validationConfig.blockTitle})
+          }}
+        ]}
+        
         initialValue={node.data.blockTitle}
       >
         <Input />
@@ -43,7 +49,9 @@ export function DatabaseBlockEditor({
         label="리소스 설명"
         name={'blockDescription'}
         rules={[
-          { required: true, message: '리소스에 대한 설명은 필수 입니다!' },
+          {validator(_, value){
+            return validateInput({value, ...validationConfig.blockDescription})}
+          }
         ]}
         initialValue={node.data.blockDescription}
       >

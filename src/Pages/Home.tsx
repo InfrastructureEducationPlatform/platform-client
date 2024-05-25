@@ -17,6 +17,7 @@ import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
+import { validateInput, validationConfig } from '../utils/validators.ts';
 
 type CreateSketchType = {
   name: string;
@@ -25,7 +26,7 @@ type CreateSketchType = {
 
 export function Home() {
   const location = useLocation();
-  const state = {...location.state};
+  const state = { ...location.state };
   const userContextReloadKey = state.userContextReloadKey;
   return (
     <MainLayout pageKey={'sketch-list'} userContextReloadKey={userContextReloadKey}>
@@ -144,7 +145,8 @@ export function SketchListView({
             id={'createSketchForm'}
             name="basic"
             onFinish={(value) => {
-              (async () => {
+              (
+                async () => {
                 await sketchApi.createSketchAsync(currentChannel.channelId, {
                   name: value.name,
                   description: value.description,
@@ -163,21 +165,27 @@ export function SketchListView({
             <Form.Item<CreateSketchType>
               label="스케치 이름"
               name={'name'}
-              rules={[
-                { required: true, message: '스케치 이름을 입력해 주세요!' },
-              ]}
+              required={true}
+              rules = {[{
+                validator: (_, value) =>{
+                  return validateInput({value: value, ...validationConfig.sketchName});
+                }
+              }]}
             >
-              <Input />
+              <Input/>
+              
             </Form.Item>
 
             <Form.Item<CreateSketchType>
               label="스케치 설명"
               name={'description'}
-              rules={[
-                { required: true, message: '스케치 설명을 입력해 주세요!' },
-              ]}
+              required={true}
+              rules={[{
+                validator: (_, value) =>{
+                  return validateInput({value: value, ...validationConfig.sketchDescription});
+              }}]}
             >
-              <Input />
+              <Input/>
             </Form.Item>
           </Form>
         </Flex>

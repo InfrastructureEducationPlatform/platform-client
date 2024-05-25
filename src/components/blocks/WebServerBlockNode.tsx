@@ -21,7 +21,7 @@ export type WebServerBlockNodeProps = CommonBlockProps & {
     imageTags: string;
     username: string | undefined;
     secrets: string | undefined;
-    containerPort: number;
+    containerPort?: number;
   };
   connectionMetadata: {
     dbRef: string;

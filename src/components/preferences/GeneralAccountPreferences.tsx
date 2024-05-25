@@ -11,6 +11,8 @@ import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
+import { InputRuled } from '../InputRuled.tsx';
+import { validationConfig } from '../../utils/validators.ts';
 
 export function GeneralAccountPreferences({
   setCurrent,
@@ -77,14 +79,15 @@ export function GeneralAccountPreferences({
           />
           <div>
             <Typography.Text type={'secondary'}>선호하는 이름</Typography.Text>
-            <Input
-              defaultValue={userContext.userName}
-              onInput={(event) => {
+            <InputRuled
+              value={userContext.userName}
+              callback={(inputValue : string) => {
                 preferenceEditCallback(
                   userContext,
-                  (event.target as HTMLInputElement).value,
+                  inputValue,
                 );
               }}
+              {...validationConfig.userName}
             />
           </div>
         </Flex>

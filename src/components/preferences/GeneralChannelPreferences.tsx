@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { channelApi } from '../../api';
 import { useChannelInformationQuery } from '../../api/queries.tsx';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
+import { InputRuled } from '../InputRuled.tsx';
+import { validationConfig } from '../../utils/validators.ts';
 
 export function GeneralChannelPreferences({
   channelId,
@@ -90,34 +92,36 @@ export function GeneralChannelPreferences({
           <div>
             <div>
               <Typography.Text type={'secondary'}>채널 이름</Typography.Text>
-              <Input
+              <InputRuled
                 value={channelName}
                 placeholder={'채널 이름을 입력해주세요'}
-                onInput={(event) => {
-                  setChannelName((event.target as HTMLInputElement).value);
+                callback={(inputValue:string) => {
+                  setChannelName(inputValue);
                   channelPreferenceEditCallback(
                     channelId,
                     channelDescription,
-                    (event.target as HTMLInputElement).value,
+                    inputValue,
                   );
                 }}
+                {...validationConfig.channelName}
               />
             </div>
             <div style={{ marginTop: '10px' }}>
               <Typography.Text type={'secondary'}>채널 설명</Typography.Text>
-              <Input
+              <InputRuled
                 value={channelDescription}
                 placeholder={'채널 설명을 입력해 주세요.'}
-                onInput={(event) => {
+                callback={(inputValue) => {
                   setChannelDescription(
-                    (event.target as HTMLInputElement).value,
+                    inputValue
                   );
                   channelPreferenceEditCallback(
                     channelId,
-                    (event.target as HTMLInputElement).value,
+                    inputValue,
                     channelName,
                   );
                 }}
+                {...validationConfig.channelDescription}
               />
             </div>
           </div>
