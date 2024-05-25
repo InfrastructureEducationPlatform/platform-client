@@ -60,4 +60,10 @@ export interface SketchResponse {
    * @memberof SketchResponse
    */
   updatedAt: string;
+  /**
+   *
+   * @type {string}
+   * @memberof SketchResponse
+   */
+  thumbnailUrl?: string | null;
 }

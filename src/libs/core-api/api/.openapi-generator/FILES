@@ -16,6 +16,7 @@ configuration.ts
 git_push.sh
 index.ts
 model/add-user-to-channel-request.ts
+model/audit-log.ts
 model/channel-information-response.ts
 model/channel-permission-projection.ts
 model/channel-permission-type.ts
@@ -27,6 +28,7 @@ model/deployment-projection.ts
 model/deployment-status.ts
 model/error-response.ts
 model/file-projection-response.ts
+model/incremental-deployment-request.ts
 model/index.ts
 model/install-plugin-request.ts
 model/light-deployment-projection.ts

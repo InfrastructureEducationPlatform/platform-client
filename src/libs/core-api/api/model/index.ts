@@ -1,4 +1,5 @@
 export * from './add-user-to-channel-request';
+export * from './audit-log';
 export * from './channel-information-response';
 export * from './channel-permission-projection';
 export * from './channel-permission-type';
@@ -10,6 +11,7 @@ export * from './deployment-projection';
 export * from './deployment-status';
 export * from './error-response';
 export * from './file-projection-response';
+export * from './incremental-deployment-request';
 export * from './install-plugin-request';
 export * from './light-deployment-projection';
 export * from './login-request';

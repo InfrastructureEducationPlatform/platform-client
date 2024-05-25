@@ -40,6 +40,8 @@ import {
 } from '../common';
 import type { Configuration } from '../configuration';
 // @ts-ignore
+import { AuditLog } from '../model';
+// @ts-ignore
 import { ErrorResponse } from '../model';
 // @ts-ignore
 import { MeProjection } from '../model';
@@ -75,6 +77,48 @@ export const UsersApiAxiosParamCreator = function (
 
       const localVarRequestOptions = {
         method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication JwtAuthenticationFilter required
+      // http bearer authentication required
+      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserAuditLogAsync: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/users/audit`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
         ...baseOptions,
         ...options,
       };
@@ -275,6 +319,28 @@ export const UsersApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getUserAuditLogAsync(
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<Array<AuditLog>>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getUserAuditLogAsync(options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -372,6 +438,16 @@ export const UsersApiFactory = function (
     },
     /**
      *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getUserAuditLogAsync(options?: any): AxiosPromise<Array<AuditLog>> {
+      return localVarFp
+        .getUserAuditLogAsync(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @summary 사용자의 현재 정보와, 소속되어 있는 채널 정보를 반환합니다.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -431,6 +507,18 @@ export class UsersApi extends BaseAPI {
   public deleteUserAsync(options?: AxiosRequestConfig) {
     return UsersApiFp(this.configuration)
       .deleteUserAsync(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof UsersApi
+   */
+  public getUserAuditLogAsync(options?: AxiosRequestConfig) {
+    return UsersApiFp(this.configuration)
+      .getUserAuditLogAsync(options)
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -25,10 +25,13 @@ type CreateSketchType = {
 
 export function Home() {
   const location = useLocation();
-  const state = {...location.state};
+  const state = { ...location.state };
   const userContextReloadKey = state.userContextReloadKey;
   return (
-    <MainLayout pageKey={'sketch-list'} userContextReloadKey={userContextReloadKey}>
+    <MainLayout
+      pageKey={'sketch-list'}
+      userContextReloadKey={userContextReloadKey}
+    >
       <SketchListView />
     </MainLayout>
   );

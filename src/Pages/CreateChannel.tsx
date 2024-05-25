@@ -1,10 +1,10 @@
 import { Button, Card, Form, Input } from 'antd';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { channelApi, userApi } from '../api';
-import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 import { useUserContextQuery } from '../api/queries.tsx';
-import { useState } from 'react';
+import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 
 type CreateChannelType = {
   channelName: string;
@@ -28,7 +28,7 @@ export function CreateChannel() {
         LocalStorageUtils.setSelectedChannelId(
           userResponse.data.channelPermissionList[0].channelId,
         );
-        navigate('/home', {state: {userContextReloadKey: 'true'}});
+        navigate('/home', { state: { userContextReloadKey: 'true' } });
       }
     })();
   };
