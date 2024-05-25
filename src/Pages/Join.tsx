@@ -1,9 +1,10 @@
 import { Button, Card, Form, Input } from 'antd';
 import { useNavigate } from 'react-router-dom';
 
-import { authApi } from '../api';
-import { CredentialProvider } from '../libs/core-api/api';
+import { authApi } from '../api/index.ts';
+import { CredentialProvider } from '../libs/core-api/api/index.ts';
 import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
+import { validateInput, validationConfig } from '../utils/validators.ts';
 
 type RegistrationFormType = {
   userName: string;
@@ -54,9 +55,9 @@ export function Join() {
           <Form.Item<RegistrationFormType>
             label="사용자 이름"
             name={'userName'}
-            rules={[
-              { required: true, message: '사용자 이름을 입력해 주세요!' },
-            ]}
+            rules={[{validator:(_,value) =>{
+              return validateInput({value: value, ...validationConfig.userName});
+            }}]}
           >
             <Input />
           </Form.Item>
@@ -64,7 +65,11 @@ export function Join() {
           <Form.Item<RegistrationFormType>
             label="사용자 이메일"
             name={'userEmail'}
-            rules={[{ required: true, message: '비밀번호를 입력해주세요!' }]}
+            rules={[
+              {validator:(_,value) =>{
+                return validateInput({value: value, ...validationConfig.userEmail});
+              }}
+            ]}
           >
             <Input />
           </Form.Item>

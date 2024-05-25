@@ -5,7 +5,7 @@ import { BlockEditPage } from './Pages/BlockEditPage.tsx';
 import { CreateChannel } from './Pages/CreateChannel';
 import { DeploymentListPage } from './Pages/DeploymentListPage.tsx';
 import { Home } from './Pages/Home';
-import { Join } from './Pages/Join';
+import { Join } from './Pages/Join.tsx';
 import { Login } from './Pages/Login';
 import { LoginCallback } from './Pages/LoginCallback';
 import { OnBoarding } from './Pages/Onboarding';

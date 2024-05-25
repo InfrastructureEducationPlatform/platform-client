@@ -5,6 +5,9 @@ import { channelApi, userApi } from '../api';
 import { LocalStorageUtils } from '../utils/LocalStorageUtils.ts';
 import { useUserContextQuery } from '../api/queries.tsx';
 import { useState } from 'react';
+import { InputRuled } from '../components/InputRuled.tsx';
+import { reject } from 'lodash';
+import { validateInput, validationConfig } from '../utils/validators.ts';
 
 type CreateChannelType = {
   channelName: string;
@@ -28,7 +31,7 @@ export function CreateChannel() {
         LocalStorageUtils.setSelectedChannelId(
           userResponse.data.channelPermissionList[0].channelId,
         );
-        navigate('/home', {state: {userContextReloadKey: 'true'}});
+        navigate('/home', { state: { userContextReloadKey: 'true' } });
       }
     })();
   };
@@ -55,15 +58,28 @@ export function CreateChannel() {
           <Form.Item<CreateChannelType>
             label="채널 이름"
             name={'channelName'}
-            rules={[{ required: true, message: '채널 이름을 입력해 주세요!' }]}
+            required={true}
+            rules={[
+              {
+                validator: (_, value) => {
+                  return validateInput({ value, ...validationConfig.channelName });
+                }
+              }
+            ]}
           >
-            <Input />
           </Form.Item>
 
           <Form.Item<CreateChannelType>
             label="채널 설명"
             name={'channelDescription'}
-            rules={[{ required: true, message: '채널 설명을 입력해 주세요!' }]}
+            required={true}
+            rules={[
+              {
+                validator: (_, value) => {
+                  return validateInput({ value, ...validationConfig.channelDescription });
+                }
+              }
+            ]}
           >
             <Input />
           </Form.Item>
@@ -71,7 +87,14 @@ export function CreateChannel() {
           <Form.Item<CreateChannelType>
             label="채널 채널 프로필 이미지 URL"
             name={'channelProfileImageUrl'}
-            rules={[{ required: false, message: '비밀번호를 입력해주세요!' }]}
+            required={true}
+            rules={[
+              {
+                validator: (_, value) => {
+                  return validateInput({ value, ...validationConfig.channelProfileImg });
+                }
+              }
+            ]}
           >
             <Input />
           </Form.Item>
