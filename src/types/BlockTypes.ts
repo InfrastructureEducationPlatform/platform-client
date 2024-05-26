@@ -28,7 +28,7 @@ export type WebServerBlock = Block & {
       imageTags: string;
       username: string | undefined;
       secrets: string | undefined;
-      containerPort: number;
+      containerPort: number|undefined;
     };
     connectionMetadata: {
       dbRef: string;
