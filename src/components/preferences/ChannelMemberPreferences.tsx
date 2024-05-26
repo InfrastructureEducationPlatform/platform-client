@@ -32,6 +32,8 @@ import {
 } from '../../libs/core-api/api';
 import { CustomModal } from '../CustomModal.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
+import { InputRuled } from '../InputRuled.tsx';
+import { validationConfig } from '../../utils/validators.ts';
 
 type ChannelMemberData = {
   userId: string;
@@ -206,16 +208,17 @@ export function ChannelMemberPreferences({ channelId }: { channelId: string }) {
         }}
       >
         <Flex style={{ flexDirection: 'column' }}>
-          <Input
+          <InputRuled
             placeholder={'이름 혹은 이메일을 입력하세요.'}
+            callback={(value) => setSearchParams(value)}
             size={'large'}
-            onInput={(e) => setSearchParams(e.currentTarget.value)}
             style={{
               border: 'none',
               borderRadius: '0',
               borderBottom: '1px solid #d9d9d9',
             }}
-          />
+            {...validationConfig.searchInput}
+                     />
           <List
             itemLayout={'horizontal'}
             dataSource={channelUserSearchResult}

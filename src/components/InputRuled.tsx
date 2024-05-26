@@ -3,6 +3,7 @@ import { InputStatus } from "antd/es/_util/statusUtils";
 import { max, set } from "lodash";
 import { useEffect, useState } from "react";
 import { CheckInputType, InputRuledProps, checkInput } from "../utils/InputUtils";
+import { SizeType } from "antd/es/config-provider/SizeContext";
 
 // InputRuled 컴포넌트는 antd Input 컴포넌트를 상속받아서 사용합니다.
 // Input, Form.Item의 Input 모두에서 사용 가능합니다.
@@ -25,7 +26,7 @@ export const ErrorMessage = ({message}:{message?:string}) => {
     );
 }
 
-export const InputRuled = ({ value = '',callback, ...props }: InputRuledProps&{callback?: (value: string) => void}) => {
+export const InputRuled = ({ value = '',callback, style, size,...props }: InputRuledProps&{callback?: (value: string) => void, style?:React.CSSProperties, size?:SizeType}) => {
     const [inputValue, setInputValue] = useState<string>(value);
 
     // input 상태
@@ -58,6 +59,8 @@ export const InputRuled = ({ value = '',callback, ...props }: InputRuledProps&{c
                 type={props.type}
                 onInput={handleInput}
                 placeholder={props.placeholder}
+                style={style}
+                size = {size}
             />
             <ErrorMessage message={status.message}/>
         </>

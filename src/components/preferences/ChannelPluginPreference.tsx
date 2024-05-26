@@ -15,6 +15,7 @@ import { pluginApi } from '../../api';
 import { useAvailablePluginsQuery } from '../../api/queries.tsx';
 import { AwsIcon } from '../../assets/AwsIcon.tsx';
 import { PluginProjection } from '../../libs/core-api/api';
+import { validateInput, validationConfig } from '../../utils/validators.ts';
 
 export function ChannelPluginPreference({ channelId }: { channelId: string }) {
   const { data: availablePluginList, isLoading } =
@@ -137,7 +138,8 @@ function PluginInstallModal({
       title={`Install ${plugin.name}`}
       open={modalVisible}
       onOk={() => handleInstall()}
-      onCancel={() => setModalVisible(false)}
+      onCancel={() =>
+        setModalVisible(false)}
     >
       <Form form={form}>
         {plugin.pluginTypeDefinitions.map((data) => (
@@ -145,6 +147,16 @@ function PluginInstallModal({
             key={`${plugin.id}.${data.fieldName}`}
             label={data.fieldName}
             name={data.fieldName ?? ''}
+            rules={[{
+              validator(_, value) {
+                const validationConfigName = plugin.id + "-" + data.fieldName;
+
+                return validateInput({
+                  value,
+                  ...validationConfig[validationConfigName as keyof typeof validationConfig],
+                });
+              }
+            }]}
           >
             {data.isSecret ? (
               <Input.Password placeholder={data.fieldDescription ?? ''} />

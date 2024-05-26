@@ -27,9 +27,9 @@ export const checkInput = ({ ...props }: InputRuledProps): CheckInputType => {
 
     // length 확인이 완료된 경우, type 확인
     // type 확인
-    typeCheck(props.value!, props.type);
+    
     // 모든 조건을 충족하는 경우
-    return { status: '', message: '' };
+    return typeCheck(props.value!, props.type);
 }
 
 const typeCheck = (value: string, type: string): CheckInputType => {
@@ -43,7 +43,7 @@ const typeCheck = (value: string, type: string): CheckInputType => {
         case 'email':
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(value)) {
-                result = { status: 'error', message: '이메일 형식에 맞지 않습니다.' };
+                result = { status: 'error', message: '이메일 형식으로 입력해주세요.(ex : abc@kangdroid.com)' };
             }
             break;
         case 'string':

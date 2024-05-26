@@ -4,6 +4,7 @@ import { InputRuledProps, checkInput } from "./InputUtils";
 // 값에 따라 Form 제출을 reject, resolve할 수 있음.
 export const validateInput = ({ ...props }: InputRuledProps) => {
     const checkResult = checkInput({ ...props });
+    console.log(checkResult);
     if (checkResult.status === 'error') {
         return Promise.reject(checkResult.message);
     } else {
@@ -59,4 +60,40 @@ export const validationConfig = {
         minLength: 1,
         type: 'string'
     },
+    "aws-static-AccessKey": {
+        maxLength: 40,
+        type: 'string'
+    },
+    "aws-static-SecretKey": {
+        maxLength: 40,
+        type: 'string'
+    },
+    "aws-static-Region": {
+        maxLength: 30,
+        type: 'string'
+    },
+    "azure-static-ClientId": {
+        maxLength: 60,
+        type: 'string'
+    },
+    "azure-static-ClientSecret": {
+        maxLength: 60,
+        type: 'string'
+    },
+    "azure-static-SubscriptionId": {
+        maxLength: 60,
+        type: 'string'
+    },
+    "azure-static-TenantId": {
+        maxLength: 60,
+        type: 'string'
+    },
+    "azure-static-Region": {
+        maxLength: 40,
+        type: 'string'
+    },
+    searchInput:{
+        maxLength: 200,
+        type: 'string'
+    }
 };
