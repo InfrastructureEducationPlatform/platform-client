@@ -9,7 +9,7 @@ import {
 } from '../../../types/BlockTypes.ts';
 import { DeploymentDatabaseBlockDetail } from './DeploymentDatabaseBlockDetail.tsx';
 import { DeploymentVmBlockDetail } from './DeploymentVmBlockDetail.tsx';
-import { DeploymentWebServerBlockDetail } from './DeploymentWebServerBlockDetail.tsx';
+import { DeploymentWebServerBlockDetail } from './WebServerDetail/DeploymentWebServerBlockDetail.tsx';
 
 type MultipleBlockType = VirtualMachineBlock | WebServerBlock | DatabaseBlock;
 export function DeploymentGeneralBlockDetail({
