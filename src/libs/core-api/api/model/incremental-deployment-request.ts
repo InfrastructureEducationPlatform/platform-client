@@ -15,31 +15,19 @@
 /**
  *
  * @export
- * @interface UpdateSketchRequest
+ * @interface IncrementalDeploymentRequest
  */
-export interface UpdateSketchRequest {
-  /**
-   * 스케치 이름입니다.
-   * @type {string}
-   * @memberof UpdateSketchRequest
-   */
-  name: string;
-  /**
-   * 스케치 설명입니다.
-   * @type {string}
-   * @memberof UpdateSketchRequest
-   */
-  description: string;
+export interface IncrementalDeploymentRequest {
   /**
    *
    * @type {any}
-   * @memberof UpdateSketchRequest
+   * @memberof IncrementalDeploymentRequest
    */
   blockData: any;
   /**
    *
    * @type {string}
-   * @memberof UpdateSketchRequest
+   * @memberof IncrementalDeploymentRequest
    */
-  thumbnailImageUrl?: string | null;
+  pluginId?: string | null;
 }

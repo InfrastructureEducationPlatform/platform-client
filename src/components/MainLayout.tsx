@@ -27,12 +27,12 @@ export function MainLayout({
   children: ReactNode;
   selectorRef?: React.Ref<HTMLDivElement> | undefined;
   pageKey: PageKey;
-  userContextReloadKey?: string,
+  userContextReloadKey?: string;
 }) {
   return (
     <ErrorHandlerProvider>
       <AuthProvider>
-        <UserContextProvider isReload = {userContextReloadKey}>
+        <UserContextProvider isReload={userContextReloadKey}>
           <ChannelNavigationProvider>
             <InnerLayout pageKey={pageKey} selectorRef={selectorRef}>
               {children}

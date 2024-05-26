@@ -15,31 +15,19 @@
 /**
  *
  * @export
- * @interface UpdateSketchRequest
+ * @interface AuditLog
  */
-export interface UpdateSketchRequest {
-  /**
-   * 스케치 이름입니다.
-   * @type {string}
-   * @memberof UpdateSketchRequest
-   */
-  name: string;
-  /**
-   * 스케치 설명입니다.
-   * @type {string}
-   * @memberof UpdateSketchRequest
-   */
-  description: string;
-  /**
-   *
-   * @type {any}
-   * @memberof UpdateSketchRequest
-   */
-  blockData: any;
+export interface AuditLog {
   /**
    *
    * @type {string}
-   * @memberof UpdateSketchRequest
+   * @memberof AuditLog
    */
-  thumbnailImageUrl?: string | null;
+  auditName?: string | null;
+  /**
+   *
+   * @type {string}
+   * @memberof AuditLog
+   */
+  auditTime?: string;
 }

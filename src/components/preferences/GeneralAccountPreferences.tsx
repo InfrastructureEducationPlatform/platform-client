@@ -11,6 +11,7 @@ import { UserContext } from '../../types/UserContext.ts';
 import { LocalStorageUtils } from '../../utils/LocalStorageUtils.ts';
 import { ImageUploader } from '../ProfileImageUploader.tsx';
 import { useUserContext } from '../providers/UserContextProvider.tsx';
+import { AccountAuditLogView } from './AccountAuditLogView.tsx';
 
 export function GeneralAccountPreferences({
   setCurrent,
@@ -159,6 +160,12 @@ export function GeneralAccountPreferences({
             <RightOutlined />
           </Flex>
         </Button>
+      </div>
+
+      <div>
+        <Typography.Title level={4}>계정 활동 로그</Typography.Title>
+        <Divider style={{ width: '100%', margin: 0 }} />
+        <AccountAuditLogView />
       </div>
       {contexHolder}
     </Flex>

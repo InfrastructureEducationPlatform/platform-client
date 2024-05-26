@@ -1148,6 +1148,81 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
       security:
         - JwtAuthenticationFilter: []
+  '/channels/{channelId}/sketches/{sketchId}/incremental-deploy':
+    post:
+      tags:
+        - Sketch
+      operationId: IncrementalDeploySketchAsync
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: sketchId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IncrementalDeploymentRequest'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/IncrementalDeploymentRequest'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/IncrementalDeploymentRequest'
+      responses:
+        '200':
+          description: Success
+  '/channels/{channelId}/sketches/{sketchId}/internal':
+    get:
+      tags:
+        - Sketch
+      operationId: GetSketchInternalAsync
+      parameters:
+        - name: channelId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+        - name: sketchId
+          in: path
+          required: true
+          style: simple
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/SketchResponse'
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
   /users/me:
     get:
       tags:
@@ -1293,6 +1368,44 @@ paths:
           description: 사용자 삭제에 성공한 경우
       security:
         - JwtAuthenticationFilter: []
+  /users/audit:
+    get:
+      tags:
+        - Users
+      operationId: GetUserAuditLogAsync
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+            text/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditLog'
+        '401':
+          description: Unauthorized
+          content:
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+            text/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - JwtAuthenticationFilter: []
 components:
   schemas:
     AddUserToChannelRequest:
@@ -1306,6 +1419,16 @@ components:
           type: string
         channelPermissionType:
           $ref: '#/components/schemas/ChannelPermissionType'
+      additionalProperties: false
+    AuditLog:
+      type: object
+      properties:
+        auditName:
+          type: string
+          nullable: true
+        auditTime:
+          type: string
+          format: date-time
       additionalProperties: false
     ChannelInformationResponse:
       required:
@@ -1509,6 +1632,16 @@ components:
         fileSize:
           type: integer
           format: int64
+      additionalProperties: false
+    IncrementalDeploymentRequest:
+      required:
+        - blockData
+      type: object
+      properties:
+        blockData: {}
+        pluginId:
+          type: string
+          nullable: true
       additionalProperties: false
     InstallPluginRequest:
       required:
@@ -1746,6 +1879,9 @@ components:
           type: string
           description: 마지막 수정일
           format: date-time
+        thumbnailUrl:
+          type: string
+          nullable: true
       additionalProperties: false
     TokenResponse:
       required:
@@ -1796,6 +1932,9 @@ components:
           type: string
           description: 스케치 설명입니다.
         blockData: {}
+        thumbnailImageUrl:
+          type: string
+          nullable: true
       additionalProperties: false
     UpdateUserChannelRoleRequest:
       required:

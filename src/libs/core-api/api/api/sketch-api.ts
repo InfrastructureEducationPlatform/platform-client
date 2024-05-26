@@ -44,6 +44,8 @@ import { CreateSketchRequest } from '../model';
 // @ts-ignore
 import { ErrorResponse } from '../model';
 // @ts-ignore
+import { IncrementalDeploymentRequest } from '../model';
+// @ts-ignore
 import { LightDeploymentProjection } from '../model';
 // @ts-ignore
 import { SketchResponse } from '../model';
@@ -223,6 +225,112 @@ export const SketchApiAxiosParamCreator = function (
         ...headersFromBaseOptions,
         ...options.headers,
       };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSketchInternalAsync: async (
+      channelId: string,
+      sketchId: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('getSketchInternalAsync', 'channelId', channelId);
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('getSketchInternalAsync', 'sketchId', sketchId);
+      const localVarPath = `/channels/{channelId}/sketches/{sketchId}/internal`
+        .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)))
+        .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {IncrementalDeploymentRequest} [IncrementalDeploymentRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    incrementalDeploySketchAsync: async (
+      channelId: string,
+      sketchId: string,
+      IncrementalDeploymentRequest?: IncrementalDeploymentRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'channelId' is not null or undefined
+      assertParamExists('incrementalDeploySketchAsync', 'channelId', channelId);
+      // verify required parameter 'sketchId' is not null or undefined
+      assertParamExists('incrementalDeploySketchAsync', 'sketchId', sketchId);
+      const localVarPath =
+        `/channels/{channelId}/sketches/{sketchId}/incremental-deploy`
+          .replace(`{${'channelId'}}`, encodeURIComponent(String(channelId)))
+          .replace(`{${'sketchId'}}`, encodeURIComponent(String(sketchId)));
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        IncrementalDeploymentRequest,
+        localVarRequestOptions,
+        configuration,
+      );
 
       return {
         url: toPathString(localVarUrlObj),
@@ -441,6 +549,63 @@ export const SketchApiFp = function (configuration?: Configuration) {
       );
     },
     /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async getSketchInternalAsync(
+      channelId: string,
+      sketchId: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SketchResponse>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.getSketchInternalAsync(
+          channelId,
+          sketchId,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {IncrementalDeploymentRequest} [IncrementalDeploymentRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async incrementalDeploySketchAsync(
+      channelId: string,
+      sketchId: string,
+      IncrementalDeploymentRequest?: IncrementalDeploymentRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.incrementalDeploySketchAsync(
+          channelId,
+          sketchId,
+          IncrementalDeploymentRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -567,6 +732,45 @@ export const SketchApiFactory = function (
         .then((request) => request(axios, basePath));
     },
     /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    getSketchInternalAsync(
+      channelId: string,
+      sketchId: string,
+      options?: any,
+    ): AxiosPromise<SketchResponse> {
+      return localVarFp
+        .getSketchInternalAsync(channelId, sketchId, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {string} channelId
+     * @param {string} sketchId
+     * @param {IncrementalDeploymentRequest} [IncrementalDeploymentRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    incrementalDeploySketchAsync(
+      channelId: string,
+      sketchId: string,
+      IncrementalDeploymentRequest?: IncrementalDeploymentRequest,
+      options?: any,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .incrementalDeploySketchAsync(
+          channelId,
+          sketchId,
+          IncrementalDeploymentRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
      * 이 API는 채널의 Owner, Reader 모두 조회할 수 있습니다.
      * @summary 채널 내에 있는 모든 스케치를 가져옵니다,
      * @param {string} channelId 조회할 채널 ID
@@ -666,6 +870,49 @@ export class SketchApi extends BaseAPI {
   ) {
     return SketchApiFp(this.configuration)
       .getSketchAsync(channelId, sketchId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} channelId
+   * @param {string} sketchId
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public getSketchInternalAsync(
+    channelId: string,
+    sketchId: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .getSketchInternalAsync(channelId, sketchId, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {string} channelId
+   * @param {string} sketchId
+   * @param {IncrementalDeploymentRequest} [IncrementalDeploymentRequest]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof SketchApi
+   */
+  public incrementalDeploySketchAsync(
+    channelId: string,
+    sketchId: string,
+    IncrementalDeploymentRequest?: IncrementalDeploymentRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return SketchApiFp(this.configuration)
+      .incrementalDeploySketchAsync(
+        channelId,
+        sketchId,
+        IncrementalDeploymentRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

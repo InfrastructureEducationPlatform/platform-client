@@ -25,6 +25,8 @@ export type ㅌ = CommonBlockProps & {
   };
   connectionMetadata: {
     dbRef: string;
+    cacheRef: string;
+    mqRef: string;
   };
 };
 

@@ -32,6 +32,8 @@ export type WebServerBlock = Block & {
     };
     connectionMetadata: {
       dbRef: string;
+      cacheRef: string;
+      mqRef: string;
     };
   };
 };
@@ -43,6 +45,24 @@ export type DatabaseBlock = Block & {
     region: 'korea' | 'defaultAccount';
     masterUsername: string;
     masterPassword: string;
+  };
+};
+
+export type CacheBlock = Block & {
+  type: 'cache';
+  cacheFeatures: {
+    tier: 'low' | 'medium' | 'high' | 'custom';
+    region: 'korea' | 'defaultAccount';
+  };
+};
+
+export type MqBlock = Block & {
+  type: 'mq';
+  mqFeatures: {
+    tier: 'low' | 'medium' | 'high' | 'custom';
+    region: 'korea' | 'defaultAccount';
+    username: string;
+    password: string;
   };
 };
 

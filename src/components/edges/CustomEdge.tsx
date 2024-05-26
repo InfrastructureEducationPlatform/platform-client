@@ -1,5 +1,6 @@
-import { Button } from 'antd';
+import { Button, Flex } from 'antd';
 import React from 'react';
+import { FaRegTrashCan } from 'react-icons/fa6';
 import {
   BaseEdge,
   EdgeLabelRenderer,
@@ -36,16 +37,24 @@ export default function CustomEdge({
 
   const onEdgeClick = () => {
     // get node with source Id
+    console.log('clicked');
     const sourceNode = getNodes().find(
       (node) => node.id === source,
     )! as Node<WebServerBlockNodeProps>;
-
     // remove connectionMetadata with target Id
     sourceNode.data.connectionMetadata = {
       dbRef:
         sourceNode.data.connectionMetadata.dbRef === target
           ? ''
           : sourceNode.data.connectionMetadata.dbRef,
+      cacheRef:
+        sourceNode.data.connectionMetadata.cacheRef === target
+          ? ''
+          : sourceNode.data.connectionMetadata.cacheRef,
+      mqRef:
+        sourceNode.data.connectionMetadata.mqRef === target
+          ? ''
+          : sourceNode.data.connectionMetadata.mqRef,
     };
 
     // update nodes and remove edge
@@ -70,7 +79,11 @@ export default function CustomEdge({
           }}
           className="nodrag nopan"
         >
-          <Button onClick={onEdgeClick}>x</Button>
+          <Button onClick={onEdgeClick}>
+            <Flex>
+              <FaRegTrashCan />
+            </Flex>
+          </Button>
         </div>
       </EdgeLabelRenderer>
     </>

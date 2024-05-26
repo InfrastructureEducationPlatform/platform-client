@@ -30,7 +30,10 @@ export function Home() {
   const state = { ...location.state };
   const userContextReloadKey = state.userContextReloadKey;
   return (
-    <MainLayout pageKey={'sketch-list'} userContextReloadKey={userContextReloadKey}>
+    <MainLayout
+      pageKey={'sketch-list'}
+      userContextReloadKey={userContextReloadKey}
+    >
       <SketchListView />
     </MainLayout>
   );

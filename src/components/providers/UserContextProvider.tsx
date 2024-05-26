@@ -17,11 +17,17 @@ type UserContextValue = {
   setForceReload: (reloadKey: string) => void;
 };
 
-export function UserContextProvider({ children, isReload}: { children: ReactNode, isReload?:string }) {
+export function UserContextProvider({
+  children,
+  isReload,
+}: {
+  children: ReactNode;
+  isReload?: string;
+}) {
   const [forceReload, setForceReload] = useState<string>(isReload || '');
   const navigate = useNavigate();
   const { data: userContext, isLoading } = useUserContextQuery(forceReload);
-  
+
   useEffect(() => {
     if (!userContext || isLoading) {
       return;
