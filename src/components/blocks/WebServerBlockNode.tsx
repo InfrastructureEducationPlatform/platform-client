@@ -13,7 +13,7 @@ import { Handle, NodeProps, Position } from 'reactflow';
 
 import { CommonBlockProps } from '../../types/CommonBlockProps.ts';
 
-export type ㅌ = CommonBlockProps & {
+export type WebServerBlockNodeProps = CommonBlockProps & {
   webServerTier: 'low' | 'medium' | 'high' | 'custom';
   webServerRegion: 'korea' | 'defaultAccount';
   containerData: {
