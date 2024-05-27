@@ -217,7 +217,7 @@ function BlockEditPageComponent() {
                       blockDescription: '가상 머신 블록입니다.',
                       vmTier: 'low',
                       vmRegion: 'korea',
-                      vmOperatingSystem: 'ubuntu',
+                      vmOperatingSystem: 'ubuntu_22_04',
                       blockTags: [],
                     },
                     type: 'virtualMachine',

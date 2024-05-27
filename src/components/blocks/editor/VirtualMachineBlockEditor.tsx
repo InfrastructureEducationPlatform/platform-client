@@ -103,7 +103,9 @@ export function VirtualMachineBlockEditor({
         initialValue={node.data.vmOperatingSystem}
       >
         <Select placeholder="운영체제 선택">
-          <Option value="ubuntu">Ubuntu 22.04</Option>
+          <Option value="ubuntu_22_04">Ubuntu 22.04</Option>
+          <Option value="ubuntu_20_04">Ubuntu 20.04</Option>
+          <Option value="ubuntu_18_04">Ubuntu 18.04</Option>
         </Select>
       </Form.Item>
 

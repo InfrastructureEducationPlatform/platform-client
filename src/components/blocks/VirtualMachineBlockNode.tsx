@@ -16,7 +16,11 @@ import { CommonBlockProps } from '../../types/CommonBlockProps.ts';
 export type VirtualMachineBlockNodeProps = CommonBlockProps & {
   vmTier: 'low' | 'medium' | 'high' | 'custom';
   vmRegion: 'korea' | 'defaultAccount';
-  vmOperatingSystem: 'ubuntu';
+  vmOperatingSystem:
+    | 'ubuntu'
+    | 'ubuntu_22_04'
+    | 'ubuntu_20_04'
+    | 'ubuntu_18_04';
 };
 
 export function VirtualMachineBlockNode(
