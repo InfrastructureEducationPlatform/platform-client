@@ -8,6 +8,7 @@ import {
   PricingInformationProjection,
 } from '../../../../libs/core-api/api';
 import { VirtualMachineBlock } from '../../../../types/BlockTypes.ts';
+import { getCpuRamData } from '../../../../utils/BlockUtils.tsx';
 import { findPrice } from '../../../../utils/PricingUtils.ts';
 import { VirtualMachineGuideline } from './VirtualMachineGuideline.ts';
 
@@ -97,6 +98,11 @@ export function DeploymentVmBlockDetail({
                   },
                   {
                     key: '5',
+                    label: '인스턴스 티어/사이즈(플러그인 반영)',
+                    children: outputFeature.instanceTier,
+                  },
+                  {
+                    key: '6',
                     label: '시간 당 예상 가격(플러그인 반영)',
                     children: `$${findPrice(
                       plugin,
@@ -106,6 +112,18 @@ export function DeploymentVmBlockDetail({
                         ? 'large'
                         : nodeData.virtualMachineFeatures.tier,
                     )}`,
+                  },
+                  {
+                    key: '7',
+                    label: '실제 CPU 코어 수',
+                    children: getCpuRamData(plugin, outputFeature.instanceTier)
+                      .cpuCount,
+                  },
+                  {
+                    key: '8',
+                    label: '실제 RAM 용량(GB)',
+                    children: getCpuRamData(plugin, outputFeature.instanceTier)
+                      .ramInGb,
                   },
                 ]}
               />
@@ -135,6 +153,7 @@ type VirtualMachineOutput = {
   instanceId: string;
   ipAddress: string;
   sshPrivateKey: string;
+  instanceTier: string;
 };
 function VmDeploymentTutorial({
   deploymentProjection,

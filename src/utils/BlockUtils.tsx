@@ -335,3 +335,53 @@ export function getConnectionEnvironment(
 
   return { ...previousConnectionMeta };
 }
+
+export function getCpuRamData(pluginId: string, instanceTier: string) {
+  if (pluginId === 'aws-static') {
+    return cpuRamDataForAws[instanceTier];
+  }
+
+  if (pluginId === 'azure-static') {
+    return cpuRamDataForAzure[instanceTier];
+  }
+
+  throw new Error(`Plugin ${pluginId} is not supported!`);
+}
+
+const cpuRamDataForAws: {
+  [key: string]: { cpuCount: number; ramInGb: number };
+} = {
+  't2.medium': {
+    cpuCount: 2,
+    ramInGb: 4,
+  },
+
+  't2.large': {
+    cpuCount: 2,
+    ramInGb: 8,
+  },
+
+  't2.xlarge': {
+    cpuCount: 4,
+    ramInGb: 16,
+  },
+};
+
+const cpuRamDataForAzure: {
+  [key: string]: { cpuCount: number; ramInGb: number };
+} = {
+  Standard_DS1_v2: {
+    cpuCount: 1,
+    ramInGb: 3.5,
+  },
+
+  Standard_DS2_v2: {
+    cpuCount: 2,
+    ramInGb: 7,
+  },
+
+  Standard_DS3_v2: {
+    cpuCount: 4,
+    ramInGb: 14,
+  },
+};
