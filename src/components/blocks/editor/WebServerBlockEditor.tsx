@@ -51,24 +51,20 @@ export function WebServerBlockEditor({
       </Form.Item>
 
       <Form.Item<WebServerBlockNodeProps>
-        label="VM Tier"
+        label="Web Server Tier"
         name={'webServerTier'}
         rules={[
           {
             required: true,
-            message:
-              'Web Server Tier를 선택해 주세요!(low, medium, high, custom) 중 1',
+            message: 'Web Server Tier를 선택해 주세요!(low, medium, high) 중 1',
           },
         ]}
         initialValue={node.data.webServerTier}
       >
         <Select placeholder="성능 선택">
-          <Option value="low">Low Performance</Option>
-          <Option value="medium">Medium Performance</Option>
-          <Option value="high">High Performance</Option>
-          <Option value="custom" disabled={true}>
-            Custom Performance
-          </Option>
+          <Option value="low">Low Performance(2Core, 4Gb Ram)</Option>
+          <Option value="medium">Medium Performance(2Core, 8Gb Ram)</Option>
+          <Option value="high">High Performance(4Core, 16Gb Ram)</Option>
         </Select>
       </Form.Item>
 

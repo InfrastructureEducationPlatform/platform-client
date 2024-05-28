@@ -56,18 +56,16 @@ export function CacheBlockEditor({
         rules={[
           {
             required: true,
-            message: 'VM Tier를 선택해 주세요!(low, medium, high, custom) 중 1',
+            message:
+              'Cache Tier를 선택해 주세요!(low, medium, high, custom) 중 1',
           },
         ]}
         initialValue={node.data.dbTier}
       >
         <Select placeholder="성능 선택">
-          <Option value="low">Low Performance</Option>
-          <Option value="medium">Medium Performance</Option>
-          <Option value="high">High Performance</Option>
-          <Option value="custom" disabled={true}>
-            Custom Performance
-          </Option>
+          <Option value="low">Low Performance(2Core, 0.5Gb RAM)</Option>
+          <Option value="medium">Medium Performance(2Core, 1Gb RAM)</Option>
+          <Option value="high">High Performance(2Core, 3GB RAM)</Option>
         </Select>
       </Form.Item>
 
@@ -77,7 +75,8 @@ export function CacheBlockEditor({
         rules={[
           {
             required: true,
-            message: 'VM Region을 선택해 주세요!(korea, defaultAccount) 중 1',
+            message:
+              'Cache Region을 선택해 주세요!(korea, defaultAccount) 중 1',
           },
         ]}
         initialValue={node.data.dbRegion}
