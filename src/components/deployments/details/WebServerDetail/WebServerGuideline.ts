@@ -97,3 +97,22 @@ jobs:
 \`\`\`
 `;
 }
+
+export function WebServerEnvGuideline(): string {
+  return `
+  **해당 서비스에서는 웹 서버에 Redis Cache, RabbitMQ, 그리고 PostgreSQL을 동시에 연결할 경우 웹 서버에 자동으로 각각의 정보가 연동되어 배포됩니다.**
+  
+  아래 내용은 각 인프라가 웹 서버에 연동되었을 때 자동으로 주입되는 환경변수의 이름과 값들이며, 개발하시는 웹 서버에서 불러와 자유롭게 활용하실 수 있습니다!
+  
+  | 환경 변수       | 설명                                                       |
+  |-----------------|------------------------------------------------------------|
+  | DB_HOST         | DB의 호스트 정보(PostgreSQL)                                |
+  | DB_PORT         | DB의 포트 정보 (기본값: 5432)                               |
+  | DB_USER         | DB의 사용자 이름 정보                                      |
+  | DB_PASSWORD     | DB의 비밀번호 정보                                         |
+  | REDIS_HOST      | Redis의 호스트 정보                                        |
+  | REDIS_PORT      | Redis의 포트 정보                                          |
+  | REDIS_KEY       | Redis에 연결할 Access Key (없을 수 있음)                   |
+  | MQ_AMQPS        | Message Queue 연결에 필요한 AMQPS URL                      |
+  `;
+}

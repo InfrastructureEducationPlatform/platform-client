@@ -1,6 +1,7 @@
 import { Card, Descriptions, DescriptionsProps, Flex, Tabs } from 'antd';
 import React from 'react';
 import Markdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 import {
   DeploymentProjection,
@@ -8,7 +9,10 @@ import {
 } from '../../../../libs/core-api/api';
 import { WebServerBlock } from '../../../../types/BlockTypes.ts';
 import { findPrice } from '../../../../utils/PricingUtils.ts';
-import { generateGithubIntegrationGuideline } from './WebServerGuideline.ts';
+import {
+  WebServerEnvGuideline,
+  generateGithubIntegrationGuideline,
+} from './WebServerGuideline.ts';
 
 export function DeploymentWebServerBlockDetail({
   nodeData,
@@ -93,6 +97,15 @@ export function DeploymentWebServerBlockDetail({
                   deploymentProjection.pluginId,
                   nodeData.id,
                 )}
+              </Markdown>
+            ),
+          },
+          {
+            key: '4',
+            label: '연동 인프라 환경 변수',
+            children: (
+              <Markdown remarkPlugins={[remarkGfm]}>
+                {WebServerEnvGuideline()}
               </Markdown>
             ),
           },
