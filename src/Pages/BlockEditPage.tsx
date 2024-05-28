@@ -265,8 +265,8 @@ function BlockEditPageComponent() {
                     id: ulid(),
                     position: { x: 0, y: 0 },
                     data: {
-                      blockTitle: '웹 서버 블록',
-                      blockDescription: '웹 서버 블록입니다.',
+                      blockTitle: 'DB 서버 블록',
+                      blockDescription: 'DB 서버 블록입니다.',
                       blockTags: [],
                       dbTier: 'low',
                       dbRegion: 'korea',
