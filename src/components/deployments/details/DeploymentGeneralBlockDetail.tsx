@@ -5,11 +5,13 @@ import { DeploymentProjection } from '../../../libs/core-api/api';
 import {
   CacheBlock,
   DatabaseBlock,
+  MqBlock,
   VirtualMachineBlock,
   WebServerBlock,
 } from '../../../types/BlockTypes.ts';
 import { CacheBlockDetail } from './CacheBlockDetail/CacheBlockDetail.tsx';
 import { DeploymentDatabaseBlockDetail } from './DatabaseBlockDetail/DeploymentDatabaseBlockDetail.tsx';
+import { MessageQueueDetail } from './MessageQueueDetail/MessageQueueDetail.tsx';
 import { DeploymentVmBlockDetail } from './VMDetail/DeploymentVmBlockDetail.tsx';
 import { DeploymentWebServerBlockDetail } from './WebServerDetail/DeploymentWebServerBlockDetail.tsx';
 
@@ -17,7 +19,8 @@ type MultipleBlockType =
   | VirtualMachineBlock
   | WebServerBlock
   | DatabaseBlock
-  | CacheBlock;
+  | CacheBlock
+  | MqBlock;
 
 export function DeploymentGeneralBlockDetail({
   deploymentProjection,
@@ -72,6 +75,18 @@ export function DeploymentGeneralBlockDetail({
         <CacheBlockDetail
           key={node.id}
           nodeData={node as CacheBlock}
+          priceInfo={priceList}
+          plugin={deploymentProjection.pluginId}
+          deploymentProjection={deploymentProjection}
+        />
+      );
+    }
+
+    if (node.type === 'mq') {
+      return (
+        <MessageQueueDetail
+          key={node.id}
+          nodeData={node as MqBlock}
           priceInfo={priceList}
           plugin={deploymentProjection.pluginId}
           deploymentProjection={deploymentProjection}
