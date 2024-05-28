@@ -14,7 +14,7 @@ export type VirtualMachineBlock = Block & {
   virtualMachineFeatures: {
     tier: 'low' | 'medium' | 'high' | 'custom';
     region: 'korea' | 'defaultAccount';
-    osType: 'ubuntu';
+    osType: 'ubuntu' | 'ubuntu_22_04' | 'ubuntu_20_04' | 'ubuntu_18_04';
   };
 };
 
