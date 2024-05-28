@@ -15,8 +15,8 @@ import {
   PricingInformationProjection,
 } from '../../../libs/core-api/api';
 import { DatabaseBlock } from '../../../types/BlockTypes.ts';
+import { findPrice } from '../../../utils/PricingUtils.ts';
 import { CustomModal } from '../../CustomModal.tsx';
-import { findPrice } from './DeploymentVmBlockDetail.tsx';
 
 export function DeploymentDatabaseBlockDetail({
   nodeData,

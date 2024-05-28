@@ -7,7 +7,7 @@ import {
   PricingInformationProjection,
 } from '../../../../libs/core-api/api';
 import { WebServerBlock } from '../../../../types/BlockTypes.ts';
-import { findPrice } from '../DeploymentVmBlockDetail.tsx';
+import { findPrice } from '../../../../utils/PricingUtils.ts';
 import { generateGithubIntegrationGuideline } from './WebServerGuideline.ts';
 
 export function DeploymentWebServerBlockDetail({
