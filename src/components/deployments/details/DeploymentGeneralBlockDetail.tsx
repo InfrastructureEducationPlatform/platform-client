@@ -7,7 +7,7 @@ import {
   VirtualMachineBlock,
   WebServerBlock,
 } from '../../../types/BlockTypes.ts';
-import { DeploymentDatabaseBlockDetail } from './DeploymentDatabaseBlockDetail.tsx';
+import { DeploymentDatabaseBlockDetail } from './DatabaseBlockDetail/DeploymentDatabaseBlockDetail.tsx';
 import { DeploymentVmBlockDetail } from './VMDetail/DeploymentVmBlockDetail.tsx';
 import { DeploymentWebServerBlockDetail } from './WebServerDetail/DeploymentWebServerBlockDetail.tsx';
 
