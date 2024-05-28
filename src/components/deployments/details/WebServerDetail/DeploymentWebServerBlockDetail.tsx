@@ -115,9 +115,14 @@ function WebDeploymentOutputView({
   blockId: string;
   pricing: number;
 }) {
-  const outputFeature = deploymentProjection.deploymentOutput.find(
+  const outputFeature = deploymentProjection.deploymentOutput?.find(
     (a: any) => a.id === blockId,
-  ).webServerOutput as WebServerOutput;
+  )?.webServerOutput as WebServerOutput | undefined;
+
+  if (!outputFeature) {
+    return '배포 정보가 없습니다. 배포가 완료되었는지 확인해 주세요.';
+  }
+
   return (
     <Flex style={{ flexDirection: 'column', gap: '10px' }}>
       <Descriptions

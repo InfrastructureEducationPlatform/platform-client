@@ -40,9 +40,9 @@ export function DeploymentVmBlockDetail({
     },
   ];
 
-  const outputFeature = deploymentProjection.deploymentOutput.find(
+  const outputFeature = deploymentProjection.deploymentOutput?.find(
     (a: any) => a.id === nodeData.id,
-  ).virtualMachineOutput as VirtualMachineOutput;
+  )?.virtualMachineOutput as VirtualMachineOutput | undefined;
 
   return (
     <Card>
@@ -62,7 +62,7 @@ export function DeploymentVmBlockDetail({
           {
             label: '배포 정보 확인하기',
             key: '2',
-            children: (
+            children: outputFeature ? (
               <Descriptions
                 title={'배포 인스턴스 정보'}
                 column={2}
@@ -109,16 +109,20 @@ export function DeploymentVmBlockDetail({
                   },
                 ]}
               />
+            ) : (
+              '배포 정보가 없습니다. 배포가 완료되었는지 확인해 주세요.'
             ),
           },
           {
             label: '팁 및 연결하기',
             key: '3',
-            children: (
+            children: outputFeature ? (
               <VmDeploymentTutorial
                 deploymentProjection={deploymentProjection}
                 blockId={nodeData.id}
               />
+            ) : (
+              '연결 정보가 없습니다. 배포가 완료되었는지 확인해 주세요.'
             ),
           },
         ]}
