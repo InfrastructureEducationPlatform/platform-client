@@ -1,5 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { Checkbox, Flex, Timeline, TimelineItemProps } from 'antd';
+import {
+  Checkbox,
+  Flex,
+  Select,
+  Timeline,
+  TimelineItemProps,
+  Typography,
+} from 'antd';
 import { useState } from 'react';
 
 import { userApi } from '../../api';
@@ -62,25 +69,42 @@ function convertAuditLogToTimelineItem(auditLog: AuditLog): TimelineItemProps {
   };
 }
 
-const useUserAuditLogQuery = (enableFullData: boolean) => {
+const useUserAuditLogQuery = (enableFullData: boolean, filterDate: string) => {
   return useQuery({
-    queryKey: ['userAuditLog', enableFullData],
-    queryFn: async (): Promise<TimelineItemProps[]> => {
+    queryKey: ['userAuditLog', enableFullData, filterDate],
+    queryFn: async (): Promise<{
+      dateEntryOptions: string[];
+      timelineProps: TimelineItemProps[];
+    }> => {
       const response = await userApi.getUserAuditLogAsync();
-      const removedDuplicates = enableFullData
-        ? response.data
-        : removeShortTimeDuplicates(response.data, 10);
-
-      return removedDuplicates.map<TimelineItemProps>(
-        convertAuditLogToTimelineItem,
+      const filteredData = response.data.filter(
+        (log) => log.auditTime!.slice(0, 10).replace(/-/g, '-') === filterDate,
       );
+      const removedDuplicates = enableFullData
+        ? filteredData
+        : removeShortTimeDuplicates(filteredData, 10);
+
+      return {
+        dateEntryOptions: [
+          ...new Set(
+            response.data.map((log) =>
+              log.auditTime!.slice(0, 10).replace(/-/g, '-'),
+            ),
+          ),
+        ],
+        timelineProps: removedDuplicates.map(convertAuditLogToTimelineItem),
+      };
     },
   });
 };
 
 export function AccountAuditLogView() {
   const [isFullDataEnabled, setIsFullDataEnabled] = useState<boolean>(false);
-  const { data } = useUserAuditLogQuery(isFullDataEnabled);
+  const [filterDate, setFilterDate] = useState<string>(
+    new Date().toISOString().slice(0, 10).replace(/-/g, '-'),
+  );
+  const { data } = useUserAuditLogQuery(isFullDataEnabled, filterDate);
+
   if (!data) return <div>Loading..</div>;
   return (
     <Flex
@@ -90,15 +114,37 @@ export function AccountAuditLogView() {
         gap: '16px',
       }}
     >
-      <Checkbox
-        onChange={(event) => {
-          setIsFullDataEnabled(event.target.checked);
+      <Flex
+        style={{
+          alignItems: 'center',
+          gap: '20px',
         }}
-        checked={isFullDataEnabled}
       >
-        전체 사용자 로그 보기
-      </Checkbox>
-      <Timeline items={data} />
+        <div style={{ display: 'inline' }}>
+          <Typography.Text>조회 날짜 선택: </Typography.Text>
+          <Select
+            options={data.dateEntryOptions.map((a) => {
+              return {
+                label: a,
+                value: a,
+              };
+            })}
+            defaultValue={filterDate}
+            onChange={(value) => {
+              setFilterDate(value);
+            }}
+          />
+        </div>
+        <Checkbox
+          onChange={(event) => {
+            setIsFullDataEnabled(event.target.checked);
+          }}
+          checked={isFullDataEnabled}
+        >
+          전체 사용자 로그 보기
+        </Checkbox>
+      </Flex>
+      <Timeline items={data.timelineProps} />
     </Flex>
   );
 }
