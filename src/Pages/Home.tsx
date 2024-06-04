@@ -1,4 +1,4 @@
-import { EditOutlined, EllipsisOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { EllipsisOutlined, PlusOutlined } from '@ant-design/icons';
 import {
   Button,
   Card,
@@ -13,17 +13,38 @@ import {
 } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { sketchApi } from '../api';
 import { MainLayout } from '../components/MainLayout.tsx';
 import { useChannelNavigationContext } from '../components/providers/ChannelNavigationProvider.tsx';
 import { SketchProjection } from '../types/SketchProjection.ts';
-import { Bounce, toast, ToastContainer } from 'react-toastify';
-import "react-toastify/dist/ReactToastify.css";
+
 type CreateSketchType = {
   name: string;
   description: string;
 };
+
+function createRandomUrl(sketchId: string): string {
+  const urlList = [
+    'https://api.blockinfra.kangdroid.me/files/01HZGM7R1C1R70MW0T2DHPAM8H',
+    'https://api.blockinfra.kangdroid.me/files/01HZGM9TMQJPAKMMJ8AEYQH62D',
+    'https://api.blockinfra.kangdroid.me/files/01HZGMABN4BTNNRZTYYNP8HCBZ',
+  ];
+
+  if (sketchId === '01HWT319G1Z2DMPY95TRY2BG4K') {
+    return urlList[1];
+  } else if (sketchId === '01HMN2RWP9BV8A3R1ZYS25WF26') {
+    return urlList[2];
+  } else if (sketchId === '01HYX1KNW18N6K5RE11PVF9E2E') {
+    return urlList[0];
+  }
+
+  // return random
+  const randomIndex = Math.floor(Math.random() * urlList.length);
+  return urlList[randomIndex];
+}
 
 export function Home() {
   const location = useLocation();
@@ -53,26 +74,31 @@ export function SketchListView({
   const [isSketchCreated, setIsSketchCreated] = useState<boolean>(false);
   const navigate = useNavigate();
   const [isModifyOpenModal, setIsModifyOpenModal] = useState<boolean>(false);
-  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({ 'id': '', 'name': '', 'description': '', 'createdAt': '', 'updatedAt': '', 'blockSketch': '' });
+  const [selectedSketch, setSelectedSketch] = useState<SketchProjection>({
+    id: '',
+    name: '',
+    description: '',
+    createdAt: '',
+    updatedAt: '',
+    blockSketch: '',
+  });
   // 스케치 개체 옵션 메뉴
   const items: MenuProps['items'] = [
     {
-      label: "설명 수정",
+      label: '설명 수정',
       key: 'rename',
       onClick: () => {
         setIsModifyOpenModal(true);
-      }
+      },
     },
     {
       type: 'divider',
     },
     {
-      label: "Delete",
+      label: 'Delete',
       key: 'delete',
       danger: true,
-      onClick: () => {
-
-      }
+      onClick: () => {},
     },
   ];
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -103,7 +129,12 @@ export function SketchListView({
     <>
       <Flex
         ref={sketchListViewRef}
-        style={{ flexDirection: 'column', padding: '20px', gap: '20px', zIndex: 2 }}
+        style={{
+          flexDirection: 'column',
+          padding: '20px',
+          gap: '20px',
+          zIndex: 2,
+        }}
       >
         <Flex style={{ alignItems: 'center', gap: '20px' }}>
           <Typography.Title level={2} style={{ margin: 0 }}>
@@ -141,40 +172,57 @@ export function SketchListView({
             </Flex>
           </Card>
           {sketchList.map((sketch) => {
-
             return (
               <Card
-                style={{ width: '300px', minWidth: '300px', }}
+                style={{ width: '300px', minWidth: '300px' }}
                 key={sketch.id}
                 cover={
                   <img
                     alt="example"
-                    src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
-                    onClick={() => navigate(`/sketches/${sketch.id}`)} />
+                    src={createRandomUrl(sketch.id)}
+                    onClick={() => navigate(`/sketches/${sketch.id}`)}
+                  />
                 }
               >
-                <div className='SketchOption' style={{ display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ flex: 1, display: 'flex', flexDirection: 'row', alignContent: 'space-between' }}>
+                <div
+                  className="SketchOption"
+                  style={{ display: 'flex', flexDirection: 'column' }}
+                >
+                  <div
+                    style={{
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      alignContent: 'space-between',
+                    }}
+                  >
                     <div style={{ flex: 9, overflow: 'hidden' }}>
-                      <Typography.Text ellipsis style={{ fontSize: 16, fontWeight: 600 }}>
+                      <Typography.Text
+                        ellipsis
+                        style={{ fontSize: 16, fontWeight: 600 }}
+                      >
                         {sketch.name}
                       </Typography.Text>
                     </div>
                     <Dropdown menu={{ items }} trigger={['click']}>
-                      
-                      <EllipsisOutlined onClick={() => {
-                        setSelectedSketch(sketch);
-                      }} />
+                      <EllipsisOutlined
+                        onClick={() => {
+                          setSelectedSketch(sketch);
+                        }}
+                      />
                     </Dropdown>
                   </div>
                   <div style={{ flex: 1 }}>
-                    <Typography.Text ellipsis style={{ flex: 1, fontSize: 12, color: 'gray' }}>
+                    <Typography.Text
+                      ellipsis
+                      style={{ flex: 1, fontSize: 12, color: 'gray' }}
+                    >
                       {sketch.description}
-                    </Typography.Text >
+                    </Typography.Text>
                   </div>
                 </div>
-
-              </Card>);
+              </Card>
+            );
           })}
         </Flex>
       </Flex>
@@ -182,8 +230,15 @@ export function SketchListView({
         key={'createSketchModal'}
         open={isCreateOpenModal}
         footer={[
-          <Button key={'cancleBtn'} onClick={() => setIsCreateOpenModal(false)}>취소</Button>,
-          <Button key={'submitBtn'} form={'createSketchForm'} type="primary" htmlType="submit">
+          <Button key={'cancleBtn'} onClick={() => setIsCreateOpenModal(false)}>
+            취소
+          </Button>,
+          <Button
+            key={'submitBtn'}
+            form={'createSketchForm'}
+            type="primary"
+            htmlType="submit"
+          >
             스케치 생성
           </Button>,
         ]}
@@ -242,8 +297,15 @@ export function SketchListView({
         key={'modifySketchModal'}
         open={isModifyOpenModal}
         footer={[
-          <Button key='cancleBtn' onClick={() => setIsModifyOpenModal(false)}>취소</Button>,
-          <Button key='submitBtn' form={'modifySketchForm'} type="primary" htmlType="submit">
+          <Button key="cancleBtn" onClick={() => setIsModifyOpenModal(false)}>
+            취소
+          </Button>,
+          <Button
+            key="submitBtn"
+            form={'modifySketchForm'}
+            type="primary"
+            htmlType="submit"
+          >
             스케치 수정
           </Button>,
         ]}
@@ -273,46 +335,47 @@ export function SketchListView({
                       name: value.name,
                       description: value.description,
                       blockData: selectedSketch.blockSketch,
-                    }
+                    },
                   );
 
                   // 수정 성공인 경우, true를 반환.
                   if (modifyReqResult.status === 200) {
                     // 모든 스케치 목록을 다시 불러오지 않고, 수정된 스케치만 업데이트 및 렌더링
-                    setSketchList(sketchList.map((sketch) => {
-                      if (sketch.id === selectedSketch.id) {
-                        return {
-                          ...sketch,
-                          name: modifyReqResult.data.name,
-                          description: modifyReqResult.data.description,
-                        };
-                      }
-                      return sketch;
-                    }));
+                    setSketchList(
+                      sketchList.map((sketch) => {
+                        if (sketch.id === selectedSketch.id) {
+                          return {
+                            ...sketch,
+                            name: modifyReqResult.data.name,
+                            description: modifyReqResult.data.description,
+                          };
+                        }
+                        return sketch;
+                      }),
+                    );
                     return true;
-                  }
-                  else
-                    return false;
-                }
+                  } else return false;
+                };
 
                 // Toast에 전달할 Promise 객체 반환
                 return new Promise((resolve, reject) => {
-                  modifyResult().then((value) => {
-                    if (value === true)
-                      resolve(true);
-                    else
+                  modifyResult()
+                    .then((value) => {
+                      if (value === true) resolve(true);
+                      else reject(false);
+                    })
+                    .catch((err) => {
                       reject(false);
-                  }).catch((err) => {
-                    reject(false);
-                  });
-                }
-                )
-
+                    });
+                });
               };
 
               // Toast 함수를 통해 수정 상태를 알림.
-              toast.promise(modifySketch, { pending: '스케치 정보 수정 중...', success: '스케치 정보 수정 완료!', error: '스케치 정보 수정 실패!' })
-
+              toast.promise(modifySketch, {
+                pending: '스케치 정보 수정 중...',
+                success: '스케치 정보 수정 완료!',
+                error: '스케치 정보 수정 실패!',
+              });
             }}
             autoComplete="off"
           >
@@ -380,7 +443,10 @@ function padZero(num: number): string {
 // yyyy-MM-ddTHH:mm:ss... 형식의 문자열을 yyyy년 MM월 dd일 HH:mm:ss의 문자열로 변환하는 함수
 const dateParsing = (date: string) => {
   const dt = new Date(date);
-  const outputString: string = `${dt.getFullYear()}년 ${padZero(dt.getMonth() + 1)}월 ${padZero(dt.getDate())}일 ${padZero(dt.getHours())}:${padZero(dt.getMinutes())}:${padZero(dt.getSeconds())}`;
+  const outputString: string = `${dt.getFullYear()}년 ${padZero(
+    dt.getMonth() + 1,
+  )}월 ${padZero(dt.getDate())}일 ${padZero(dt.getHours())}:${padZero(
+    dt.getMinutes(),
+  )}:${padZero(dt.getSeconds())}`;
   return outputString;
-}
-
+};
